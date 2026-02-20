@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catalogs — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+  <section class="catalog-page container">
+    <h1>Catalogs</h1>
+    <p class="catalog-lead">
+      Catalog management: create, edit, archive, and restore records.
+    </p>
+
+    <div class="catalog-grid">
+      <a class="catalog-card" href="{% url 'catalog_attractions_list' %}">
+        <h3>Attractions</h3>
+        <p>Active: {{ attractions_count }} | Archived: {{ attractions_archived_count }}</p>
+      </a>
+      <a class="catalog-card" href="{% url 'catalog_tours_days_list' %}">
+        <h3>ToursDay</h3>
+        <p>Active: {{ tours_days_count }} | Archived: {{ tours_days_archived_count }}</p>
+      </a>
+      <a class="catalog-card" href="{% url 'catalog_includes_list' %}">
+        <h3>Includes</h3>
+        <p>Active: {{ includes_count }} | Archived: {{ includes_archived_count }}</p>
+      </a>
+      <a class="catalog-card" href="{% url 'catalog_group_tours_list' %}">
+        <h3>GroupTours</h3>
+        <p>Active: {{ group_tours_count }} | Archived: {{ group_tours_archived_count }}</p>
+      </a>
+      <a class="catalog-card" href="{% url 'catalog_blog_list' %}">
+        <h3>Blog</h3>
+        <p>Active: {{ blog_posts_count }} | Archived: {{ blog_posts_archived_count }}</p>
+      </a>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/about-us.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Hero — первый экран Figma 989:11673: заголовок, подзаголовок, приглушённый логотип в фоне -->
+  <section class="about-us-hero">
+    <div class="about-us-hero-bg" aria-hidden="true">
+      <img src="{{ MEDIA_URL }}working/logo/icon.png" alt="" />
+    </div>
+    <div class="container about-us-hero-inner">
+      <h1 class="about-us-title">About Us</h1>
+      <p class="about-us-subtitle">Our focus is cultural and historical travel with reliable and professional service</p>
+    </div>
+  </section>
+
+  <!-- Три карточки: Private tours, Group Tours, For organizations -->
+  <section class="about-us-cards-section">
+    <div class="container">
+      <div class="about-us-cards">
+        <a href="{% url 'begin_your_journey_step1' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/mount.jpg');">
+          <div class="about-us-card-overlay"></div>
+          <h3 class="about-us-card-title">Private tours</h3>
+          <span class="about-us-card-link">Craft your journey</span>
+        </a>
+        <a href="{% url 'tours' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/balls.jpg');">
+          <div class="about-us-card-overlay"></div>
+          <h3 class="about-us-card-title">Group Tours</h3>
+          <span class="about-us-card-link">Choose a group tour</span>
+        </a>
+        <a href="{% url 'for_organizations' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/kayak.jpg');">
+          <div class="about-us-card-overlay"></div>
+          <h3 class="about-us-card-title">For organizations</h3>
+          <span class="about-us-card-link">Read more</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-red-line"></div>
+  </section>
+
+  <!-- Второй экран About — Figma 989:12003: опыт + фото + 4 карточки -->
+  <section class="about-us-experience">
+    <div class="container about-us-experience-inner">
+      <div class="about-us-experience-text">
+        <h2 class="about-us-experience-title">Years of <span class="about-us-experience-accent">experience</span> shaping meaningful journeys</h2>
+        <div class="about-us-experience-text-body">
+          <p>During this time, we have designed and organized trips for private clients, families, and organizations from different countries.</p>
+          <p>Our long term experience allows us to understand what works in practice and how to organize travel in a way that feels smooth and predictable for our clients.</p>
+        </div>
+      </div>
+      <div class="about-us-experience-right">
+        <div class="about-us-experience-image-wrap">
+          <img src="{{ MEDIA_URL }}working/hero/hero_organisations.jpg" alt="Team and travelers" class="about-us-experience-image" />
+        </div>
+        <div class="about-us-experience-cards">
+          <div class="about-us-exp-card">
+            <span class="about-us-exp-icon-wrap">
+              <img src="{{ MEDIA_URL }}working/icons/people.png" alt="" class="about-us-exp-icon" aria-hidden="true" />
+            </span>
+            <p>20+ years of experience in travel planning</p>
+          </div>
+          <div class="about-us-exp-card">
+            <span class="about-us-exp-icon-wrap">
+              <img src="{{ MEDIA_URL }}working/icons/card.png" alt="" class="about-us-exp-icon" aria-hidden="true" />
+            </span>
+            <p>Hundreds of itineraries created across Poland and Europe</p>
+          </div>
+          <div class="about-us-exp-card">
+            <span class="about-us-exp-icon-wrap">
+              <img src="{{ MEDIA_URL }}working/icons/king.png" alt="" class="about-us-exp-icon" aria-hidden="true" />
+            </span>
+            <p>Trusted by thousands of travelers</p>
+          </div>
+          <div class="about-us-exp-card">
+            <span class="about-us-exp-icon-wrap">
+              <img src="{{ MEDIA_URL }}working/icons/exp.png" alt="" class="about-us-exp-icon" aria-hidden="true" />
+            </span>
+            <p>Experience with private clients and organizations</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Experience we promise you (с главной) -->
+  <section class="section-experience-promise">
+    <div class="exp-lp-bg" style="background-image: url('{{ MEDIA_URL }}working/lp/459-523.png');"></div>
+    <div class="exp-lp-overlay"></div>
+    <div class="container exp-lp-inner">
+      <div class="exp-lp-content">
+        <h2>The Experience we <span class="exp-lp-title-underline">promise</span> you</h2>
+        <p>Your journey is planned with care, comfort, and full attention to what matters to you.</p>
+      </div>
+      <div class="exp-lp-cards-grid">
+        <div class="exp-lp-row">
+          <div class="exp-lp-card">
+            <span class="exp-lp-title">Personalized Attention</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/e6e6660023c621229cf94ee8e1b7cc75e659da8c.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+          <div class="exp-lp-card exp-lp-cards-grid-shift">
+            <span class="exp-lp-title">Thoughtful Organization</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/1ba233f0c7bec0f15f667de527c69406eb4c74cc.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+        </div>
+        <div class="exp-lp-row">
+          <div class="exp-lp-card">
+            <span class="exp-lp-title">Reliable Support</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/076dbee2e5750b967c346b9ed36d16c1d8175575.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+          <div class="exp-lp-card exp-lp-cards-grid-shift">
+            <span class="exp-lp-title">Authentic Experiences</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/bbdeb23d2af13c6a193a49c963b46bcce601d86b.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works (с главной) -->
+  <section class="section-how-works">
+    <div class="how-lp-bg" style="background-image: url('{{ MEDIA_URL }}working/lp/459-524.svg');"></div>
+    <div class="container how-lp-wrap">
+      <h2>How it works</h2>
+      <div class="how-lp-steps">
+        <div class="how-lp-step">
+          <span>You looking for lifetime vacations</span><em>step 1</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You decide to come to Europe to visit Poland</span><em>step 2</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You visit our website and fill out the request form</span><em>step 3</em>
+        </div>
+        <div class="how-lp-step">
+          <span>Within 24 hours, our tour manager contacts you</span><em>step 4</em>
+        </div>
+        <div class="how-lp-step">
+          <span>We design your fully personalized trip</span><em>step 5</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You receive full support throughout the entire process.</span><em>step 6</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You arrive and enjoy a unique vacation in Poland</span><em>step 7</em>
+        </div>
+      </div>
+      <div class="btn-works">
+        <a href="{% url 'begin_your_journey_step1' %}" class="btn btn-hero how-lp-btn"><span>Craft your journey</span></a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

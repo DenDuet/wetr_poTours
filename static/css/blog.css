@@ -1,0 +1,444 @@
+/* Our Blog — по макету Figma */
+.blog-page {
+  padding: 120px 0 64px;
+  background: var(--color-bg);
+}
+
+.blog-page-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.blog-page-title {
+  font-family: var(--font-headline);
+  font-size: clamp(53px, 5.5vw, 79px);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-dark);
+  margin: var(--space-6) 0 var(--space-4) 0;
+  line-height: var(--line-height-tight);
+}
+
+/* Блок под заголовком — уже по ширине, шрифт body, средняя насыщенность (по макету) */
+.blog-page-lead {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--font-medium);
+  color: var(--color-text-dark);
+  margin: 0 0 var(--space-8);
+  line-height: var(--line-height-relaxed);
+  max-width: 420px;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.blog-card {
+  margin: 0;
+}
+
+.blog-card-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 60px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-white);
+  border: 1px solid #eaeaea;
+  border-radius: 24px;
+  padding: 30px;
+  min-height: 586px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.blog-card-link:hover {
+  border-color: #d6d6d6;
+  transform: translateY(-2px);
+}
+
+.blog-card-main {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: 30px;
+  min-height: 0;
+  width: 100%;
+}
+
+.blog-card-image-wrap {
+  height: 280px;
+  overflow: hidden;
+  background: #eaeaea;
+  border-radius: 12px;
+  min-width: 0;
+}
+
+.blog-card-image {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-card-image-placeholder {
+  background: #eaeaea;
+}
+
+.blog-card-text {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  width: 100%;
+}
+
+.blog-card-date {
+  display: block;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #181d27;
+  margin: 0;
+}
+
+.blog-card-title {
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: #181d27;
+  margin: 0;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog-card-read {
+  display: inline-block;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #181d27;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin: 0;
+}
+
+.blog-card-link:hover .blog-card-read {
+  color: #a6112a;
+}
+
+.blog-empty {
+  grid-column: 1 / -1;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--color-gray-500);
+  margin: var(--space-8) 0;
+}
+
+.blog-pagination {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+
+.blog-pagination-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blog-pagination-link,
+.blog-pagination-current,
+.blog-pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  font-family: var(--font-headline);
+  font-size: var(--text-body);
+  font-weight: var(--font-medium);
+  color: var(--color-red-figma);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.blog-pagination-link:hover {
+  background: var(--color-primary-light);
+  color: var(--color-red-dark);
+}
+
+.blog-pagination-current {
+  background: var(--color-red-figma);
+  color: var(--color-white);
+}
+
+.blog-pagination-ellipsis {
+  color: var(--color-gray-500);
+  cursor: default;
+}
+
+@media (max-width: 1024px) {
+  .blog-page {
+    padding-top: 102px;
+    padding-bottom: 48px;
+  }
+
+  .blog-page-inner {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .blog-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .blog-card-link {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .blog-page {
+    padding-top: 92px;
+    padding-bottom: 32px;
+  }
+
+  .blog-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .blog-page-title {
+    font-size: 32px;
+  }
+
+  .blog-page-lead {
+    font-size: var(--text-body);
+  }
+
+  /* Мобильная версия: картинки строго по ширине блока, без переполнения */
+  .blog-card {
+    min-width: 0;
+  }
+
+  .blog-card-link {
+    min-width: 0;
+    gap: 40px;
+    padding: 20px;
+  }
+
+  .blog-card-image-wrap {
+    max-width: 100%;
+    height: 220px;
+  }
+
+  .blog-card-image {
+    max-width: 100%;
+    object-fit: cover;
+  }
+}
+
+/* ——— Blog post detail (Figma node 718:2630) ——— */
+/* Отступ сверху, чтобы блок с картинкой был под меню, а не под ним */
+.blog-post-page {
+  padding-top: 120px;
+  padding-bottom: 0;
+  background: var(--color-bg);
+}
+
+/* Блок по ширине меню (тот же контейнер), скругление, картинка по ширине блока */
+.blog-post-hero {
+  width: min(1430px, calc(100% - (2 * var(--container-padding))));
+  max-width: 1430px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  aspect-ratio: 16 / 10;
+  max-height: 520px;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-gray-light);
+  position: relative;
+}
+
+.blog-post-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.blog-post-hero-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--color-gray-light);
+}
+
+.blog-post-body-wrap {
+  padding: 48px 0 64px;
+  background: var(--color-bg);
+}
+
+.blog-post-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.blog-post-back {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--color-text-dark);
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 0.2s ease;
+}
+
+.blog-post-back:hover {
+  color: var(--color-red-figma);
+}
+
+.blog-post-title {
+  font-family: var(--font-headline);
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: var(--font-semibold);
+  color: var(--color-black);
+  line-height: var(--line-height-tight);
+  margin: 0 0 var(--space-8);
+}
+
+.blog-post-content {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-dark);
+  margin-bottom: 32px;
+}
+
+.blog-post-content p {
+  margin: 0 0 1em;
+}
+
+.blog-post-content p:last-child {
+  margin-bottom: 0;
+}
+
+.blog-post-content h2,
+.blog-post-content h3 {
+  font-family: var(--font-headline);
+  font-size: var(--text-h4);
+  font-weight: var(--font-semibold);
+  margin: 1.5em 0 0.5em;
+}
+
+.blog-post-date {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  color: var(--color-gray-500);
+}
+
+/* Страница достопримечательности — блок City, Address, Duration */
+.attraction-detail-meta {
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--color-text-dark);
+}
+.attraction-detail-meta dt {
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-700);
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+.attraction-detail-meta dt:first-child { margin-top: 0; }
+.attraction-detail-meta dd {
+  margin: 0;
+}
+
+/* Кнопки вперед/назад на странице достопримечательности — красные стрелки */
+.attraction-detail-inner {
+  position: relative;
+  padding-top: 0;
+}
+
+.attraction-detail-nav {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  padding: 0 16px;
+  z-index: 2;
+}
+
+.attraction-nav-btn {
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+.attraction-detail-nav .arrow-btn {
+  pointer-events: auto;
+}
+
+.attraction-nav-disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .blog-post-page {
+    padding-top: 102px;
+  }
+
+  .blog-post-hero {
+    width: calc(100% - 30px);
+  }
+
+  .blog-post-inner {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .blog-post-page {
+    padding-top: 92px;
+  }
+
+  .blog-post-body-wrap {
+    padding: 32px 0 48px;
+  }
+
+  .attraction-detail-nav {
+    padding: 0 10px;
+  }
+
+  .blog-post-title {
+    font-size: 28px;
+  }
+}

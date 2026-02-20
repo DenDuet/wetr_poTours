@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Blog — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="blog-page">
+    <div class="container blog-page-inner">
+      <h1 class="blog-page-title">Our Blog</h1>
+      <p class="blog-page-lead">Insights and stories to inspire your next journey</p>
+
+      <div class="blog-grid">
+        {% for post in posts %}
+          <article class="blog-card">
+            <a href="{% url 'blog_post_detail' post.pk %}" class="blog-card-link">
+              <div class="blog-card-main">
+                <div class="blog-card-image-wrap">
+                  {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-card-image" loading="lazy" />
+                  {% else %}
+                    <div class="blog-card-image blog-card-image-placeholder"></div>
+                  {% endif %}
+                </div>
+                <div class="blog-card-text">
+                  <time class="blog-card-date" datetime="{{ post.published_at|date:'Y-m-d' }}">{{ post.published_at|date:"d M Y"|default:"—" }}</time>
+                  <h2 class="blog-card-title">{{ post.title }}</h2>
+                </div>
+              </div>
+              <span class="blog-card-read">Read more</span>
+            </a>
+          </article>
+        {% empty %}
+          <p class="blog-empty">No posts yet.</p>
+        {% endfor %}
+      </div>
+
+      {% if page_obj.has_other_pages %}
+        <nav class="blog-pagination" aria-label="Blog pagination">
+          <ul class="blog-pagination-list">
+            {% if page_obj.has_previous %}
+              <li><a href="?page={{ page_obj.previous_page_number }}" class="blog-pagination-link" aria-label="Previous">←</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li><span class="blog-pagination-current" aria-current="page">{{ num }}</span></li>
+              {% else %}
+                <li><a href="?page={{ num }}" class="blog-pagination-link">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+              <li><a href="?page={{ page_obj.next_page_number }}" class="blog-pagination-link" aria-label="Next">→</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,68 @@
+/* PoTours Design System — точная копия из Figma (get_variable_defs) */
+:root {
+  /* Colors — из Figma variables */
+  --color-black: #181D27;
+  --color-white: #FFFFFA;
+  --color-bg: #F6F6F0;
+  --color-bg-hero: #FBF8F4;
+  --color-red-figma: #E23A39;
+  --color-orange-border: #F4AE40;
+  --color-btn-border-start: #FEDE80;
+  --color-btn-border-end: #FFA800;
+  --color-text-dark: #333333;
+  --color-red: #C51230;
+  --color-red-dark: #A6112A;
+  --color-yellow: #EC9F1D;
+  --color-yellow-light: #F8F8C1;
+  --color-gray-light: #EAEAEA;
+  --Gray-light: #EAEAEA;
+  --BG: #F6F6F0;
+  
+  /* Typography — Figma: Stack Sans Headline, Inter Tight */
+  --font-headline: 'Stack Sans Headline', -apple-system, sans-serif;
+  --font-body: 'Inter Tight', sans-serif;
+  
+  /* Font sizes из Figma */
+  --text-display-2xl: 90px;
+  --text-h2: 60px;
+  --text-h3: 36px;
+  --text-h4: 28px;
+  --text-h6: 18px;
+  --text-btn: 18px;
+  --text-link: 18px;
+  --text-body: 18px;
+  --text-body-sm: 14px;
+  
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  --line-height-tight: 1.1;
+  --line-height-normal: 1.2;
+  --line-height-relaxed: 1.4;
+  
+  /* Spacing */
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  --container-max: 1536px;
+  --container-padding: 53px;
+  
+  /* Aliases for components */
+  --color-primary: #C51230;
+  --color-primary-hover: #A6112A;
+  --color-primary-light: rgba(197, 18, 48, 0.1);
+  --color-gray-200: #EAEAEA;
+  --color-gray-500: #666666;
+  --color-gray-600: #4B5563;
+  --color-gray-700: #374151;
+  --color-gray-900: #181D27;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px;
+  --radius-md: 8px; --radius-full: 9999px;
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+  --transition-base: 0.25s ease;
+  --text-xs: 12px; --text-sm: 14px; --text-xl: 20px; --text-3xl: 30px; --text-4xl: 36px; --text-5xl: 48px;
+}

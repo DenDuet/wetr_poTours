@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Get Inspirations — po.tours
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/group-tours-page.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="section group-tours-intro">
+    <div class="container group-tours-intro-grid">
+      <h1 class="group-tours-title">Beautiful Ideas for Your Next Journey</h1>
+
+      <div class="group-tours-left">
+        <div class="group-tours-text-blocks">
+          <p class="group-tours-desc-top">Choose from thoughtfully designed trips you can adapt to your own schedule and interests.</p>
+          <div class="group-tours-bottom-group">
+            <p class="group-tours-desc-bottom">Each itinerary comes with carefully crafted details and cultural storytelling to make planning simple and the journey unforgettable.</p>
+            <a href="#contact" class="btn btn-hero"><span>Request a group tour</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="group-tours-right">
+        <div class="group-tours-image-big">
+          <img src="{{ MEDIA_URL }}working/figma-group-tours-page/202ef6f88b9e0536630c83b01ac794a18fa6d87b.png" alt="Group tour" />
+        </div>
+        <div class="group-tours-image-small">
+          <img src="{{ MEDIA_URL }}working/figma-group-tours-page/9f56211dc5d58e0c0d820adc91861c0d8824f195.png" alt="Group tour city" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="red-line"></div>
+
+  <section class="section-inspirations section-group-tour-cards" id="inspiration">
+    <div class="container">
+      {% for row in group_tour_rows %}
+        <div class="{% if row.size == 2 %}
+            
+            inspirations-grid0
+
+          {% else %}
+            
+            inspirations-grid group-tours-bottom-grid
+
+          {% endif %}">
+          {% for tour in row.cards %}
+            <a href="{% url 'group_tour_inspiration_detail' tour.id %}"
+              class="inspiration-card {% if row.size == 2 %}
+                
+                inspiration-card-top
+
+              {% else %}
+                
+                inspiration-card-bottom
+
+              {% endif %}"
+              style="background-image: url('{{ tour.cover_url }}');">
+              <div class="card-overlay"></div>
+              <div class="card-info">
+                <h3>{{ tour.title }}</h3>
+                <p>{{ tour.short_description }}</p>
+                <div class="card-badges">
+                  <span class="badge">{{ tour.tour_days_count }} days</span>
+                  <span class="badge">{{ tour.cities_count }} cities</span>
+                </div>
+              </div>
+              <span class="link">Read more</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% empty %}
+        <p class="group-tours-empty">No group tours yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

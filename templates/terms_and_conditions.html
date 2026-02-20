@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Terms and Conditions — po.tours{% endblock %}
+
+{% block content %}
+  <section class="container" style="padding: 80px 0; max-width: 800px;">
+    <h1 style="font-family: var(--font-headline); font-size: clamp(28px, 4vw, 48px); font-weight: var(--font-semibold); margin: 0 0 32px;">Terms and Conditions</h1>
+    <p style="margin: 0 0 16px; line-height: 1.6;">Last updated: 2025.</p>
+    <p style="margin: 0 0 24px; line-height: 1.6;">By using this website and our services you agree to these terms. For questions, please contact us.</p>
+    <p style="margin: 0 0 24px; line-height: 1.6;">We reserve the right to update these terms. Continued use of the site after changes constitutes acceptance.</p>
+    <p style="margin: 0; line-height: 1.6;"><a href="{% url 'home' %}" class="btn btn-cta-header"><span>Return to Home</span></a></p>
+  </section>
+{% endblock %}

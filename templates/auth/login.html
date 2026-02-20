@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+  <section class="catalog-page container">
+    <h1>Login</h1>
+    <p class="catalog-lead">Sign in to create and edit catalog records.</p>
+
+    <form method="post" class="catalog-form" style="max-width: 420px;">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
+      <div class="catalog-form-actions">
+        <button class="catalog-btn" type="submit">Sign in</button>
+        <a href="{% url 'logout' %}" class="catalog-btn catalog-btn-ghost">Logout</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Thank You — po.tours
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/begin-journey-step5.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="journey5-page">
+    <div class="container journey5-shell">
+      <div class="journey5-bg" style="background-image: url('{{ cover_url }}');">
+        <div class="journey5-card">
+          <div class="journey5-check" aria-hidden="true">✓</div>
+          <h2>Thank you for completing your tour request form</h2>
+          <p>We'll get back to you via email within 24 hours with personalized tour recommendations and next steps</p>
+          <div class="journey5-actions">
+            <a href="{% url 'home' %}" class="btn btn-cta-header"><span>Return Home</span></a>
+            <a href="#" class="journey5-link-stub">↓ Download Video</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

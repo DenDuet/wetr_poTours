@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <article class="blog-post-page">
+    <div class="blog-post-hero">
+      {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-post-hero-image" />
+      {% else %}
+        <div class="blog-post-hero-placeholder"></div>
+      {% endif %}
+    </div>
+
+    <div class="blog-post-body-wrap">
+      <div class="container blog-post-inner">
+        <a href="{% url 'blog_page' %}" class="blog-post-back">← Back to Blog</a>
+        <h1 class="blog-post-title">{{ post.title }}</h1>
+        <div class="blog-post-content">
+          {{ post.body|linebreaks }}
+        </div>
+        {% if post.published_at %}
+          <time class="blog-post-date" datetime="{{ post.published_at|date:'Y-m-d' }}">{{ post.published_at|date:"d M Y" }}</time>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+  <section class="catalog-page container">
+    <h1>Blog</h1>
+    <div class="catalog-actions">
+      <a class="catalog-btn" href="{% url 'catalog_blog_create' %}">Add post</a>
+      <a class="catalog-btn catalog-btn-ghost" href="{% url 'catalog_dashboard' %}">Back to catalogs</a>
+    </div>
+
+    <form method="get" class="catalog-filters">
+      <label>From date <input type="date" name="date_from" value="{{ date_from }}" placeholder="YYYY-MM-DD"></label>
+      <label>To date <input type="date" name="date_to" value="{{ date_to }}" placeholder="YYYY-MM-DD"></label>
+      <label>Search <input type="search" name="search" value="{{ search }}" placeholder="Words in title or body"></label>
+      <button type="submit" class="catalog-btn">Filter</button>
+      {% if date_from or date_to or search %}
+        <a class="catalog-btn catalog-btn-ghost" href="{% url 'catalog_blog_list' %}">Reset</a>
+      {% endif %}
+    </form>
+
+    <h2>Active</h2>
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th class="catalog-table-sort">
+            <a href="?{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}&{% endif %}{% if search %}search={{ search|urlencode }}&{% endif %}sort=title&order={% if sort == 'title' and order == 'asc' %}desc{% else %}asc{% endif %}">Title</a>
+            {% if sort == 'title' %}<span class="sort-indicator">{% if order == 'asc' %}↑{% else %}↓{% endif %}</span>{% endif %}
+          </th>
+          <th class="catalog-table-sort">
+            <a href="?{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}&{% endif %}{% if search %}search={{ search|urlencode }}&{% endif %}sort=date&order={% if sort == 'date' and order == 'asc' %}desc{% else %}asc{% endif %}">Date</a>
+            {% if sort == 'date' %}<span class="sort-indicator">{% if order == 'asc' %}↑{% else %}↓{% endif %}</span>{% endif %}
+          </th>
+          <th class="catalog-table-sort">
+            <a href="?{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}&{% endif %}{% if search %}search={{ search|urlencode }}&{% endif %}sort=author&order={% if sort == 'author' and order == 'asc' %}desc{% else %}asc{% endif %}">Author</a>
+            {% if sort == 'author' %}<span class="sort-indicator">{% if order == 'asc' %}↑{% else %}↓{% endif %}</span>{% endif %}
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.title }}</td>
+            <td>{{ item.published_at|date:"d.m.Y"|default:"—" }}</td>
+            <td>{{ item.user|default:"—" }}</td>
+            <td class="catalog-actions-cell">
+              <a href="{% url 'catalog_blog_update' item.pk %}">Edit</a>
+              <form method="post" action="{% url 'catalog_blog_archive' item.pk %}">
+                {% csrf_token %}
+                <button type="submit">Archive</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4">No posts yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2>Archive</h2>
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in archived_items %}
+          <tr>
+            <td>{{ item.title }}</td>
+            <td>{{ item.published_at|date:"d.m.Y"|default:"—" }}</td>
+            <td>
+              <form method="post" action="{% url 'catalog_blog_restore' item.pk %}">
+                {% csrf_token %}
+                <button type="submit">Restore</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">Archive is empty.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Begin Your Journey — Step 3
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/begin-journey-step3.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="journey3-page">
+    <div class="container journey3-shell">
+      <div class="journey3-stepper-line"></div>
+      <nav class="journey3-stepper">
+        <a href="{% url 'begin_your_journey_step1' %}">Type of experience</a>
+        <span class="journey3-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step2' %}">Your preferences</a>
+        <span class="journey3-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step3' %}" class="is-active">Places that interest you</a>
+        <span class="journey3-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step4' %}">Trip details</a>
+      </nav>
+
+      <div class="journey3-layout">
+        <section class="journey3-panel">
+          <h2>Choose the places that inspire you</h2>
+
+          <label class="journey3-search"><input type="text" id="journey3-search-input" placeholder="Search for a place or attraction" /></label>
+
+          <div class="journey3-tabs">
+            <button type="button" class="journey3-tab is-active" data-tab="popular">Popular Places</button>
+            <button type="button" class="journey3-tab" data-tab="all">All Places</button>
+            <button type="button" class="journey3-tab" data-tab="itinerary">My Itinerary</button>
+          </div>
+
+          <div class="journey3-list" id="journey3-list"></div>
+
+          <div class="journey3-nav">
+            <a href="{% url 'begin_your_journey_step2' %}" class="journey3-nav-link">← Previous step</a>
+            <a href="{% url 'begin_your_journey_step4' %}" class="journey3-nav-link">Next step →</a>
+          </div>
+        </section>
+
+        <section class="journey3-map-wrap">
+          <div id="journey3-map" class="journey3-map"></div>
+          <div id="journey3-map-preview" class="journey3-map-preview" aria-hidden="true"></div>
+          <div class="journey3-legend">
+            <span class="journey3-pill journey3-pill-historical">Historical</span>
+            <span class="journey3-pill journey3-pill-city">City</span>
+            <span class="journey3-pill journey3-pill-nature">Nature</span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  {{ attractions|json_script:'journey3-attractions-data' }}
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    ;(function () {
+      var dataTag = document.getElementById('journey3-attractions-data')
+      var listEl = document.getElementById('journey3-list')
+      var searchEl = document.getElementById('journey3-search-input')
+      var tabButtons = document.querySelectorAll('.journey3-tab')
+      if (!dataTag || !listEl || !searchEl || !tabButtons.length) return
+    
+      var attractions = []
+      try {
+        attractions = JSON.parse(dataTag.textContent || '[]')
+      } catch (e) {
+        attractions = []
+      }
+      if (!attractions.length) {
+        listEl.innerHTML = '<p class="journey3-empty">No attractions available.</p>'
+        return
+      }
+    
+      var currentTab = 'popular'
+      var query = ''
+      var itinerary = new Set()
+      var activeId = attractions[0].id
+      var markersById = {}
+      var map = null
+      var points = []
+      var clusterer = null
+      var suggestView = null
+      var previewEl = document.getElementById('journey3-map-preview')
+    
+      function markerColor(category) {
+        if (category === 'nature') return '#1CB26C'
+        if (category === 'city') return '#15327E'
+        return '#C51230'
+      }
+
+      function markerPreset(category) {
+        if (category === 'nature') return 'islands#greenCircleDotIconWithCaption'
+        if (category === 'city') return 'islands#darkBlueCircleDotIconWithCaption'
+        return 'islands#redCircleDotIconWithCaption'
+      }
+    
+      function badgeLabel(category) {
+        if (category === 'nature') return 'Nature'
+        if (category === 'city') return 'City'
+        return 'Historical'
+      }
+    
+      function filteredAttractions() {
+        var bySearch = attractions.filter(function (item) {
+          var text = (item.title + ' ' + item.city + ' ' + item.address).toLowerCase()
+          return text.indexOf(query.toLowerCase()) !== -1
+        })
+        if (currentTab === 'itinerary') {
+          return bySearch.filter(function (item) {
+            return itinerary.has(item.id)
+          })
+        }
+        if (currentTab === 'popular') {
+          return bySearch.slice(0, 6)
+        }
+        return bySearch
+      }
+    
+      function renderList() {
+        var items = filteredAttractions()
+        if (!items.length) {
+          listEl.innerHTML = '<p class="journey3-empty">No places found.</p>'
+          return
+        }
+    
+        listEl.innerHTML = items
+          .map(function (item) {
+            var activeClass = item.id === activeId ? 'is-active' : ''
+            var badgeClass = item.category === 'nature' ? 'is-nature' : item.category === 'city' ? 'is-city' : 'is-historical'
+            return '<button type="button" class="journey3-card ' + activeClass + '" data-id="' + item.id + '">' + '<img src="' + item.photo_url + '" alt="' + item.title + '" class="journey3-card-img">' + '<div class="journey3-card-body">' + '<div class="journey3-card-title-row"><strong>' + item.title + '</strong><span class="journey3-badge ' + badgeClass + '">' + badgeLabel(item.category) + '</span></div>' + '<p>' + item.city + ' <span>|</span> ' + item.duration_hours + ' hours</p>' + '</div></button>'
+          })
+          .join('')
+    
+        listEl.querySelectorAll('.journey3-card').forEach(function (card) {
+          card.addEventListener('click', function () {
+            var id = Number(card.getAttribute('data-id'))
+            activeId = id
+            itinerary.add(id)
+            renderList()
+            focusMarker(id)
+          })
+        })
+      }
+    
+      function focusMarker(id) {
+        if (!map || !markersById[id]) return
+        var marker = markersById[id]
+        var coords = marker.geometry.getCoordinates()
+        map.setCenter(coords, 7, { duration: 220 })
+        marker.balloon.open()
+      }
+
+      function showPreview(item) {
+        if (!previewEl || !item) return
+        previewEl.innerHTML =
+          '<img src="' + escapeHtml(item.photo_url) + '" alt="' + escapeHtml(item.title) + '">' +
+          '<strong>' + escapeHtml(item.title) + '</strong>' +
+          '<p>' + escapeHtml(item.city) + ' | ' + escapeHtml(item.duration_hours) + ' hours</p>'
+        previewEl.classList.add('is-visible')
+        previewEl.setAttribute('aria-hidden', 'false')
+      }
+
+      function hidePreview() {
+        if (!previewEl) return
+        previewEl.classList.remove('is-visible')
+        previewEl.setAttribute('aria-hidden', 'true')
+      }
+    
+      searchEl.addEventListener('input', function () {
+        query = searchEl.value || ''
+        renderList()
+      })
+    
+      tabButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          tabButtons.forEach(function (b) {
+            b.classList.remove('is-active')
+          })
+          btn.classList.add('is-active')
+          currentTab = btn.getAttribute('data-tab') || 'all'
+          renderList()
+        })
+      })
+    
+      renderList()
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')
+      }
+
+      function normalizeText(value) {
+        return (value || '')
+          .toString()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .trim()
+      }
+
+      function cityFallbackCoords(city) {
+        var c = normalizeText(city)
+        var cityMap = {
+          gdansk: [54.352, 18.6466],
+          krakow: [50.0647, 19.945],
+          wawel: [50.054, 19.935],
+          malbork: [54.0359, 19.0266],
+          warsaw: [52.2297, 21.0122],
+          wieliczka: [49.9875, 20.0614],
+          zakopane: [49.2992, 19.9496],
+          auschwitz: [50.0344, 19.2104],
+          oswiecim: [50.0344, 19.2104]
+        }
+        return cityMap[c] || null
+      }
+
+      window.initJourneyPlacesMap = function () {
+        if (!window.ymaps) return
+        var mapEl = document.getElementById('journey3-map')
+        if (!mapEl) return
+
+        map = new ymaps.Map('journey3-map', {
+          center: [52.1, 19.4],
+          zoom: 6,
+          controls: []
+        })
+        clusterer = new ymaps.Clusterer({
+          preset: 'islands#invertedVioletClusterIcons',
+          groupByCoordinates: false,
+          clusterDisableClickZoom: false,
+          clusterOpenBalloonOnClick: true,
+        })
+        map.geoObjects.add(clusterer)
+
+        function geocodeWithFallback(item, callback) {
+          var queries = [
+            [item.address, item.city, 'Poland'].filter(Boolean).join(', '),
+            [item.city, 'Poland'].filter(Boolean).join(', '),
+            [item.title, item.city, 'Poland'].filter(Boolean).join(', '),
+          ]
+
+          function run(index) {
+            if (index >= queries.length) {
+              callback(cityFallbackCoords(item.city))
+              return
+            }
+            var q = queries[index]
+            if (!q) {
+              run(index + 1)
+              return
+            }
+            ymaps.geocode(q, { results: 1 }).then(
+              function (res) {
+                var geoObject = res.geoObjects.get(0)
+                if (!geoObject) {
+                  run(index + 1)
+                  return
+                }
+                callback(geoObject.geometry.getCoordinates())
+              },
+              function () {
+                run(index + 1)
+              }
+            )
+          }
+
+          run(0)
+        }
+
+        attractions.forEach(function (item) {
+          geocodeWithFallback(item, function (coords) {
+            if (!coords) return
+            var marker = new ymaps.Placemark(
+              coords,
+              {
+                hintContent: escapeHtml(item.title),
+                iconCaption: escapeHtml(item.city || item.title),
+                balloonContent:
+                  '<div class="journey3-map-card">' +
+                  '<img src="' + escapeHtml(item.photo_url) + '" alt="' + escapeHtml(item.title) + '">' +
+                  '<strong>' + escapeHtml(item.title) + '</strong>' +
+                  '<p>' + escapeHtml(item.city) + ' | ' + escapeHtml(item.duration_hours) + ' hours</p>' +
+                  '</div>',
+                attractionId: item.id,
+              },
+              {
+                preset: markerPreset(item.category),
+                iconCaptionMaxWidth: '140',
+              }
+            )
+            clusterer.add(marker)
+            markersById[item.id] = marker
+            points.push(coords)
+
+            marker.events.add('click', function () {
+              activeId = item.id
+              itinerary.add(item.id)
+              renderList()
+            })
+            marker.events.add('mouseenter', function () {
+              showPreview(item)
+            })
+            marker.events.add('mouseleave', function () {
+              hidePreview()
+            })
+
+            if (points.length === 1) {
+              map.setCenter(coords, 7)
+            } else {
+              map.setBounds(ymaps.util.bounds.fromPoints(points), {
+                checkZoomRange: true,
+                zoomMargin: 60,
+              })
+            }
+          })
+        })
+
+        suggestView = new ymaps.SuggestView('journey3-search-input', {
+          results: 7,
+        })
+        suggestView.events.add('select', function (e) {
+          var selected = e.get('item')
+          var value = selected && selected.value ? selected.value : ''
+          if (!value) return
+          searchEl.value = value
+          query = value
+          renderList()
+        })
+      }
+    })()
+  </script>
+
+  {% if yandex_maps_api_key %}
+    <script src="https://api-maps.yandex.ru/2.1/?apikey={{ yandex_maps_api_key }}&lang=en_US"></script>
+  {% else %}
+    <script src="https://api-maps.yandex.ru/2.1/?lang=en_US"></script>
+  {% endif %}
+  <script>
+    ;(function () {
+      var attempts = 0
+      var maxAttempts = 25
+      var timer = setInterval(function () {
+        attempts += 1
+        if (window.ymaps && window.initJourneyPlacesMap) {
+          clearInterval(timer)
+          window.ymaps.ready(window.initJourneyPlacesMap)
+          return
+        }
+        if (attempts >= maxAttempts) {
+          clearInterval(timer)
+          var mapEl = document.getElementById('journey3-map')
+          if (mapEl) {
+            mapEl.innerHTML = '<div class="journey3-map-fallback">Yandex Maps failed to load. Check internet connection and API key.</div>'
+          }
+        }
+      }, 200)
+    })()
+  </script>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Begin Your Journey — Step 4
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/begin-journey-step4.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="journey4-page">
+    <div class="container journey4-shell">
+      <div class="journey4-stepper-line"></div>
+      <nav class="journey4-stepper">
+        <a href="{% url 'begin_your_journey_step1' %}">Type of experience</a>
+        <span class="journey4-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step2' %}">Your preferences</a>
+        <span class="journey4-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step3' %}">Places that interest you</a>
+        <span class="journey4-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step4' %}" class="is-active">Trip details</a>
+      </nav>
+
+      <div class="journey4-layout">
+        <section class="journey4-cover">
+          <video preload="metadata" playsinline muted>
+            <source src="{{ MEDIA_URL }}working/video/final%20detail.mp4" type="video/mp4" />
+          </video>
+        </section>
+
+        <section class="journey4-form-card">
+          <header class="journey4-head">
+            <h2>Final details for your journey</h2>
+            <p>Complete the details and we will contact you by email</p>
+          </header>
+
+          <form class="journey4-form">
+            <div class="journey4-row">
+              <label class="journey4-field">
+                <span>Name</span>
+                <input type="text" placeholder="Enter Your Name" />
+              </label>
+              <label class="journey4-field">
+                <span>Email address</span>
+                <input type="email" placeholder="Enter Your Email" />
+              </label>
+            </div>
+
+            <div class="journey4-row">
+              <label class="journey4-field">
+                <span>When?</span>
+                <input type="month" />
+              </label>
+              <label class="journey4-field">
+                <span>How long?</span>
+                <input type="text" placeholder="Number of days" />
+              </label>
+            </div>
+
+            <div class="journey4-row">
+              <label class="journey4-field">
+                <span>How many people?</span>
+                <input type="text" placeholder="Number of adults" />
+              </label>
+              <label class="journey4-field">
+                <span>&nbsp;</span>
+                <input type="text" placeholder="Number of children" />
+              </label>
+            </div>
+
+            <div class="journey4-row">
+              <label class="journey4-field">
+                <span>Cities of arrival and departure</span>
+                <select>
+                  <option value="">Select city</option>
+                  {% for city in city_choices %}
+                    <option value="{{ city }}">{{ city }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+              <label class="journey4-field journey4-field-no-label"><input type="text" placeholder="Other city (if not listed)" /></label>
+            </div>
+
+            <div class="journey4-row journey4-row-with-title">
+              <p class="journey4-row-title">Do you have a preference for accommodation?</p>
+              <label class="journey4-field journey4-field-no-label"><input type="text" placeholder="Select accommodation type" /></label>
+              <label class="journey4-field journey4-field-no-label"><input type="text" placeholder="Additional comments" /></label>
+            </div>
+
+            <label class="journey4-field">
+              <span>Where are you from?</span>
+              <input type="text" placeholder="Enter your country of origin" />
+            </label>
+
+            <label class="journey4-field">
+              <span>Any health or comfort needs we should know about</span>
+              <textarea rows="3" placeholder="Please describe any health considerations, mobility needs, or dietary restrictions..."></textarea>
+            </label>
+          </form>
+
+          <div class="journey4-nav">
+            <a href="{% url 'begin_your_journey_step3' %}" class="journey4-nav-link">← Previous step</a>
+            <a href="{% url 'begin_your_journey_step5' %}" class="journey4-nav-link">Send Details →</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+{% endblock %}

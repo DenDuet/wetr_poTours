@@ -1,0 +1,113 @@
+/* PoTours Base Styles — шрифты из Figma: Stack Sans Headline, Inter Tight */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@400;500;600&display=swap');
+@import 'variables.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-dark, var(--color-black));
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--color-black);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-red);
+}
+
+/* Buttons — Figma: Craft Your Trip — gold border */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-family: var(--font-headline);
+  font-size: var(--text-btn);
+  font-weight: var(--font-medium);
+  line-height: var(--line-height-normal);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-red);
+  color: var(--color-white);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-red-dark);
+}
+
+.btn-cta {
+  background-color: var(--color-white);
+  color: var(--color-black);
+  border: 2px solid var(--color-yellow);
+}
+
+.btn-cta:hover {
+  border-color: var(--color-red);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--space-4);
+  font-weight: var(--font-bold);
+  line-height: 1.2;
+}
+
+h1 { font-size: var(--text-h3); }
+h2 { font-size: var(--text-h3); }
+h3 { font-size: var(--text-h4); }
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.section {
+  padding: var(--space-16) 0;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.section-title h2 {
+  margin-bottom: var(--space-2);
+}
+
+.section-title p {
+  color: var(--color-gray-500);
+  font-size: var(--text-lg);
+  margin: 0;
+}

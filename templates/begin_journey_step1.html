@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Begin Your Journey — Step 1
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/begin-journey-step1.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="journey-step1-page">
+    <div class="container journey-step1-shell">
+      <div class="journey-stepper-line"></div>
+      <div class="journey-stepper">
+        <a href="{% url 'begin_your_journey_step1' %}" class="is-active">Type of experience</a>
+        <span class="journey-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step2' %}">Your preferences</a>
+        <span class="journey-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step3' %}">Places that interest you</a>
+        <span class="journey-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step4' %}">Trip details</a>
+      </div>
+
+      <div class="journey-cards-grid">
+        <a href="{% url 'begin_your_journey_step2' %}" class="journey-card" style="background-image: url('{{ MEDIA_URL }}working/tours/mountains-iceland.png');">
+          <div class="journey-card-overlay"></div>
+          <div class="journey-card-text">
+            <p>Recreational</p>
+            <h3>Relaxation and active leisure</h3>
+          </div>
+        </a>
+        <a href="{% url 'begin_your_journey_step2' %}" class="journey-card" style="background-image: url('{{ MEDIA_URL }}working/tours/mountains-iceland.png');">
+          <div class="journey-card-overlay"></div>
+          <div class="journey-card-text">
+            <p>Sightseeing</p>
+            <h3>Exploring cities or nature and landscapes</h3>
+          </div>
+        </a>
+        <a href="{% url 'begin_your_journey_step2' %}" class="journey-card" style="background-image: url('{{ MEDIA_URL }}working/tours/mountains-iceland.png');">
+          <div class="journey-card-overlay"></div>
+          <div class="journey-card-text">
+            <p>Historical</p>
+            <h3>Learning about specific parts of Polish history</h3>
+          </div>
+        </a>
+        <a href="{% url 'begin_your_journey_step2' %}" class="journey-card" style="background-image: url('{{ MEDIA_URL }}working/tours/mountains-iceland.png');">
+          <div class="journey-card-overlay"></div>
+          <div class="journey-card-text">
+            <p>Generations Trip</p>
+            <h3>Discover how your Polish ancestors lived</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

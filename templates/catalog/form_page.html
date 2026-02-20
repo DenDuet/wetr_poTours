@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+  <section class="catalog-page container">
+    <h1>{{ title }}</h1>
+    <form method="post" enctype="multipart/form-data" class="catalog-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="catalog-btn" type="submit">Save</button>
+    </form>
+    <script>
+      document.querySelectorAll(".file-input-english-wrap input[type=file]").forEach(function (input) {
+        var label = input.nextElementSibling;
+        if (!label || !label.classList.contains("file-input-english-label")) return;
+        function update() {
+          label.textContent = input.files.length ? input.files[0].name : "";
+        }
+        input.addEventListener("change", update);
+        update();
+      });
+    </script>
+
+    {% if existing_media %}
+      <h2>Uploaded photos/videos</h2>
+      <ul class="catalog-media-list">
+        {% for media in existing_media %}
+          <li>
+            <a href="{{ media.file.url }}" target="_blank" rel="noopener">{{ media.file.name }}</a>
+            <span>({{ media.get_media_type_display }})</span>
+            <form method="post" action="{% url 'catalog_group_tour_media_delete' media.pk %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="catalog-btn catalog-btn-ghost">Delete media</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+{% endblock %}

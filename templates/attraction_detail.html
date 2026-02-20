@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ attraction.title }} — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <article class="blog-post-page">
+    <div class="blog-post-hero">
+      {% if attraction.photo %}
+        <img src="{{ attraction.photo.url }}" alt="{{ attraction.title }}" class="blog-post-hero-image" />
+      {% else %}
+        <div class="blog-post-hero-placeholder"></div>
+      {% endif %}
+      <div class="attraction-detail-nav">
+        {% if prev_attraction_pk %}
+          <a href="{% url 'attraction_detail' prev_attraction_pk %}" class="arrow-btn attraction-nav-btn attraction-nav-prev" aria-label="Previous attraction">
+            <div class="arrow-icons arrow-left">
+              <div class="arrow-icon">
+                <span class="arrow-vector v1" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11654-1128-11013-831-4853.svg');"></span>
+                <span class="arrow-vector v2" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11654-1128-11013-831-4854.svg');"></span>
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <span class="arrow-btn attraction-nav-btn attraction-nav-prev attraction-nav-disabled" aria-hidden="true">
+            <div class="arrow-icons arrow-left">
+              <div class="arrow-icon">
+                <span class="arrow-vector v1" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11654-1128-11013-831-4853.svg');"></span>
+                <span class="arrow-vector v2" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11654-1128-11013-831-4854.svg');"></span>
+              </div>
+            </div>
+          </span>
+        {% endif %}
+        {% if next_attraction_pk %}
+          <a href="{% url 'attraction_detail' next_attraction_pk %}" class="arrow-btn attraction-nav-btn attraction-nav-next" aria-label="Next attraction">
+            <div class="arrow-icons arrow-right">
+              <div class="arrow-icon">
+                <span class="arrow-vector v1" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11655-831-4871-831-4865.svg');"></span>
+                <span class="arrow-vector v2" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11655-831-4871-831-4864.svg');"></span>
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <span class="arrow-btn attraction-nav-btn attraction-nav-next attraction-nav-disabled" aria-hidden="true">
+            <div class="arrow-icons arrow-right">
+              <div class="arrow-icon">
+                <span class="arrow-vector v1" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11655-831-4871-831-4865.svg');"></span>
+                <span class="arrow-vector v2" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11655-831-4871-831-4864.svg');"></span>
+              </div>
+            </div>
+          </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="blog-post-body-wrap">
+      <div class="container blog-post-inner attraction-detail-inner">
+        <a href="{% url 'home' %}#attractions" class="blog-post-back">← Back to Attractions</a>
+        <h1 class="blog-post-title">{{ attraction.title }}</h1>
+        <div class="blog-post-content">
+          {{ attraction.description|linebreaks }}
+        </div>
+        <dl class="attraction-detail-meta">
+          {% if attraction.city %}
+            <dt>City</dt>
+            <dd>{{ attraction.city }}</dd>
+          {% endif %}
+          {% if attraction.address %}
+            <dt>Address</dt>
+            <dd>{{ attraction.address }}</dd>
+          {% endif %}
+          {% if attraction.duration_hours %}
+            <dt>Duration</dt>
+            <dd>{{ attraction.duration_hours }} h</dd>
+          {% endif %}
+        </dl>
+      </div>
+    </div>
+  </article>
+{% endblock %}

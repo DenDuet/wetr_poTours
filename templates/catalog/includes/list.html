@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Includes — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+  <section class="catalog-page container">
+    <h1>Includes</h1>
+    <div class="catalog-actions">
+      <a class="catalog-btn" href="{% url 'catalog_include_create' %}">Add</a>
+      <a class="catalog-btn catalog-btn-ghost" href="{% url 'catalog_dashboard' %}">Back to catalogs</a>
+    </div>
+
+    <h2>Active</h2>
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th>Icon</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>
+              {% if item.icon_path %}
+                <a href="{{ item.icon_url }}" target="_blank" rel="noopener">
+                  <img src="{{ item.icon_url }}" alt="icon" style="width: 36px; height: 36px; object-fit: contain;">
+                </a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>{{ item.description }}</td>
+            <td class="catalog-actions-cell">
+              <a href="{% url 'catalog_include_update' item.pk %}">Edit</a>
+              <form method="post" action="{% url 'catalog_include_archive' item.pk %}">
+                {% csrf_token %}
+                <button type="submit">Archive</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">No records yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2>Archive</h2>
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th>Icon</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in archived_items %}
+          <tr>
+            <td>
+              {% if item.icon_path %}
+                <a href="{{ item.icon_url }}" target="_blank" rel="noopener">
+                  <img src="{{ item.icon_url }}" alt="icon" style="width: 36px; height: 36px; object-fit: contain;">
+                </a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>{{ item.description }}</td>
+            <td>
+              <form method="post" action="{% url 'catalog_include_restore' item.pk %}">
+                {% csrf_token %}
+                <button type="submit">Restore</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">Archive is empty.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

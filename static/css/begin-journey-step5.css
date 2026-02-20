@@ -1,0 +1,152 @@
+.journey5-page {
+  background: #f6f6f0;
+  min-height: 100vh;
+  padding: 126px 0 28px;
+}
+
+.container.journey5-shell {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding, 24px);
+  padding-right: var(--container-padding, 24px);
+}
+
+.journey5-bg {
+  width: 100%;
+  height: 814px;
+  border-radius: 24px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: grid;
+  place-items: center;
+}
+
+.journey5-card {
+  width: 460px;
+  background: #fffffa;
+  border: 1px solid #eaeaea;
+  border-radius: 24px;
+  padding: 40px;
+}
+
+.journey5-check {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #c51230;
+  color: #fffffa;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.journey5-card h2 {
+  margin: 0 0 20px;
+  color: #181d27;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.journey5-card p {
+  margin: 0 0 24px;
+  color: #181d27;
+  font-family: "Inter Tight", var(--font-body), sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 500;
+  max-width: 380px;
+}
+
+.journey5-actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.journey5-actions .btn-cta-header {
+  min-width: auto;
+  width: auto;
+  padding: 16px 28px;
+}
+
+.journey5-btn-menu {
+  border: 3px solid rgba(236, 159, 29, 0.93);
+  border-radius: 60px;
+  color: #ec9f1d;
+  text-decoration: none;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 500;
+  padding: 16px 24px;
+}
+
+.journey5-link-stub {
+  color: #181d27;
+  text-decoration: none;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.journey5-link-stub:hover,
+.journey5-btn-menu:hover {
+  color: #a6112a;
+}
+
+@media (max-width: 1200px) {
+  .journey5-bg {
+    height: 680px;
+  }
+
+  .journey5-card {
+    width: min(620px, calc(100% - 24px));
+  }
+
+  .journey5-card h2 {
+    font-size: 32px;
+  }
+
+  .journey5-card p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .journey5-page {
+    padding: 92px 0 24px;
+  }
+
+  .journey5-shell {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .journey5-bg {
+    height: 520px;
+  }
+
+  .journey5-card {
+    padding: 20px;
+  }
+
+  .journey5-card h2 {
+    font-size: 26px;
+  }
+
+  .journey5-card p {
+    font-size: 18px;
+  }
+
+  .journey5-actions {
+    gap: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ group_tour.title }} — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/group-tour-detail.css' %}">
+{% endblock %}
+
+{% block content %}
+  <section class="group-tour-detail section">
+    <div class="container">
+      <div class="gtd-hero">
+        <img src="{{ cover_url }}" alt="{{ group_tour.title }}" id="gtd-main-image">
+      </div>
+      {% if gallery|length > 1 %}
+        <div class="gtd-thumbs">
+          {% for image in gallery %}
+            <button type="button" class="gtd-thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ image }}">
+              <img src="{{ image }}" alt="{{ group_tour.title }}">
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="gtd-head">
+        <a href="{% url 'tours' %}" class="gtd-back-link gtd-back-link-under-hero">← Back to Group Tours</a>
+        <h1>{{ group_tour.title }}</h1>
+        <p class="gtd-short">{{ group_tour.short_description }}</p>
+      </div>
+
+      <div class="gtd-divider"></div>
+
+      <div class="gtd-grid">
+        <div class="gtd-main">
+          <div class="gtd-stats">
+            <div class="gtd-stat">
+              <img src="{{ MEDIA_URL }}working/icons/time.png" alt="">
+              <div>
+                <span>Duration</span>
+                <strong>{{ tour_days_count }} days</strong>
+              </div>
+            </div>
+            <div class="gtd-stat">
+              <img src="{{ MEDIA_URL }}working/icons/cities.png" alt="">
+              <div>
+                <span>Cities</span>
+                <strong>{{ cities_count }}</strong>
+              </div>
+            </div>
+            <div class="gtd-stat">
+              <img src="{{ MEDIA_URL }}working/icons/people.png" alt="">
+              <div>
+                <span>Group Size</span>
+                <strong>{{ group_size }}</strong>
+              </div>
+            </div>
+            <div class="gtd-stat">
+              <img src="{{ MEDIA_URL }}working/icons/star.png" alt="">
+              <div>
+                <span>Rating</span>
+                <strong>{{ rating }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="gtd-overview-title">Tour Overview</h3>
+          <p>{{ group_tour.description }}</p>
+
+          <h3>What Makes This Tour Special</h3>
+          <ul class="gtd-special-list">
+            <li>UNESCO World Heritage landmarks and rich local culture.</li>
+            <li>Authentic cuisine and regional evening experiences.</li>
+            <li>Balanced route between historic cities and nature.</li>
+            <li>Relaxed pacing with flexible planning options.</li>
+          </ul>
+
+          {% if highlights %}
+            <h3>Your Highlights</h3>
+            <div class="gtd-highlights-grid">
+              {% for item in highlights %}
+                <article class="gtd-highlight-item">
+                  <img src="{{ item.photo_url }}" alt="{{ item.title }}">
+                  <div>
+                    <strong>{{ item.title }}</strong>
+                    <p>{{ item.city }} | {{ item.duration_hours }} hours</p>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="gtd-itinerary-header">
+            <h3>Tour Itinerary</h3>
+            <p class="gtd-itinerary-lead">
+              Discover Poland from north to south on this comprehensive {{ tour_days_count }}-day journey through history, culture, and breathtaking landscapes.
+            </p>
+            <div class="gtd-itinerary-note">
+              <div class="gtd-itinerary-note-icon">
+                <img src="https://www.figma.com/api/mcp/asset/1b563d2e-c868-4681-aac3-ae6700982c16" alt="">
+              </div>
+              <p>You can add individual days to your journey and continue to the request form when ready</p>
+            </div>
+          </div>
+          <div class="gtd-accordion">
+            {% for day in itinerary %}
+              <details class="gtd-acc-day" {% if forloop.first %}open{% endif %}>
+                <summary>
+                  <span>Day {{ day.day_number }}</span>
+                  <strong>{{ day.title }}</strong>
+                  <i class="gtd-acc-toggle" aria-hidden="true"></i>
+                </summary>
+                <div class="gtd-acc-content">
+                  <div class="gtd-acc-layout">
+                    <div class="gtd-day-image">
+                      <img src="{{ day.photo_url }}" alt="{{ day.title }}">
+                    </div>
+                    <div class="gtd-acc-right">
+                      <div class="gtd-day-info">
+                        <p>{{ day.description }}</p>
+                        <p class="gtd-day-meta">{{ day.city }} | {{ day.duration_hours }} hours</p>
+                      </div>
+                      {% if day.attractions %}
+                        <div class="gtd-acc-attractions">
+                          {% for attraction in day.attractions %}
+                            <article class="gtd-attraction-card">
+                              <img src="{{ attraction.photo_url }}" alt="{{ attraction.title }}">
+                              <div>
+                                <strong>{{ attraction.title }}</strong>
+                                <p>{{ attraction.city }} | {{ attraction.duration_hours }} hours</p>
+                              </div>
+                            </article>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                      <a href="#" class="gtd-add-day-link">+ Add day to my journey</a>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            {% empty %}
+              <p>No days have been added to this group tour yet.</p>
+            {% endfor %}
+          </div>
+
+          {% if tour_includes %}
+            <h3 class="gtd-includes-title">Tour Includes</h3>
+            <div class="gtd-includes-grid">
+              {% for include in tour_includes %}
+                <article class="gtd-include-card">
+                  <div class="gtd-include-icon">
+                    {% if include.icon_path %}
+                      <img src="{{ include.icon_url }}" alt="{{ include.description }}">
+                    {% else %}
+                      <img src="{{ MEDIA_URL }}working/icons/icon1.svg" alt="">
+                    {% endif %}
+                  </div>
+                  <p>{{ include.description }}</p>
+                </article>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <aside class="gtd-booking">
+          <h3>Book this tour</h3>
+          <form>
+            <label>Preferred Start Date
+              <select>
+                <option value="">Select month and year</option>
+                <option>May 2026</option>
+                <option>June 2026</option>
+                <option>July 2026</option>
+              </select>
+            </label>
+            <label>How long?
+              <input type="text" placeholder="Number of days">
+            </label>
+            <label>Name
+              <input type="text" placeholder="Enter Your Name">
+            </label>
+            <label>Email address
+              <input type="email" placeholder="Enter Your Email">
+            </label>
+            <label>How many people?
+              <div class="gtd-booking-two-cols">
+                <input type="text" inputmode="numeric" placeholder="Adults" aria-label="Adults">
+                <input type="text" inputmode="numeric" placeholder="Children" aria-label="Children">
+              </div>
+            </label>
+            <label>Additional Notes
+              <textarea rows="3" placeholder="Any special requests, dietary restrictions, or questions..."></textarea>
+            </label>
+            <button type="button" class="btn-cta-header gtd-submit-btn"><span>Submit Request</span></button>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    (function () {
+      var mainImage = document.getElementById('gtd-main-image');
+      var thumbs = document.querySelectorAll('.gtd-thumb');
+      if (!mainImage || !thumbs.length) return;
+      thumbs.forEach(function (thumb) {
+        thumb.addEventListener('click', function () {
+          var src = thumb.getAttribute('data-src');
+          if (!src) return;
+          mainImage.src = src;
+          thumbs.forEach(function (t) { t.classList.remove('is-active'); });
+          thumb.classList.add('is-active');
+        });
+      });
+    })();
+  </script>
+{% endblock %}

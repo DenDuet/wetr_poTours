@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  For organizations — po.tours
+{% endblock %}
+
+{% block content %}
+  <!-- Hero — по макету Figma node 967:6773 -->
+  <section class="hero-section hero-section--image-open">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>Group Tours<br />for Organizations</h1>
+        <div class="hero-text-content">
+          <div class="hero-text-blocks">
+            <p class="hero-desc">Thoughtfully designed journeys for teams, institutions, and private groups across Europe.</p>
+            <div class="hero-bottom-group">
+              <p class="hero-experience">Whether for education, culture, or connection, we design group journeys that are fully planned, flexible, and adapted to your needs.</p>
+              <a href="#request-group-tour" class="btn btn-hero"><span>Request a group tour</span></a>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="{{ MEDIA_URL }}working/hero/hero_organisations.jpg" alt="Group tour for organizations" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-red-line"></div>
+  </section>
+
+  <!-- Historically Focused — второй экран по Figma -->
+  <section class="section-org-focus">
+    <div class="container">
+      <div class="org-focus-inner">
+        <div class="org-focus-collage">
+          <img src="{{ MEDIA_URL }}working/hero/kayak.jpg" alt="Kayaking" />
+          <img src="{{ MEDIA_URL }}working/hero/balls.jpg" alt="Hot air balloons" />
+          <img src="{{ MEDIA_URL }}working/hero/mount.jpg" alt="Hiking" />
+          <img src="{{ MEDIA_URL }}working/hero/mans.jpg" alt="Group travel" />
+        </div>
+        <div class="org-focus-content">
+          <h2>Historically <span class="org-focus-accent">Focused</span> Group Tours Across Poland</h2>
+          <div class="org-focus-text">
+            <p>We create group tours across Poland with a strong focus on history, cultural heritage, and meaningful places. We pay close attention to pacing, logistics, and the overall flow of the journey, ensuring that groups can focus on the experience itself rather than organizational details.</p>
+            <p>These tours are well suited for organizations, institutions, and groups interested in educational and historically rich travel. From early planning to on site support, we ensure that every aspect of the trip is carefully managed and aligned with the group's interests and goals.</p>
+          </div>
+          <a href="#request-group-tour" class="btn btn-hero"><span>Plan a group tour</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Request a group tour — третий экран по Figma node 1157:9631 -->
+  <section class="section-org-request" id="request-group-tour">
+    <div class="org-request-bg" aria-hidden="true">
+      <video src="{{ MEDIA_URL }}working/video/organisations_group.mp4" muted loop playsinline></video>
+    </div>
+    <div class="container org-request-inner">
+      {% if submitted %}
+        <!-- Thank you — по макету Figma 1157:9631 -->
+        <div class="org-request-card org-request-card--thankyou">
+          <div class="org-request-thankyou-icon" aria-hidden="true">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="38" fill="var(--color-red-figma)"/>
+              <path d="M24 40L36 52L56 28" stroke="#FFFFFA" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 class="org-request-thankyou-title">Thank you for completing your tour request form</h2>
+          <p class="org-request-thankyou-desc">We'll get back to you via email within 24 hours with personalized tour recommendations and next steps.</p>
+          <a href="#request-group-tour" class="btn btn-hero org-request-again"><span>Send Request Again</span></a>
+        </div>
+      {% else %}
+        <div class="org-request-card org-request-card--form">
+          <h2 class="org-request-title">Request a group tour</h2>
+          <p class="org-request-desc">Complete the details and we will get back to you via email within 24 hours</p>
+          <form class="org-request-form" action="{% url 'for_organizations' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="submit_request" value="1" />
+            <div class="org-request-field">
+              <label for="id_org_name">Name</label>
+              <input type="text" id="id_org_name" name="name" placeholder="Enter Your Name" required />
+            </div>
+            <div class="org-request-field">
+              <label for="id_org_email">Email address</label>
+              <input type="email" id="id_org_email" name="email" placeholder="Enter Your Email" required />
+            </div>
+            <button type="submit" class="btn btn-hero org-request-submit"><span>Submit Request</span></button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+    <script>
+      (function () {
+        var card = document.querySelector('.section-org-request .org-request-card--thankyou');
+        if (!card) return;
+        setTimeout(function () {
+          card.classList.add('org-request-card--hidden');
+        }, 10000);
+      })();
+    </script>
+  </section>
+{% endblock %}

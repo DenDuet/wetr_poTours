@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  po.tours — Private. Outstanding. Perfectly Organized.
+{% endblock %}
+
+{% block content %}
+  <!-- Hero — первая часть страницы по Figma -->
+  <section class="hero-section">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>Private. Outstanding.<br />Perfectly Organized.</h1>
+        <div class="hero-text-content">
+          <div class="hero-text-blocks">
+            <p class="hero-desc">Tours across Central and Eastern Europe for private clients, families, and organizations.</p>
+            <div class="hero-bottom-group">
+              <p class="hero-experience">With over 20 years of experience in designing personalized tours, we can create one just for you</p>
+              <a href="{% url 'begin_your_journey_step1' %}" class="btn btn-hero"><span>Begin your journey</span></a>
+            </div>
+          </div>
+          <a href="{% url 'begin_your_journey_step1' %}" class="hero-image hero-image-link">
+            <video src="{{ MEDIA_URL }}working/mountain.mp4" muted loop playsinline preload="metadata" data-paused="true"></video>
+            <span class="hero-image-label">How it works</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-red-line"></div>
+  </section>
+
+  <!-- Красная черта + About (из Тест1) -->
+  <div class="red-line"></div>
+  <section class="section-about" id="about">
+    <div class="container">
+      <div class="about-inner">
+        <div class="about-image">
+          <img src="{{ MEDIA_URL }}working/test1/965-5762.png" alt="About po.tours" />
+          <img src="{{ MEDIA_URL }}working/test1/965-5763.svg" alt="" class="badge-2005" />
+          <img src="{{ MEDIA_URL }}working/test1/965-5765.svg" alt="" class="badge-line" />
+          <img src="{{ MEDIA_URL }}working/test1/965-5764.svg" alt="" class="badge-2025" />
+        </div>
+        <div class="about-content">
+          <h2><span class="about-title-accent">About us</span> and our commitment to creating refined travel across Europe</h2>
+          <div class="about-text-block">
+            <p>
+              Po.tours is a Polish travel company that creates private and comfortable journeys across Europe. We focus on travelers who value peace, friendly support, and rich cultural experiences.<br />Our team plans every trip with care and attention to detail, so our guests can enjoy Europe in a relaxed and personal way.
+            </p>
+            <a href="{% url 'about_us' %}" class="btn btn-cta-header"><span>Read about our history</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Attractions (из Тест1) -->
+  <section class="section-attractions">
+    {{ featured_attractions|json_script:'attractions-data' }}
+    <div class="container">
+      <div class="attractions-inner">
+        <div class="attractions-content">
+          <div class="attractions-text-block">
+            <h2>Attractions and the places that make your journey truly unforgettable</h2>
+            <p>Po.tours is a Polish travel company that creates private and comfortable journeys across Europe. We focus on travelers who value peace, friendly support, and rich cultural experiences.</p>
+          </div>
+          <div class="attractions-slider">
+            <div class="slider-arrows">
+              <button type="button" class="arrow-btn" aria-label="Previous">
+                <div class="arrow-icons arrow-left">
+                  <div class="arrow-icon">
+                    <span class="arrow-vector v1" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11654-1128-11013-831-4853.svg');"></span>
+                    <span class="arrow-vector v2" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11654-1128-11013-831-4854.svg');"></span>
+                  </div>
+                </div>
+              </button>
+              <button type="button" class="arrow-btn" aria-label="Next">
+                <div class="arrow-icons arrow-right">
+                  <div class="arrow-icon">
+                    <span class="arrow-vector v1" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11655-831-4871-831-4865.svg');"></span>
+                    <span class="arrow-vector v2" style="background-image: url('{{ MEDIA_URL }}working/test1/I971-11655-831-4871-831-4864.svg');"></span>
+                  </div>
+                </div>
+              </button>
+            </div>
+            <div class="slider-info">
+              <h3 id="attractions-title">{% if featured_attractions %}{{ featured_attractions.0.title }}{% else %}Malbork Castle{% endif %}</h3>
+              <p id="attractions-desc">{% if featured_attractions %}{{ featured_attractions.0.description|truncatewords:15 }}{% else %}From Historic Cities to Mountain Peaks{% endif %}</p>
+              <a href="{% if featured_attractions %}{% url 'attraction_detail' featured_attractions.0.id %}{% else %}#{% endif %}" id="attractions-link" class=""><span>Read more</span></a>
+            </div>
+          </div>
+        <div class="attractions-images">
+          <img src="{% if featured_attractions %}{{ featured_attractions.0.photo_url }}{% else %}{{ MEDIA_URL }}working/test1/origOf1icon.jpg{% endif %}" alt="" class="main-img" id="attractions-main-img" />
+          <div class="thumbnails">
+            {% for att in featured_attractions %}
+            <button type="button" class="thumbnail-btn {% if forloop.first %}active{% endif %}" aria-label="View {{ att.title }}" data-src="{{ att.photo_url }}" data-title="{{ att.title }}" data-description="{{ att.description|truncatewords:15 }}" data-href="{% url 'attraction_detail' att.id %}"><img src="{{ att.photo_url }}" alt="{{ att.title }}" /></button>
+            {% empty %}
+            <button type="button" class="thumbnail-btn active" aria-label="View image 1" data-src="{{ MEDIA_URL }}working/test1/origOf1icon.jpg" data-title="Malbork Castle" data-description="From Historic Cities to Mountain Peaks" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5790.png" alt="" /></button>
+            <button type="button" class="thumbnail-btn" aria-label="View image 2" data-src="{{ MEDIA_URL }}working/test1/origOf2icon.jpg" data-title="" data-description="" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5791.png" alt="" /></button>
+            <button type="button" class="thumbnail-btn" aria-label="View image 3" data-src="{{ MEDIA_URL }}working/test1/origOf3icon.jpg" data-title="" data-description="" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5792.png" alt="" /></button>
+            {% endfor %}
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video (сразу после Attractions), без анимации -->
+  <section class="section-video-banner">
+    <video muted loop playsinline preload="metadata" data-paused="true">
+      <source src="{{ MEDIA_URL }}working/test1/20659480-uhd_3840_2160_24fps.mp4" type="video/mp4" />
+    </video>
+  </section>
+
+  <!-- Inspirations (из Тест1), отступы как на /tours/ -->
+  <section class="section-inspirations section-group-tour-cards" id="inspiration">
+      <div class="container">
+        <h2><span class="discover-accent">Discover</span> our inspirations.</h2>
+        <div class="inspirations-grid0">
+        {% for tour in featured_group_tours|slice:':2' %}
+        <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-top" style="background-image: url('{{ tour.cover_url }}');">
+          <div class="card-overlay"></div>
+          <div class="card-info">
+            <h3>{{ tour.title }}</h3>
+            <p>{{ tour.short_description }}</p>
+            <div class="card-badges">
+              <span class="badge">{{ tour.tour_days_count }} days</span>
+              <span class="badge">{{ tour.cities_count }} cities</span>
+            </div>
+          </div>
+          <span class="link">Read more</span>
+        </a>
+        {% empty %}
+        <a href="#" class="inspiration-card inspiration-card-top" style="background-image: url('{{ MEDIA_URL }}working/test1/I965-5797-449-1298-368-149.png');">
+          <div class="card-overlay"></div>
+          <div class="card-info">
+            <h3>North-South Poland Tour</h3>
+            <p>From Historic Cities to Mountain Peaks</p>
+            <div class="card-badges"><span class="badge">12 days</span><span class="badge">8 Cities</span></div>
+          </div>
+          <span class="link">Read more</span>
+        </a>
+        <a href="#" class="inspiration-card inspiration-card-top" style="background-image: url('{{ MEDIA_URL }}working/test1/I965-5798-449-1298-368-149.png');">
+          <div class="card-overlay"></div>
+          <div class="card-info">
+            <h3>Kingdom of Poland Tour</h3>
+            <p>From Historic Cities to Mountain Peaks</p>
+            <div class="card-badges"><span class="badge">12 days</span><span class="badge">8 Cities</span></div>
+          </div>
+          <span class="link">Read more</span>
+        </a>
+        {% endfor %}
+      </div>
+      <div class="inspirations-grid group-tours-bottom-grid">
+        {% for tour in featured_group_tours|slice:'2:4' %}
+        <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-bottom" style="background-image: url('{{ tour.cover_url }}');">
+          <div class="card-overlay"></div>
+          <div class="card-info">
+            <h3>{{ tour.title }}</h3>
+            <p>{{ tour.short_description }}</p>
+            <div class="card-badges">
+              <span class="badge">{{ tour.tour_days_count }} days</span>
+              <span class="badge">{{ tour.cities_count }} cities</span>
+            </div>
+          </div>
+          <span class="link">Read more</span>
+        </a>
+        {% endfor %}
+        <div class="inspiration-text">
+          <p>Poland is various of interesting thinks. If you don't know yet, what you wanna do, just check our ready made inspiration and find something for yourself. Poland is various of interesting thinks. If you don't know yet, what you wanna do, just check our ready made inspiration and find something for yourself.</p>
+          <a href="{% url 'group_tours_page' %}" class="btn btn-cta-header"><span>Get inspired</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews / Voices (из Тест1) -->
+  <section class="section-reviews">
+    <div class="container">
+      <h2><span class="voices-highlight">Voices</span> of our travelers and their unforgettable moments</h2>
+      <div class="reviews-grid">
+        <article class="review-card">
+          <div class="review-card-image">
+            <img src="{{ MEDIA_URL }}working/test1/965-5788.png" alt="Castle view" />
+          </div>
+          <div class="review-body">
+            <blockquote>"We discovered places we'd never have found on our own. Truly exceptional experience."</blockquote>
+            <cite>Sophia Bennett</cite>
+          </div>
+        </article>
+        <article class="review-card">
+          <div class="review-card-image">
+            <img src="{{ MEDIA_URL }}working/test1/965-5788.png" alt="Castle view" />
+          </div>
+          <div class="review-body">
+            <blockquote>"We discovered places we'd never have found on our own. Truly exceptional experience."</blockquote>
+            <cite>Sophia Bennett</cite>
+          </div>
+        </article>
+        <article class="review-card">
+          <div class="review-card-image">
+            <img src="{{ MEDIA_URL }}working/test1/965-5788.png" alt="Castle view" />
+          </div>
+          <div class="review-body">
+            <blockquote>"We discovered places we'd never have found on our own. Truly exceptional experience."</blockquote>
+            <cite>Sophia Bennett</cite>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Experience we promise you (из LP) -->
+  <section class="section-experience-promise">
+    <div class="exp-lp-bg" style="background-image: url('{{ MEDIA_URL }}working/lp/459-523.png');"></div>
+    <div class="exp-lp-overlay"></div>
+    <div class="container exp-lp-inner">
+      <div class="exp-lp-content">
+        <h2>The Experience we <span class="exp-lp-title-underline">promise</span> you</h2>
+        <p>Your journey is planned with care, comfort, and full attention to what matters to you.</p>
+      </div>
+      <div class="exp-lp-cards-grid">
+        <div class="exp-lp-row">
+          <div class="exp-lp-card">
+            <span class="exp-lp-title">Personalized Attention</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/e6e6660023c621229cf94ee8e1b7cc75e659da8c.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+          <div class="exp-lp-card exp-lp-cards-grid-shift">
+            <span class="exp-lp-title">Thoughtful Organization</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/1ba233f0c7bec0f15f667de527c69406eb4c74cc.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+        </div>
+        <div class="exp-lp-row">
+          <div class="exp-lp-card">
+            <span class="exp-lp-title">Reliable Support</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/076dbee2e5750b967c346b9ed36d16c1d8175575.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+          <div class="exp-lp-card exp-lp-cards-grid-shift">
+            <span class="exp-lp-title">Authentic Experiences</span>
+            <div class="exp-lp-illus" style="background-image: url('{% static 'figma-design-images/bbdeb23d2af13c6a193a49c963b46bcce601d86b.png' %}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works (из LP) -->
+  <section class="section-how-works">
+    <div class="how-lp-bg" style="background-image: url('{{ MEDIA_URL }}working/lp/459-524.svg');"></div>
+    <div class="container how-lp-wrap">
+      <h2>How it works</h2>
+      <div class="how-lp-steps">
+        <div class="how-lp-step">
+          <span>You looking for lifetime vacations</span><em>step 1</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You decide to come to Europe to visit Poland</span><em>step 2</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You visit our website and fill out the request form</span><em>step 3</em>
+        </div>
+        <div class="how-lp-step">
+          <span>Within 24 hours, our tour manager contacts you</span><em>step 4</em>
+        </div>
+        <div class="how-lp-step">
+          <span>We design your fully personalized trip</span><em>step 5</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You receive full support throughout the entire process.</span><em>step 6</em>
+        </div>
+        <div class="how-lp-step">
+          <span>You arrive and enjoy a unique vacation in Poland</span><em>step 7</em>
+        </div>
+      </div>
+      <div class="btn-works">
+        <a href="{% url 'begin_your_journey_step1' %}" class="btn btn-hero how-lp-btn"><span>Craft your journey</span></a>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    ;(function () {
+      document.querySelectorAll('video[data-paused="true"]').forEach(function (v) { v.pause() })
+
+      var mainImg = document.getElementById('attractions-main-img')
+      var thumbBtns = document.querySelectorAll('.attractions-images .thumbnail-btn')
+      var arrowBtns = document.querySelectorAll('.section-attractions .arrow-btn')
+      function setAttractionImage(index) {
+        if (!mainImg || !thumbBtns.length) return
+        index = (index + thumbBtns.length) % thumbBtns.length
+        var btn = thumbBtns[index]
+        var src = btn.getAttribute('data-src')
+        if (src) {
+          mainImg.src = src
+          thumbBtns.forEach(function (b) { b.classList.remove('active') })
+          btn.classList.add('active')
+        }
+        var titleEl = document.getElementById('attractions-title')
+        var descEl = document.getElementById('attractions-desc')
+        var linkEl = document.getElementById('attractions-link')
+        if (titleEl && btn.getAttribute('data-title')) titleEl.textContent = btn.getAttribute('data-title')
+        if (descEl && btn.getAttribute('data-description')) descEl.textContent = btn.getAttribute('data-description')
+        if (linkEl && btn.getAttribute('data-href')) linkEl.href = btn.getAttribute('data-href')
+      }
+      function getActiveIndex() {
+        for (var i = 0; i < thumbBtns.length; i++) {
+          if (thumbBtns[i].classList.contains('active')) return i
+        }
+        return 0
+      }
+      thumbBtns.forEach(function (btn, index) {
+        btn.addEventListener('click', function () {
+          setAttractionImage(index)
+        })
+      })
+      if (arrowBtns.length >= 2) {
+        arrowBtns[0].addEventListener('click', function () { setAttractionImage(getActiveIndex() - 1) })
+        arrowBtns[1].addEventListener('click', function () { setAttractionImage(getActiveIndex() + 1) })
+      }
+    })()
+  </script>
+{% endblock %}

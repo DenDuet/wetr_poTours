@@ -1,0 +1,245 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        po.tours — Private. Outstanding. Perfectly Organized.
+      {% endblock %}
+    </title>
+    <link rel="icon" type="image/png" href="{{ MEDIA_URL }}working/favicon.png" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    {% block extra_css %}
+    {% endblock %}
+  </head>
+  <body>
+    <header class="header" id="header">
+      <div class="container header-inner">
+        <a href="/" class="logo">
+          <img src="{{ MEDIA_URL }}working/logo/icon.png" alt="" class="logo-icon" />
+          <span class="logo-text">po<span class="logo-dot">.</span><span class="logo-tours">tours</span></span>
+        </a>
+
+        <nav class="nav">
+          <a href="{% url 'group_tours_page' %}"><span>Get Inspired</span></a>
+          <a href="{% url 'tours' %}"><span>Group Tours</span></a>
+          {% if user.is_authenticated %}
+            <a href="/catalog/"><span>Catalog</span></a>
+          {% endif %}
+          <a href="{% url 'for_organizations' %}"><span>For organizations</span></a>
+          <a href="{% url 'blog_page' %}"><span>Our Blog</span></a>
+          <a href="{% url 'about_us' %}"><span>About Us</span></a>
+        </nav>
+        <button type="button" class="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="burger-menu" id="burger-btn">
+          <span class="nav-menu-btn-icon"></span>
+          <span class="nav-menu-btn-text">Menu</span>
+        </button>
+        <div class="header-right">
+          <a href="#contact" class="nav-link-contact"><span>Contact</span></a>
+          <a href="{% url 'begin_your_journey_step1' %}" class="btn btn-cta-header"><span>Craft Your Trip</span></a>
+        </div>
+      </div>
+      <div id="burger-menu" class="burger-menu" aria-hidden="true">
+        <nav class="burger-menu-nav">
+          <a href="{% url 'group_tours_page' %}">Get Inspired</a>
+          <a href="{% url 'tours' %}">Group Tours</a>
+          {% if user.is_authenticated %}
+            <a href="/catalog/">Catalog</a>
+          {% endif %}
+          <a href="{% url 'for_organizations' %}">For organizations</a>
+          <a href="{% url 'blog_page' %}">Our Blog</a>
+          <a href="{% url 'about_us' %}">About Us</a>
+          <a href="#contact">Contact</a>
+          <a href="{% url 'begin_your_journey_step1' %}" class="btn btn-cta-header"><span>Craft Your Trip</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      {% if messages %}
+        <section class="container" style="margin-top: 16px;">
+          {% for message in messages %}
+            <div style="padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; background: #f3f6fb; border: 1px solid #d8e1ee;">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    <aside class="cookie-notice" id="cookie-notice" aria-label="Cookie consent">
+      <div class="cookie-notice-content">
+        <h3 class="cookie-notice-title">Cookies</h3>
+        <p class="cookie-notice-text">
+          We use <span>cookies</span> to ensure the website functions properly and to improve its performance.
+        </p>
+      </div>
+      <div class="cookie-notice-actions">
+        <button type="button" class="cookie-notice-accept" id="cookie-accept-btn">Accept cookies</button>
+        <button type="button" class="cookie-notice-reject" id="cookie-reject-btn">Reject non essential cookies</button>
+      </div>
+    </aside>
+
+    <footer class="footer" id="contact">
+      <div class="footer-logo-bg" aria-hidden="true">
+        <div class="footer-logo-bg-image" style="background-image: url('{{ MEDIA_URL }}working/footer/965-5972.png');"></div>
+        <div class="footer-logo-bg-tint"></div>
+      </div>
+      <div class="container footer-content">
+        <div class="footer-inner">
+          <div class="footer-contact">
+            <a href="/" class="footer-logo">
+              <img src="{{ MEDIA_URL }}working/logo/icon.png" alt="" class="footer-logo-icon" />
+              <span class="footer-logo-text">po<span class="logo-dot">.</span>tours</span>
+            </a>
+            <div class="footer-contact-details">
+              <p class="footer-address">
+                Bałucianka 40<br />38-481 Rymanów-Zdrój<br />Poland
+              </p>
+              <p class="footer-hours">Mon–Fri: 9:00 AM – 6:00 PM</p>
+              <div class="footer-phones">
+                <a href="tel:+48664407089">+48 664 407 089</a>
+                <a href="tel:+48531579095">+48 531 579 095</a>
+              </div>
+              <div class="footer-social">
+                <a href="#" class="footer-social-link" aria-label="Instagram"><img src="{{ MEDIA_URL }}working/footer/I965-5974-476-1595.svg" alt="" /></a>
+                <a href="#" class="footer-social-link" aria-label="Facebook"><img src="{{ MEDIA_URL }}working/footer/I965-5974-476-1598.svg" alt="" /></a>
+                <a href="#" class="footer-social-link" aria-label="YouTube"><img src="{{ MEDIA_URL }}working/footer/I965-5974-476-1601.svg" alt="" /></a>
+                <a href="#" class="footer-social-link" aria-label="Pinterest"><img src="{{ MEDIA_URL }}working/footer/I965-5974-476-1604.svg" alt="" /></a>
+              </div>
+              <a href="mailto:info@polishorigins.com" class="footer-email">info@polishorigins.com</a>
+            </div>
+          </div>
+          <div class="footer-menus">
+            <div class="footer-menu-col">
+              <span class="footer-menu-title">Menu</span>
+              <nav class="footer-links">
+                <a href="{% url 'blog_page' %}">Our Blog</a>
+                <a href="{% url 'about_us' %}">About Us</a>
+                <a href="#contact">Contact</a>
+              </nav>
+            </div>
+            <div class="footer-menu-col">
+              <span class="footer-menu-title">Services</span>
+              <nav class="footer-links">
+                <a href="{% url 'group_tours_page' %}">Get Inspired</a>
+                <a href="{% url 'tours' %}">Group Tours</a>
+                <a href="{% url 'for_organizations' %}">For organizations</a>
+                <a href="#">Travel Guides</a>
+              </nav>
+            </div>
+            <div class="footer-cta-block">
+              <img src="{{ MEDIA_URL }}working/footer/I965-5974-476-1605.png" alt="" class="footer-image" />
+              <a href="{% url 'begin_your_journey_step1' %}" class="btn btn-cta-header"><span>Craft Your Trip</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="footer-bottom-links">
+            <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+            <a href="{% url 'terms_and_conditions' %}">Terms and Conditions</a>
+          </div>
+          <a class="footer-copy" href="{% url 'login' %}">© 2025 po.tours All rights reserved.</a>
+        </div>
+      </div>
+    </footer>
+
+    {% block extra_js %}
+    {% endblock %}
+    <script>
+      ;(function () {
+        var header = document.getElementById('header')
+        var heroSection = document.querySelector('.hero-section')
+        function checkScroll() {
+          if (heroSection) {
+            var heroBottom = heroSection.offsetTop + heroSection.offsetHeight
+            header.classList.toggle('header-scrolled', window.pageYOffset > heroBottom - 100)
+          } else {
+            header.classList.toggle('header-scrolled', window.pageYOffset > 80)
+          }
+        }
+        if (header) {
+          window.addEventListener('scroll', checkScroll, { passive: true })
+          checkScroll()
+        }
+        var burgerBtn = document.getElementById('burger-btn')
+        var burgerMenu = document.getElementById('burger-menu')
+        function closeBurger() {
+          burgerMenu.classList.remove('burger-menu-open')
+          burgerBtn.setAttribute('aria-expanded', false)
+          burgerMenu.setAttribute('aria-hidden', true)
+        }
+        if (burgerBtn && burgerMenu) {
+          burgerBtn.addEventListener('click', function (e) {
+            e.stopPropagation()
+            var open = burgerMenu.classList.toggle('burger-menu-open')
+            burgerBtn.setAttribute('aria-expanded', open)
+            burgerMenu.setAttribute('aria-hidden', !open)
+          })
+          burgerMenu.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', closeBurger)
+          })
+          document.addEventListener('click', function (e) {
+            if (!burgerMenu.classList.contains('burger-menu-open')) return
+            if (burgerBtn.contains(e.target) || burgerMenu.contains(e.target)) return
+            closeBurger()
+          })
+        }
+
+        var cookieNotice = document.getElementById('cookie-notice')
+        var acceptCookieBtn = document.getElementById('cookie-accept-btn')
+        var rejectCookieBtn = document.getElementById('cookie-reject-btn')
+        var cookieStorageKey = 'potours_cookie_consent_v1'
+
+        function hideCookieNotice() {
+          if (!cookieNotice) return
+          cookieNotice.classList.remove('is-visible')
+        }
+
+        function saveCookieConsent(value) {
+          try {
+            localStorage.setItem(cookieStorageKey, value)
+          } catch (e) {
+            // localStorage may be unavailable in private mode
+          }
+          hideCookieNotice()
+        }
+
+        if (cookieNotice) {
+          var consent = null
+          try {
+            consent = localStorage.getItem(cookieStorageKey)
+          } catch (e) {
+            consent = null
+          }
+          if (!consent) cookieNotice.classList.add('is-visible')
+
+          if (acceptCookieBtn) {
+            acceptCookieBtn.addEventListener('click', function () {
+              saveCookieConsent('accepted')
+            })
+          }
+          if (rejectCookieBtn) {
+            rejectCookieBtn.addEventListener('click', function () {
+              saveCookieConsent('rejected')
+            })
+          }
+        }
+
+        var allVideos = document.querySelectorAll('video')
+        allVideos.forEach(function (videoEl) {
+          videoEl.autoplay = false
+          videoEl.removeAttribute('autoplay')
+          try {
+            videoEl.pause()
+            videoEl.currentTime = 0
+          } catch (e) {
+            // ignore media control errors
+          }
+        })
+      })()
+    </script>
+  </body>
+</html>

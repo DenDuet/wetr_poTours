@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Paris & French Riviera — po.tours{% endblock %}
+
+{% block content %}
+  <section class="section" style="padding-top: 120px; padding-bottom: 80px;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start;">
+        <div>
+          <div style="border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 24px; aspect-ratio: 16/9;">
+            <img src="{{ MEDIA_URL }}working/tours/castle-europe.png" alt="Paris" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+            <span class="tour-card-badge" style="position: static;">Popular</span>
+            <div class="tour-card-rating" style="position: static;">★ 4.9 (128 reviews)</div>
+          </div>
+          <h1 style="margin-bottom: 8px;">Paris & French Riviera</h1>
+          <p style="color: var(--color-gray-500); margin-bottom: 24px;">7 days · France</p>
+          <h3>Description</h3>
+          <p style="margin-bottom: 24px;">Romantic journey through the most beautiful corners of France. Start with Paris — the city of love and art — then head to the French Riviera for azure waters, exquisite cuisine and the unique atmosphere of the south of France.</p>
+          <h3>What's included</h3>
+          <ul style="margin-bottom: 24px;">
+            <li>Flights</li>
+            <li>4* hotel accommodation</li>
+            <li>Breakfasts</li>
+            <li>Guided excursions</li>
+          </ul>
+          <h3>Itinerary</h3>
+          <ol style="margin-bottom: 24px; padding-left: 24px;">
+            <li><strong>Day 1-2:</strong> Paris — Eiffel Tower, Louvre, Montmartre</li>
+            <li><strong>Day 3-4:</strong> Transfer to Nice, promenade walks</li>
+            <li><strong>Day 5-6:</strong> Monaco, Cannes, Saint-Tropez</li>
+            <li><strong>Day 7:</strong> Departure from Nice</li>
+          </ol>
+        </div>
+
+        <div style="position: sticky; top: 100px;">
+          <div class="filters" style="position: static;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px;">
+              <span class="tour-card-price" style="font-size: 28px;">from €89 000</span>
+              <span style="color: var(--color-gray-500);">per person</span>
+            </div>
+            <form>
+              <div class="filter-group">
+                <label>Departure date</label>
+                <input type="date">
+              </div>
+              <div class="filter-group">
+                <label>Number of travelers</label>
+                <input type="number" value="2" min="1">
+              </div>
+              <a href="#" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 18px; text-align: center; box-sizing: border-box;">Book Now</a>
+            </form>
+            <p style="font-size: 14px; color: var(--color-gray-500); margin-top: 16px; margin-bottom: 0;">Free cancellation up to 7 days before departure</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--color-white); padding: 64px 0;">
+    <div class="container">
+      <h2 class="voices-title" style="margin-bottom: 48px;">
+        <span class="highlight">Voices</span> of our travelers
+      </h2>
+      <div style="display: grid; gap: 24px;">
+        <div style="background: var(--color-bg); padding: 24px; border-radius: var(--radius-xl);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="color: var(--color-yellow);">★★★★★</span>
+            <strong>Anna K.</strong>
+          </div>
+          <p style="margin: 0; color: var(--color-black);">Incredible journey! Everything was organized at the highest level. We'll definitely go again.</p>
+        </div>
+        <div style="background: var(--color-bg); padding: 24px; border-radius: var(--radius-xl);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="color: var(--color-yellow);">★★★★★</span>
+            <strong>Michael S.</strong>
+          </div>
+          <p style="margin: 0; color: var(--color-black);">Great tour, I recommend it to all France lovers. The guide was very knowledgeable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

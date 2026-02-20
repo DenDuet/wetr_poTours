@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Group Tours — po.tours
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/group-tours-slide.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="gt-slide-page">
+    <div class="container gt-slide-container">
+      <h1>Group Tours</h1>
+      <p class="gt-slide-lead">Pick a tour or create your own from chosen days</p>
+
+      <div class="gt-slide-grid">
+        {% for tour in cards %}
+          <a href="{% url 'group_tour_detail' tour.id %}" class="gt-slide-card" style="background-image: url('{{ tour.cover_url }}');">
+            <div class="gt-slide-overlay"></div>
+            <div class="gt-slide-content">
+              <h3>{{ tour.title }}</h3>
+              <p>{{ tour.short_description }}</p>
+              <div class="gt-slide-badges">
+                <span>{{ tour.tour_days_count }} days</span>
+                <span>{{ tour.cities_count }} cities</span>
+              </div>
+            </div>
+            <span class="gt-slide-link">Read more</span>
+          </a>
+        {% empty %}
+          <p class="gt-slide-empty">No group tours yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

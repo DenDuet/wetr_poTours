@@ -1,0 +1,149 @@
+/* 404 — Figma 897-6089 */
+
+.page-404 {
+  position: relative;
+  padding: 120px 0 80px;
+  background: var(--color-bg-hero);
+  overflow: hidden;
+}
+
+.page-404-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.page-404-content {
+  max-width: 520px;
+}
+
+.page-404-title {
+  font-family: var(--font-headline);
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-dark);
+  margin: 0 0 16px;
+  line-height: var(--line-height-tight);
+}
+
+.page-404-lead {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-dark);
+  margin: 0 0 32px;
+  line-height: var(--line-height-relaxed);
+}
+
+.page-404-hint {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--font-regular);
+  color: var(--color-text-dark);
+  margin: 0 0 32px;
+  line-height: var(--line-height-relaxed);
+}
+
+.page-404-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  padding: 14px 24px;
+}
+
+/* Правая колонка: фон-паттерн + картинка с оверлеем 404 */
+.page-404-right {
+  position: relative;
+}
+
+.page-404-bg-pattern {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.page-404-bg-pattern img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.page-404-image-wrap {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--color-gray-light);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  max-height: 85vh;
+}
+
+.page-404-image {
+  width: 100%;
+  height: 100%;
+  max-height: 85vh;
+  display: block;
+  object-fit: cover;
+  vertical-align: top;
+}
+
+.page-404-overlay {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  font-family: var(--font-headline);
+  font-size: clamp(80px, 12vw, 160px);
+  font-weight: var(--font-semibold);
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1;
+  pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .page-404 {
+    padding: 100px 0 60px;
+  }
+
+  .page-404-inner {
+    grid-template-columns: 1fr;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .page-404-content {
+    max-width: 100%;
+  }
+
+  .page-404-right {
+    order: -1;
+  }
+
+  .page-404-overlay {
+    font-size: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-404 {
+    padding: 92px 0 48px;
+  }
+
+  .page-404-title {
+    font-size: 32px;
+  }
+
+  .page-404-overlay {
+    font-size: 72px;
+    right: 16px;
+    bottom: 16px;
+  }
+}

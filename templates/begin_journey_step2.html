@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Begin Your Journey — Step 2
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/begin-journey-step2.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="journey2-page">
+    <div class="container journey2-shell">
+      <div class="journey2-stepper-line"></div>
+      <nav class="journey2-stepper">
+        <a href="{% url 'begin_your_journey_step1' %}" class="{% if step_stage == 'type' %}is-active{% endif %}">Type of experience</a>
+        <span class="journey2-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step2' %}" class="{% if step_stage == 'preferences' %}is-active{% endif %}">Your preferences</a>
+        <span class="journey2-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step3' %}" class="{% if step_stage == 'places' %}is-active{% endif %}">Places that interest you</a>
+        <span class="journey2-step-sep">›</span>
+        <a href="{% url 'begin_your_journey_step4' %}" class="{% if step_stage == 'details' %}is-active{% endif %}">Trip details</a>
+      </nav>
+
+      <div class="journey2-grid">
+        <section class="journey2-hero" id="journey2-slider" style="background-image: url('{{ slider_current.photo_url }}');">
+          <div class="journey2-hero-overlay"></div>
+          <button type="button" class="journey2-arrow journey2-arrow-left" aria-label="Previous attraction">←</button>
+          <button type="button" class="journey2-arrow journey2-arrow-right" aria-label="Next attraction">→</button>
+          <div class="journey2-hero-text">
+            <h2 id="journey2-title">{{ slider_current.title }}</h2>
+            <p id="journey2-description">{{ slider_current.description }}</p>
+            <a href="{% if slider_items.0.id %}{% url 'attraction_detail' slider_items.0.id %}{% else %}#{% endif %}" id="journey2-read-more" class="journey2-read-more">Read more</a>
+          </div>
+        </section>
+
+        <section class="journey2-form-card">
+          <div class="journey2-form-head">
+            <h3>What would you like to experience?</h3>
+            <p>Complete the details and we will contact you by email</p>
+          </div>
+
+          <div class="journey2-form-fields">
+            <label class="journey2-field">
+              <span>Tell us about your dream journey</span>
+              <textarea rows="3" placeholder="Describe the places you'd like to visit and what would make this trip special for you..."></textarea>
+            </label>
+            <label class="journey2-field">
+              <span>Is there a topic, historical period, or something that particularly interests you?</span>
+              <textarea rows="3" placeholder="Share any themes, eras, or interests you'd like us to include..."></textarea>
+            </label>
+          </div>
+
+          <div class="journey2-form-nav">
+            <a href="{% url 'begin_your_journey_step1' %}" class="journey2-nav-link">← Previous step</a>
+            <a href="{% url 'begin_your_journey_step3' %}" class="journey2-nav-link">Next step →</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  {{ slider_items|json_script:'journey2-attractions-data' }}
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    ;(function () {
+      var dataTag = document.getElementById('journey2-attractions-data')
+      var slider = document.getElementById('journey2-slider')
+      var title = document.getElementById('journey2-title')
+      var description = document.getElementById('journey2-description')
+      var prevBtn = document.querySelector('.journey2-arrow-left')
+      var nextBtn = document.querySelector('.journey2-arrow-right')
+      if (!dataTag || !slider || !title || !description || !prevBtn || !nextBtn) return
+    
+      var attractions = []
+      try {
+        attractions = JSON.parse(dataTag.textContent || '[]')
+      } catch (e) {
+        attractions = []
+      }
+      if (!attractions.length) return
+    
+      var idx = 0
+      var readMoreLink = document.getElementById('journey2-read-more')
+      var render = function () {
+        var item = attractions[idx]
+        slider.style.backgroundImage = "url('" + item.photo_url + "')"
+        title.textContent = item.title || ''
+        description.textContent = item.description || ''
+        if (readMoreLink && item.id) readMoreLink.href = '/attractions/' + item.id + '/'
+      }
+
+      render()
+    
+      prevBtn.addEventListener('click', function () {
+        idx = (idx - 1 + attractions.length) % attractions.length
+        render()
+      })
+      nextBtn.addEventListener('click', function () {
+        idx = (idx + 1) % attractions.length
+        render()
+      })
+    })()
+  </script>
+{% endblock %}

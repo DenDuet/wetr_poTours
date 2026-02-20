@@ -1,0 +1,357 @@
+/* About Us — первый экран Figma 989:11673 */
+
+.about-us-hero {
+  position: relative;
+  padding: 120px 0 0;
+  background: var(--color-bg-hero);
+  overflow: hidden;
+}
+
+/* Приглушённый логотип по центру первого экрана (hero) */
+.about-us-hero-bg {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, -50%);
+  opacity: 0.04;
+  pointer-events: none;
+  color: var(--color-red-figma);
+}
+
+.about-us-hero-bg img {
+  width: min(320px, 40vw);
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.about-us-hero-inner {
+  position: relative;
+  z-index: 1;
+  padding: 0 var(--container-padding);
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.about-us-title {
+  font-family: var(--font-headline);
+  font-size: clamp(53px, 5.5vw, 79px);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-dark);
+  margin: var(--space-6) 0 var(--space-4) 0;
+  line-height: var(--line-height-tight);
+}
+
+.about-us-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--font-medium);
+  color: var(--color-text-dark);
+  margin: 0 0 var(--space-8) 0;
+  max-width: 290px;
+  line-height: var(--line-height-relaxed);
+}
+
+/* Второй экран About — Figma 989:12003 */
+.about-us-experience {
+  padding: 24px 0 80px; /* после красной линии убрано 40px (было 64px) */
+  background: #F9F8F6;
+}
+
+.about-us-experience-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: stretch;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.about-us-experience-text {
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+}
+
+/* Блок с <p>: ширина 60% (уменьшена на 40%), низ по низу правого блока */
+.about-us-experience-text-body {
+  width: 60%;
+  margin-top: auto;
+}
+
+.about-us-experience-text-body p {
+  margin: 0 0 20px;
+}
+
+.about-us-experience-text-body p:last-child {
+  margin-bottom: 0;
+}
+
+.about-us-experience-title {
+  font-family: var(--font-headline);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-dark);
+  margin: 0 0 28px;
+  line-height: var(--line-height-tight);
+}
+
+.about-us-experience-accent {
+  color: var(--color-red);
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.08em;
+  text-decoration-skip-ink: none;
+}
+
+.about-us-experience-text-body p,
+.about-us-experience-text p {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-dark);
+}
+
+.about-us-experience-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.about-us-experience-image-wrap {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--color-gray-light);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.about-us-experience-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  vertical-align: top;
+}
+
+/* Карточки под фото — 2x2 по макету */
+.about-us-experience-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.about-us-exp-card {
+  background: #FBF8F4;
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Фоновый прямоугольник под иконку, как в шаблоне */
+.about-us-exp-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 12px;
+  background: var(--color-yellow-light);
+  flex-shrink: 0;
+}
+
+.about-us-exp-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.about-us-exp-card p {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .about-us-experience-inner {
+    grid-template-columns: 1fr;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .about-us-experience {
+    padding: 48px 0 64px;
+  }
+
+  .about-us-experience-text-body {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-us-experience-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .about-us-experience-title {
+    font-size: 28px;
+  }
+}
+
+/* Три карточки, красная полоса под ними */
+.about-us-cards-section {
+  padding: 0;
+  margin: 50px 0;
+  background: var(--color-bg);
+}
+
+.about-us-cards-section .hero-red-line {
+  margin-top: 88px; /* +40px к прежним 48px */
+}
+
+.about-us-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.about-us-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 380px;
+  padding: 30px;
+  border-radius: var(--radius-xl);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-gray-light);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.about-us-card:hover {
+  transform: translateY(-4px);
+}
+
+.about-us-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+.about-us-card-title {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-headline);
+  font-size: var(--text-h3);
+  font-weight: var(--font-semibold);
+  color: var(--color-white);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+.about-us-card-link {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-headline);
+  font-size: var(--text-body);
+  font-weight: var(--font-medium);
+  color: var(--color-white);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-top: auto;
+}
+
+.about-us-card:hover .about-us-card-link {
+  color: var(--color-yellow);
+}
+
+@media (max-width: 1024px) {
+  .about-us-hero {
+    padding-top: 102px;
+    padding-bottom: 48px;
+  }
+
+  .about-us-hero-inner {
+    width: 90vw;
+    max-width: 90vw;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+  }
+
+  .about-us-cards-section,
+  .about-us-cards-section .container {
+    width: 96vw;
+    max-width: 96vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    box-sizing: border-box;
+  }
+
+  .about-us-cards-section {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .about-us-cards {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .about-us-card {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-us-hero {
+    padding-top: 92px;
+    padding-bottom: 32px;
+  }
+
+  .about-us-hero-inner {
+    width: 90vw;
+    max-width: 90vw;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .about-us-title {
+    font-size: 32px;
+  }
+
+  .about-us-cards-section,
+  .about-us-cards-section .container {
+    width: 98vw;
+    max-width: 98vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    box-sizing: border-box;
+  }
+
+  .about-us-cards-section {
+    margin: 32px auto 48px;
+  }
+
+  .about-us-card {
+    min-height: 280px;
+    padding: 24px;
+  }
+
+  .about-us-card-title {
+    font-size: var(--text-h4);
+  }
+}

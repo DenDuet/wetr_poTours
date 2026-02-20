@@ -1,0 +1,140 @@
+.journey-step1-page {
+  background: #f6f6f0;
+  min-height: 100vh;
+  padding: 106px 0 40px;
+}
+
+.journey-step1-shell {
+  max-width: 1430px;
+}
+
+.journey-stepper-line {
+  height: 1px;
+  background: #eaeaea;
+  margin-bottom: 18px;
+}
+
+.journey-stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #575757;
+}
+
+.journey-stepper a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.journey-stepper a:hover {
+  color: #a6112a;
+}
+
+.journey-stepper .is-active {
+  color: #c51230;
+}
+
+.journey-step-sep {
+  color: #8f8f8f;
+}
+
+.journey-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.journey-card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 380px;
+  border-radius: 24px;
+  overflow: hidden;
+  text-decoration: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 30px;
+}
+
+.journey-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.14) 55%, rgba(0, 0, 0, 0.05));
+}
+
+.journey-card-text {
+  position: relative;
+  z-index: 1;
+  color: #f6f6f0;
+  max-width: 340px;
+}
+
+.journey-card-text p {
+  margin: 0 0 12px;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.journey-card-text h3 {
+  margin: 0;
+  font-family: "Stack Sans Headline", var(--font-headline), sans-serif;
+  font-size: 40px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 1024px) {
+  .journey-card {
+    min-height: 320px;
+  }
+
+  .journey-card-text h3 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 768px) {
+  .journey-step1-page {
+    padding: 92px 0 24px;
+  }
+
+  .journey-step1-shell {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .journey-stepper {
+    font-size: 14px;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .journey-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .journey-card {
+    min-height: 280px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .journey-card-text p {
+    font-size: 16px;
+  }
+
+  .journey-card-text h3 {
+    font-size: 32px;
+  }
+}

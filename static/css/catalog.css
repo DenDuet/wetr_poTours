@@ -1,0 +1,232 @@
+.catalog-page {
+  padding: 120px 0 48px;
+  padding-left: 60px;
+}
+
+/* Align catalog work area with header logo (left) and nav end (right). */
+@media (min-width: 1200px) {
+  .catalog-page {
+    padding-right: clamp(220px, 16vw, 320px);
+  }
+}
+
+.catalog-page h1 {
+  margin: var(--space-6) 0 16px 0;
+  font-family: var(--font-headline);
+  font-size: clamp(53px, 5.5vw, 79px);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-dark);
+}
+
+.catalog-page h2 {
+  margin: 28px 0 12px;
+}
+
+.catalog-lead {
+  margin: 0 0 20px;
+  color: #49566d;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.catalog-card {
+  border: 1px solid #d8e1ee;
+  border-radius: 12px;
+  padding: 16px;
+  color: #0f2745;
+  text-decoration: none;
+  background: #ffffff;
+}
+
+.catalog-card:hover {
+  border-color: #b9c9dd;
+}
+
+.catalog-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 12px 0;
+}
+.catalog-filters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.catalog-filters input[type="date"],
+.catalog-filters input[type="search"] {
+  padding: 6px 8px;
+  border: 1px solid #d8e1ee;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.catalog-table-sort a {
+  text-decoration: none;
+  color: inherit;
+}
+.catalog-table-sort a:hover {
+  text-decoration: underline;
+}
+.catalog-table-sort .sort-indicator {
+  margin-left: 4px;
+  color: #6a7891;
+}
+
+.catalog-btn,
+.catalog-table button,
+.catalog-table a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d8e1ee;
+  border-radius: 8px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #0f2745;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+}
+
+.catalog-btn-ghost {
+  background: #f5f8fc;
+}
+
+.catalog-form-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.catalog-form {
+  max-width: 720px;
+  display: grid;
+  gap: 8px;
+}
+
+.catalog-input,
+.catalog-form textarea,
+.catalog-form select,
+.catalog-form input[type="file"] {
+  width: 100%;
+  border: 1px solid #d8e1ee;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+.catalog-form textarea {
+  min-height: 120px;
+}
+
+.catalog-form .helptext {
+  color: #6a7891;
+  font-size: 13px;
+}
+
+/* File input: hide browser’s locale text, show English “No file chosen” */
+.file-input-english-wrap {
+  display: inline-block;
+  position: relative;
+  min-width: 200px;
+}
+.file-input-english-wrap input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+.file-input-english-label {
+  display: inline-block;
+  padding: 8px 10px;
+  border: 1px solid #d8e1ee;
+  border-radius: 8px;
+  background: #fff;
+  color: #6a7891;
+  min-height: 1.2em;
+}
+.file-input-english-label:empty::before {
+  content: attr(data-empty);
+}
+.file-input-english-wrap input[type="file"]:focus + .file-input-english-label {
+  outline: 2px solid #0f2745;
+  outline-offset: 2px;
+}
+
+.catalog-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border: 1px solid #d8e1ee;
+}
+
+.catalog-table th,
+.catalog-table td {
+  border-bottom: 1px solid #e8eef6;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.catalog-table th {
+  background: #f5f8fc;
+}
+
+.catalog-actions-cell {
+  display: flex;
+  gap: 6px;
+}
+
+.catalog-actions-cell form {
+  margin: 0;
+}
+
+.catalog-media-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.catalog-media-list li {
+  border: 1px solid #d8e1ee;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+@media (max-width: 768px) {
+  .catalog-page {
+    padding-top: 102px;
+    padding-left: 15px;
+  }
+
+  .catalog-page h1 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-page {
+    padding-top: 92px;
+  }
+}

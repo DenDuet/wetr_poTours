@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page not found — po.tours{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/page-404.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="page-404">
+    <div class="container page-404-inner">
+      <div class="page-404-content">
+        <h1 class="page-404-title">Page not found</h1>
+        <p class="page-404-lead">The page you're looking for is unavailable or may have been removed</p>
+        <p class="page-404-hint">Please check the address or return to the homepage</p>
+        <a href="{% url 'home' %}" class="btn btn-cta-header page-404-btn"><span>Return Home</span></a>
+      </div>
+      <div class="page-404-right">
+        <div class="page-404-bg-pattern" aria-hidden="true">
+          <img src="{{ MEDIA_URL }}working/logo/icon.png" alt="" />
+        </div>
+        <div class="page-404-image-wrap">
+          <img src="{{ MEDIA_URL }}working/hero/mount.jpg" alt="" class="page-404-image" />
+          <span class="page-404-overlay">404</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-red-line"></div>
+  </section>
+{% endblock %}
