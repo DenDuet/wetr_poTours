@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+import os
 from datetime import datetime
 
 from django.conf import settings
@@ -357,6 +358,18 @@ def group_tour_detail(request, pk):
         pk=pk,
     )
     context = _group_tour_detail_context(group_tour)
+    # Иконки includes берём из media/working/icons/
+    includes_with_icons_path = []
+    for inc in context["tour_includes"]:
+        icon_url = ""
+        if inc.icon_path:
+            icon_url = f"{settings.MEDIA_URL}working/icons/{os.path.basename(inc.icon_path)}"
+        includes_with_icons_path.append({
+            "description": inc.description,
+            "icon_path": inc.icon_path,
+            "icon_url": icon_url,
+        })
+    context["tour_includes"] = includes_with_icons_path
     return render(request, "group_tour_detail.html", context)
 
 
@@ -370,6 +383,18 @@ def group_tour_inspiration_detail(request, pk):
         pk=pk,
     )
     context = _group_tour_detail_context(group_tour)
+    # Иконки includes на странице inspirations берём из media/working/icons/
+    includes_with_icons_path = []
+    for inc in context["tour_includes"]:
+        icon_url = ""
+        if inc.icon_path:
+            icon_url = f"{settings.MEDIA_URL}working/icons/{os.path.basename(inc.icon_path)}"
+        includes_with_icons_path.append({
+            "description": inc.description,
+            "icon_path": inc.icon_path,
+            "icon_url": icon_url,
+        })
+    context["tour_includes"] = includes_with_icons_path
     return render(request, "group_tour_inspiration_detail.html", context)
 
 
