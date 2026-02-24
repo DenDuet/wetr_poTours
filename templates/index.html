@@ -83,88 +83,123 @@
               </button>
             </div>
             <div class="slider-info">
-              <h3 id="attractions-title">{% if featured_attractions %}{{ featured_attractions.0.title }}{% else %}Malbork Castle{% endif %}</h3>
-              <p id="attractions-desc">{% if featured_attractions %}{{ featured_attractions.0.description|truncatewords:15 }}{% else %}From Historic Cities to Mountain Peaks{% endif %}</p>
-              <a href="{% if featured_attractions %}{% url 'attraction_detail' featured_attractions.0.id %}{% else %}#{% endif %}" id="attractions-link" class=""><span>Read more</span></a>
+              <h3 id="attractions-title">
+                {% if featured_attractions %}
+                  {{ featured_attractions.0.title }}
+                {% else %}
+                  Malbork Castle
+                {% endif %}
+              </h3>
+              <p id="attractions-desc">
+                {% if featured_attractions %}
+                  {{ featured_attractions.0.description|truncatewords:15 }}
+                {% else %}
+                  From Historic Cities to Mountain Peaks
+                {% endif %}
+              </p>
+              <a href="{% if featured_attractions %}
+                  {% url 'attraction_detail' featured_attractions.0.id %}
+                {% else %}
+                  #
+                {% endif %}"
+                id="attractions-link"
+                class="">
+                <span>Read more</span>
+              </a>
             </div>
           </div>
-        <div class="attractions-images">
-          <img src="{% if featured_attractions %}{{ featured_attractions.0.photo_url }}{% else %}{{ MEDIA_URL }}working/test1/origOf1icon.jpg{% endif %}" alt="" class="main-img" id="attractions-main-img" />
-          <div class="thumbnails">
-            {% for att in featured_attractions %}
-            <button type="button" class="thumbnail-btn {% if forloop.first %}active{% endif %}" aria-label="View {{ att.title }}" data-src="{{ att.photo_url }}" data-title="{{ att.title }}" data-description="{{ att.description|truncatewords:15 }}" data-href="{% url 'attraction_detail' att.id %}"><img src="{{ att.photo_url }}" alt="{{ att.title }}" /></button>
-            {% empty %}
-            <button type="button" class="thumbnail-btn active" aria-label="View image 1" data-src="{{ MEDIA_URL }}working/test1/origOf1icon.jpg" data-title="Malbork Castle" data-description="From Historic Cities to Mountain Peaks" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5790.png" alt="" /></button>
-            <button type="button" class="thumbnail-btn" aria-label="View image 2" data-src="{{ MEDIA_URL }}working/test1/origOf2icon.jpg" data-title="" data-description="" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5791.png" alt="" /></button>
-            <button type="button" class="thumbnail-btn" aria-label="View image 3" data-src="{{ MEDIA_URL }}working/test1/origOf3icon.jpg" data-title="" data-description="" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5792.png" alt="" /></button>
-            {% endfor %}
+          <div class="attractions-images">
+            <img src="{% if featured_attractions %}
+                {{ featured_attractions.0.photo_url }}
+              {% else %}
+                {{ MEDIA_URL }}working/test1/origOf1icon.jpg
+              {% endif %}"
+              alt=""
+              class="main-img"
+              id="attractions-main-img" />
+            <div class="thumbnails">
+              {% for att in featured_attractions %}
+                <button type="button" class="thumbnail-btn {% if forloop.first %}active{% endif %}" aria-label="View {{ att.title }}" data-src="{{ att.photo_url }}" data-title="{{ att.title }}" data-description="{{ att.description|truncatewords:15 }}" data-href="{% url 'attraction_detail' att.id %}"><img src="{{ att.photo_url }}" alt="{{ att.title }}" /></button>
+              {% empty %}
+                <button type="button" class="thumbnail-btn active" aria-label="View image 1" data-src="{{ MEDIA_URL }}working/test1/origOf1icon.jpg" data-title="Malbork Castle" data-description="From Historic Cities to Mountain Peaks" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5790.png" alt="" /></button>
+                <button type="button" class="thumbnail-btn" aria-label="View image 2" data-src="{{ MEDIA_URL }}working/test1/origOf2icon.jpg" data-title="" data-description="" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5791.png" alt="" /></button>
+                <button type="button" class="thumbnail-btn" aria-label="View image 3" data-src="{{ MEDIA_URL }}working/test1/origOf3icon.jpg" data-title="" data-description="" data-href="#"><img src="{{ MEDIA_URL }}working/test1/965-5792.png" alt="" /></button>
+              {% endfor %}
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Video (сразу после Attractions), без анимации -->
-  <section class="section-video-banner">
-    <video muted loop playsinline preload="metadata" data-paused="true">
-      <source src="{{ MEDIA_URL }}working/test1/20659480-uhd_3840_2160_24fps.mp4" type="video/mp4" />
-    </video>
-  </section>
+  <!-- Video: выезд справа при скролле, фиксация на 100vh вверху -->
+  <div class="video-banner-pin-wrapper">
+    <section class="section-video-banner">
+      <video muted loop playsinline preload="metadata" data-paused="true">
+        <source src="{{ MEDIA_URL }}working/test1/20659480-uhd_3840_2160_24fps.mp4" type="video/mp4" />
+      </video>
+      <div class="video-need-ideas" aria-hidden="true">Need ideas?</div>
+      <div class="video-banner-headline-fixed" id="video-banner-headline-fixed" aria-hidden="true"></div>
+    </section>
+  </div>
 
   <!-- Inspirations (из Тест1), отступы как на /tours/ -->
   <section class="section-inspirations section-group-tour-cards" id="inspiration">
-      <div class="container">
-        <h2><span class="discover-accent">Discover</span> our inspirations.</h2>
-        <div class="inspirations-grid0">
+    <div class="container">
+      <h2><span class="discover-accent">Discover</span> our inspirations.</h2>
+      <div class="inspirations-grid0">
         {% for tour in featured_group_tours|slice:':2' %}
-        <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-top" style="background-image: url('{{ tour.cover_url }}');">
-          <div class="card-overlay"></div>
-          <div class="card-info">
-            <h3>{{ tour.title }}</h3>
-            <p>{{ tour.short_description }}</p>
-            <div class="card-badges">
-              <span class="badge">{{ tour.tour_days_count }} days</span>
-              <span class="badge">{{ tour.cities_count }} cities</span>
+          <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-top" style="background-image: url('{{ tour.cover_url }}');">
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <h3>{{ tour.title }}</h3>
+              <p>{{ tour.short_description }}</p>
+              <div class="card-badges">
+                <span class="badge">{{ tour.tour_days_count }} days</span>
+                <span class="badge">{{ tour.cities_count }} cities</span>
+              </div>
             </div>
-          </div>
-          <span class="link">Read more</span>
-        </a>
+            <span class="link">Read more</span>
+          </a>
         {% empty %}
-        <a href="#" class="inspiration-card inspiration-card-top" style="background-image: url('{{ MEDIA_URL }}working/test1/I965-5797-449-1298-368-149.png');">
-          <div class="card-overlay"></div>
-          <div class="card-info">
-            <h3>North-South Poland Tour</h3>
-            <p>From Historic Cities to Mountain Peaks</p>
-            <div class="card-badges"><span class="badge">12 days</span><span class="badge">8 Cities</span></div>
-          </div>
-          <span class="link">Read more</span>
-        </a>
-        <a href="#" class="inspiration-card inspiration-card-top" style="background-image: url('{{ MEDIA_URL }}working/test1/I965-5798-449-1298-368-149.png');">
-          <div class="card-overlay"></div>
-          <div class="card-info">
-            <h3>Kingdom of Poland Tour</h3>
-            <p>From Historic Cities to Mountain Peaks</p>
-            <div class="card-badges"><span class="badge">12 days</span><span class="badge">8 Cities</span></div>
-          </div>
-          <span class="link">Read more</span>
-        </a>
+          <a href="#" class="inspiration-card inspiration-card-top" style="background-image: url('{{ MEDIA_URL }}working/test1/I965-5797-449-1298-368-149.png');">
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <h3>North-South Poland Tour</h3>
+              <p>From Historic Cities to Mountain Peaks</p>
+              <div class="card-badges">
+                <span class="badge">12 days</span><span class="badge">8 Cities</span>
+              </div>
+            </div>
+            <span class="link">Read more</span>
+          </a>
+          <a href="#" class="inspiration-card inspiration-card-top" style="background-image: url('{{ MEDIA_URL }}working/test1/I965-5798-449-1298-368-149.png');">
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <h3>Kingdom of Poland Tour</h3>
+              <p>From Historic Cities to Mountain Peaks</p>
+              <div class="card-badges">
+                <span class="badge">12 days</span><span class="badge">8 Cities</span>
+              </div>
+            </div>
+            <span class="link">Read more</span>
+          </a>
         {% endfor %}
       </div>
       <div class="inspirations-grid group-tours-bottom-grid">
         {% for tour in featured_group_tours|slice:'2:4' %}
-        <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-bottom" style="background-image: url('{{ tour.cover_url }}');">
-          <div class="card-overlay"></div>
-          <div class="card-info">
-            <h3>{{ tour.title }}</h3>
-            <p>{{ tour.short_description }}</p>
-            <div class="card-badges">
-              <span class="badge">{{ tour.tour_days_count }} days</span>
-              <span class="badge">{{ tour.cities_count }} cities</span>
+          <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-bottom" style="background-image: url('{{ tour.cover_url }}');">
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <h3>{{ tour.title }}</h3>
+              <p>{{ tour.short_description }}</p>
+              <div class="card-badges">
+                <span class="badge">{{ tour.tour_days_count }} days</span>
+                <span class="badge">{{ tour.cities_count }} cities</span>
+              </div>
             </div>
-          </div>
-          <span class="link">Read more</span>
-        </a>
+            <span class="link">Read more</span>
+          </a>
         {% endfor %}
         <div class="inspiration-text">
           <p>Poland is various of interesting thinks. If you don't know yet, what you wanna do, just check our ready made inspiration and find something for yourself. Poland is various of interesting thinks. If you don't know yet, what you wanna do, just check our ready made inspiration and find something for yourself.</p>
@@ -282,8 +317,10 @@
 {% block extra_js %}
   <script>
     ;(function () {
-      document.querySelectorAll('video[data-paused="true"]').forEach(function (v) { v.pause() })
-
+      document.querySelectorAll('video[data-paused="true"]').forEach(function (v) {
+        v.pause()
+      })
+    
       var mainImg = document.getElementById('attractions-main-img')
       var thumbBtns = document.querySelectorAll('.attractions-images .thumbnail-btn')
       var arrowBtns = document.querySelectorAll('.section-attractions .arrow-btn')
@@ -294,7 +331,9 @@
         var src = btn.getAttribute('data-src')
         if (src) {
           mainImg.src = src
-          thumbBtns.forEach(function (b) { b.classList.remove('active') })
+          thumbBtns.forEach(function (b) {
+            b.classList.remove('active')
+          })
           btn.classList.add('active')
         }
         var titleEl = document.getElementById('attractions-title')
@@ -316,8 +355,202 @@
         })
       })
       if (arrowBtns.length >= 2) {
-        arrowBtns[0].addEventListener('click', function () { setAttractionImage(getActiveIndex() - 1) })
-        arrowBtns[1].addEventListener('click', function () { setAttractionImage(getActiveIndex() + 1) })
+        arrowBtns[0].addEventListener('click', function () {
+          setAttractionImage(getActiveIndex() - 1)
+        })
+        arrowBtns[1].addEventListener('click', function () {
+          setAttractionImage(getActiveIndex() + 1)
+        })
+      }
+
+      /* Attractions: параллакс только при скролле; включаем позже — когда секция уже в верхней половине экрана */
+      var attractionsSection = document.querySelector('.section-attractions')
+      var attractionsParallaxInitialTop = null
+      var ATTRACTIONS_PARALLAX_START = 0.5
+      if (attractionsSection) {
+        function updateAttractionsParallax() {
+          var rect = attractionsSection.getBoundingClientRect()
+          var vh = window.innerHeight
+          var inView = rect.top < vh && rect.bottom > 0
+          if (!inView) {
+            attractionsParallaxInitialTop = null
+            attractionsSection.style.setProperty('--attractions-parallax', '0px')
+            return
+          }
+          if (rect.top >= vh * ATTRACTIONS_PARALLAX_START) {
+            attractionsSection.style.setProperty('--attractions-parallax', '0px')
+            return
+          }
+          if (attractionsParallaxInitialTop === null) attractionsParallaxInitialTop = rect.top
+          var offset = 0.45 * Math.max(0, attractionsParallaxInitialTop - rect.top)
+          attractionsSection.style.setProperty('--attractions-parallax', offset + 'px')
+        }
+        updateAttractionsParallax()
+        window.addEventListener('scroll', updateAttractionsParallax, { passive: true })
+        window.addEventListener('resize', updateAttractionsParallax)
+      }
+
+      /* Video banner: выезд, фиксация; 2 с — "Need ideas?"; ещё 3 с — заголовок Inspirations фиксирован, видео уезжает, затем заголовок садится на место */
+      var videoBanner = document.querySelector('.section-video-banner')
+      var headlineFixedEl = document.getElementById('video-banner-headline-fixed')
+      var inspirationsSection = document.querySelector('.section-inspirations')
+      var inspirationsH2 = inspirationsSection ? inspirationsSection.querySelector('h2') : null
+      var pinLiftTimeout = null
+      var headlineTimeout = null
+      var pinLiftScheduled = false
+      var FIXED_HEADLINE_TOP_RATIO = 0.45
+      var VIDEO_ZONE_TOP_MAX = 0
+      var VIDEO_ZONE_TOP_MIN = -100
+      var hasLanded = false
+      if (videoBanner) {
+        function showHeadlineFixed() {
+          if (!headlineFixedEl || !inspirationsH2 || hasLanded) return
+          var scrollY = window.scrollY || window.pageYOffset
+          if (inspirationsSection) {
+            inspirationsSection.classList.add('is-headline-floating')
+            inspirationsSection.classList.add('is-headline-pulled')
+          }
+          videoBanner.classList.remove('is-ideas-visible')
+          var clone = inspirationsH2.cloneNode(true)
+          clone.setAttribute('aria-hidden', 'true')
+          headlineFixedEl.innerHTML = ''
+          headlineFixedEl.appendChild(clone)
+          videoBanner.classList.add('is-headline-visible')
+          function restoreScroll() {
+            var now = window.scrollY || window.pageYOffset
+            if (Math.abs(now - scrollY) > 2) window.scrollTo(0, scrollY)
+          }
+          restoreScroll()
+          requestAnimationFrame(function () {
+            restoreScroll()
+            headlineFixedEl.classList.add('is-visible')
+          })
+          requestAnimationFrame(function () { restoreScroll() })
+          setTimeout(restoreScroll, 0)
+          setTimeout(restoreScroll, 50)
+          setTimeout(restoreScroll, 150)
+          setTimeout(function () {
+            videoBanner.classList.add('is-headline-scrollable')
+            restoreScroll()
+            setTimeout(restoreScroll, 0)
+            setTimeout(restoreScroll, 50)
+          }, 200)
+        }
+        function landHeadline() {
+          headlineFixedEl.classList.remove('is-visible')
+          if (inspirationsSection) inspirationsSection.classList.remove('is-headline-floating')
+          pinLiftScheduled = false
+          hasLanded = true
+          setTimeout(function () {
+            headlineFixedEl.innerHTML = ''
+          }, 500)
+        }
+        function revertHeadline() {
+          headlineFixedEl.classList.remove('is-visible')
+          headlineFixedEl.innerHTML = ''
+          videoBanner.classList.remove('is-headline-visible')
+          videoBanner.classList.remove('is-headline-scrollable')
+          videoBanner.classList.add('is-ideas-visible')
+          if (inspirationsSection) {
+            inspirationsSection.classList.remove('is-headline-floating')
+            inspirationsSection.classList.remove('is-headline-pulled')
+          }
+          pinLiftScheduled = false
+          hasLanded = false
+        }
+        function forceHideOutsideZone() {
+          headlineFixedEl.classList.remove('is-visible')
+          headlineFixedEl.innerHTML = ''
+          videoBanner.classList.remove('is-pinned')
+          videoBanner.classList.remove('is-ideas-visible')
+          videoBanner.classList.remove('is-headline-visible')
+          videoBanner.classList.remove('is-headline-scrollable')
+          if (inspirationsSection) {
+            inspirationsSection.classList.remove('is-headline-floating')
+            inspirationsSection.classList.remove('is-headline-pulled')
+          }
+          pinLiftScheduled = false
+          if (pinLiftTimeout) { window.clearTimeout(pinLiftTimeout); pinLiftTimeout = null }
+          if (headlineTimeout) { window.clearTimeout(headlineTimeout); headlineTimeout = null }
+        }
+        function inVideoZone(rectTopVh) {
+          return rectTopVh >= VIDEO_ZONE_TOP_MIN && rectTopVh <= VIDEO_ZONE_TOP_MAX
+        }
+        function checkHeadlineLanding() {
+          if (!videoBanner.classList.contains('is-headline-visible') || !inspirationsH2) return
+          var rect = videoBanner.getBoundingClientRect()
+          var vh = window.innerHeight
+          var rectTopVh = (rect.top / vh) * 100
+          if (!inVideoZone(rectTopVh)) {
+            if (rect.top >= 0) revertHeadline()
+            else if (rect.top < (VIDEO_ZONE_TOP_MIN / 100) * vh) landHeadline()
+            return
+          }
+          if (rect.top >= 0) {
+            revertHeadline()
+            return
+          }
+          var targetTop = vh * FIXED_HEADLINE_TOP_RATIO
+          var realTop = inspirationsH2.getBoundingClientRect().top
+          if (realTop <= targetTop) landHeadline()
+        }
+        function updateVideoSlide() {
+          var rect = videoBanner.getBoundingClientRect()
+          var vh = window.innerHeight
+          var progress = 1 - rect.top / vh
+          if (progress < 0) progress = 0
+          if (progress > 1) progress = 1
+          var rectTopVh = (rect.top / vh) * 100
+          var inZone = inVideoZone(rectTopVh)
+          var slideX = (1 - progress) * 100
+          videoBanner.style.setProperty('--video-slide-x', slideX + '%')
+          if (!inZone) {
+            if (rect.top >= 0) {
+              videoBanner.classList.remove('is-pinned')
+              forceHideOutsideZone()
+            } else if (rect.top < (VIDEO_ZONE_TOP_MIN / 100) * vh && videoBanner.classList.contains('is-headline-visible')) {
+              landHeadline()
+            } else {
+              headlineFixedEl.classList.remove('is-visible')
+              headlineFixedEl.innerHTML = ''
+              if (!videoBanner.classList.contains('is-headline-visible')) {
+                videoBanner.classList.remove('is-ideas-visible')
+                pinLiftScheduled = false
+                if (pinLiftTimeout) { window.clearTimeout(pinLiftTimeout); pinLiftTimeout = null }
+                if (headlineTimeout) { window.clearTimeout(headlineTimeout); headlineTimeout = null }
+              }
+            }
+            if (videoBanner.classList.contains('is-headline-visible')) checkHeadlineLanding()
+            return
+          }
+          if (progress >= 1) {
+            videoBanner.classList.add('is-pinned')
+            if (!pinLiftScheduled && !hasLanded) {
+              pinLiftScheduled = true
+              pinLiftTimeout = window.setTimeout(function () {
+                pinLiftTimeout = null
+                videoBanner.classList.add('is-ideas-visible')
+                headlineTimeout = window.setTimeout(function () {
+                  headlineTimeout = null
+                  showHeadlineFixed()
+                }, 3000)
+              }, 2000)
+            }
+            checkHeadlineLanding()
+          } else {
+            videoBanner.classList.remove('is-pinned')
+            if (!videoBanner.classList.contains('is-headline-visible')) {
+              videoBanner.classList.remove('is-ideas-visible')
+              pinLiftScheduled = false
+              if (pinLiftTimeout) { window.clearTimeout(pinLiftTimeout); pinLiftTimeout = null }
+              if (headlineTimeout) { window.clearTimeout(headlineTimeout); headlineTimeout = null }
+            }
+            checkHeadlineLanding()
+          }
+        }
+        updateVideoSlide()
+        window.addEventListener('scroll', updateVideoSlide, { passive: true })
+        window.addEventListener('resize', updateVideoSlide)
       }
     })()
   </script>

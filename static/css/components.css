@@ -927,9 +927,10 @@
   display: inline-block;
 }
 
-/* Attractions (из Тест1 Attractions-69) */
+/* Attractions (из Тест1 Attractions-69); параллакс при скролле вверх */
 .section-attractions {
   padding: 80px 0;
+  --attractions-parallax: 0px;
 }
 
 .attractions-inner {
@@ -989,15 +990,18 @@
   max-width: 450px;
 }
 
-/* ContainerSlider-74 */
+/* ContainerSlider-74 — блок под заголовком; низ выше низа экрана, чуть ниже изображения справа */
 .attractions-slider {
   grid-column: 1;
   grid-row: 2;
   align-self: end;
+  margin-bottom: 80px;
   display: flex;
   flex-direction: column;
   gap: 40px;
   width: 252px;
+  transform: translateY(var(--attractions-parallax, 0));
+  will-change: transform;
 }
 
 /* NavigationArrows-75, SmallBtn — кнопки стрелок (иконки из Тест1 Icons/Icon/Vector) */
@@ -1093,7 +1097,7 @@
   display: inline-block;
 }
 
-/* TourTitleAndSubtitle-86 */
+/* TourTitleAndSubtitle-86 — внутри .attractions-slider, параллакс один на весь блок */
 .slider-info {
   display: flex;
   flex-direction: column;
@@ -1250,21 +1254,47 @@
   visibility: hidden;
 }
 
-/* Video banner — обычный блок без фиксации при скролле */
-.section-video-banner {
+/* Обёртка: даёт зону скролла для фиксации видео наверху (эффект паузы) */
+.video-banner-pin-wrapper {
   position: relative;
+  height: 200vh;
+}
+
+/* Video banner — сдвиг вправо за экран, выезд при скролле, sticky-фиксация вверху */
+.section-video-banner {
+  position: sticky;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 560px;
+  height: 100vh;
   overflow: hidden;
   z-index: 1;
+  --video-slide-x: 100%;
 }
 
 .section-video-banner img,
 .section-video-banner video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  min-width: 100%;
+  min-height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
+  transform: translateX(var(--video-slide-x, 100%));
+  will-change: transform;
+}
+
+/* В верхней точке: видео на весь экран (убираем полоску) и визуально зафиксировано */
+.section-video-banner.is-pinned img,
+.section-video-banner.is-pinned video {
+  transform: translateX(0) scale(1.02);
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .video-need-ideas {
@@ -1286,8 +1316,59 @@
 }
 
 .section-video-banner.is-ideas-visible .video-need-ideas {
+  display: block;
   opacity: 1;
   transform: translate(-50%, -50%);
+}
+
+/* Фиксированный заголовок Inspirations: выше на строчку, заменяет первый без движения снизу вверх */
+.video-banner-headline-fixed {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%) translateY(-0.5em);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  text-align: center;
+}
+
+.video-banner-headline-fixed.is-visible {
+  opacity: 1;
+}
+
+.video-banner-headline-fixed h2 {
+  font-family: var(--font-headline);
+  font-size: clamp(32px, 4vw, 60px);
+  font-weight: var(--font-semibold);
+  color: var(--color-black);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.video-banner-headline-fixed .discover-accent {
+  color: var(--color-red);
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.08em;
+  text-decoration-skip-ink: none;
+}
+
+/* После появления второго заголовка — видео может уезжать при скролле (включается с задержкой, чтобы не сдвигать экран) */
+.section-video-banner.is-headline-scrollable {
+  position: relative;
+}
+
+/* Плейсхолдер заголовка в Inspirations скрыт, пока фиксированная копия на экране */
+.section-inspirations.is-headline-floating h2 {
+  visibility: hidden;
+}
+
+/* Блок Inspirations подтянут вверх под видео */
+.section-inspirations.is-headline-pulled {
+  margin-top: -100vh;
 }
 
 /* Inspirations — Figma node 413:485, контейнер 1536px, сетка 1430×910px */
@@ -3014,11 +3095,11 @@
   }
 
   .section-video-banner {
-    height: 495px;
+    height: 100vh;
     --video-enter-progress: 1;
     --video-collapse-progress: 1;
-    position: relative;
-    top: auto;
+    position: sticky;
+    top: 0;
   }
 
   .video-banner-stage {
