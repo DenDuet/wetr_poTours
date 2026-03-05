@@ -11,6 +11,14 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+}
+/* На страницах с кадровой навигацией (index) snap отключён всегда — иначе после анимации браузер возвращает скролл */
+html.frame-scroll-used {
+  scroll-snap-type: none !important;
+}
+html.frame-scroll-active {
+  scroll-behavior: auto !important;
 }
 
 body {

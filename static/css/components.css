@@ -350,6 +350,29 @@
   border-radius: var(--radius-lg);
 }
 
+/* Спейсер истории скролла отключён — логика как в anim, без фиксированных панелей */
+.scroll-story-spacer {
+  height: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Экраны: на весь экран и остановка по скроллу */
+.screen {
+  scroll-snap-align: start;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.section-inspirations {
+  z-index: 1;
+}
+
+/* Зона после карточек Inspirations, перед блоком Voices — без белого поля на весь экран */
+.zone-after-inspirations {
+  min-height: 0;
+}
+
 /* Hero — Figma: заголовок 70% ширины слева, под ним блоки слева + изображение справа */
 .hero-section {
   padding-top: 120px;
@@ -927,10 +950,11 @@
   display: inline-block;
 }
 
-/* Attractions (из Тест1 Attractions-69); параллакс при скролле вверх */
+/* Attractions (из Тест1 Attractions-69); параллакс только при уходе секции вверх за экран */
 .section-attractions {
   padding: 80px 0;
   --attractions-parallax: 0px;
+  --attractions-image-parallax: 0px;
 }
 
 .attractions-inner {
@@ -990,7 +1014,7 @@
   max-width: 450px;
 }
 
-/* ContainerSlider-74 — блок под заголовком; низ выше низа экрана, чуть ниже изображения справа */
+/* ContainerSlider-74 — при уходе секции вверх: движение вниз (параллакс) */
 .attractions-slider {
   grid-column: 1;
   grid-row: 2;
@@ -1001,6 +1025,7 @@
   gap: 40px;
   width: 252px;
   transform: translateY(var(--attractions-parallax, 0));
+  transition: transform 0.28s ease-out;
   will-change: transform;
 }
 
@@ -1124,7 +1149,7 @@
   line-height: 1.4;
 }
 
-/* SliderImage-93: правая колонка 710×860 */
+/* SliderImage-93: правая колонка 710×860; параллакс — картинка отстаёт при скролле (как в Figma top: 50%) */
 .attractions-images {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -1133,6 +1158,9 @@
   max-width: 710px;
   height: 860px;
   flex-shrink: 0;
+  transform: translateY(var(--attractions-image-parallax, 0));
+  transition: transform 0.12s ease-out;
+  will-change: transform;
 }
 
 /* Img-94 */
@@ -1254,10 +1282,29 @@
   visibility: hidden;
 }
 
-/* Обёртка: даёт зону скролла для фиксации видео наверху (эффект паузы) */
+/* Обёртка видео: на весь экран (логика anim) */
 .video-banner-pin-wrapper {
   position: relative;
-  height: 200vh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 2;
+  background-color: var(--color-bg, #f6f6f0);
+}
+
+/* Gap между видео и Inspirations (100px, как в anim) */
+.video-inspirations-gap {
+  width: 100%;
+  height: 100px;
+  flex-shrink: 0;
+  background: var(--color-bg, #f6f6f0);
+}
+
+/* Inspirations под видео: высота 100vh - 100px */
+#inspiration.screen {
+  min-height: calc(100vh - 100px);
+  min-height: calc(100dvh - 100px);
 }
 
 /* Video banner — сдвиг вправо за экран, выезд при скролле, sticky-фиксация вверху */
@@ -1297,19 +1344,29 @@
   object-position: center;
 }
 
+/* Перед уходом видео: плавное сжатие (scale 1.02 → 1), затем скролл */
+.section-video-banner.is-headline-shrinking.is-pinned img,
+.section-video-banner.is-headline-shrinking.is-pinned video {
+  transform: translateX(0) scale(1);
+  transition: transform 0.35s ease-out;
+}
+
+/* Заголовки на видео — по Figma H2Inspirations (342:1212): центр 50%/50%, 713×75px, 60px SemiBold, #181d27 */
 .video-need-ideas {
   position: absolute;
   left: 50%;
-  top: 45%;
+  top: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 713px;
   font-family: var(--font-headline);
   font-size: clamp(28px, 5vw, 60px);
   font-weight: var(--font-semibold);
   line-height: 1.1;
-  color: #fffffa;
-  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  color: var(--color-black);
+  text-align: center;
   opacity: 0;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: 2;
   display: none;
@@ -1321,17 +1378,28 @@
   transform: translate(-50%, -50%);
 }
 
-/* Фиксированный заголовок Inspirations: выше на строчку, заменяет первый без движения снизу вверх */
+/* Фиксированный заголовок Inspirations — поверх всего (при переносе в body), центр экрана */
 .video-banner-headline-fixed {
   position: fixed;
   left: 50%;
-  top: 45%;
-  transform: translate(-50%, -50%) translateY(-0.5em);
-  z-index: 10;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 713px;
+  z-index: 9999;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.35s ease, transform 0.4s ease-out;
   text-align: center;
+}
+
+.video-banner-headline-fixed.is-slide-up {
+  transform: translate(-50%, calc(-50% + 50px));
+}
+
+.video-banner-headline-fixed.is-slide-up.is-visible {
+  transform: translate(-50%, -50%);
+  opacity: 1;
 }
 
 .video-banner-headline-fixed.is-visible {
@@ -1356,6 +1424,67 @@
   text-decoration-skip-ink: none;
 }
 
+/* Родитель заголовка виден, когда активна обёртка двух заголовков */
+.video-banner-headline-fixed.headline-wrap-visible {
+  opacity: 1;
+}
+
+/* Обёртка двух заголовков (логика anim: первый по центру, через 2с второй выталкивает) */
+.video-headline-wrap {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  pointer-events: none;
+  transition: top 0.5s ease-out, transform 0.5s ease-out;
+}
+.video-headline-wrap.titles-visible {
+  display: block;
+}
+.video-headline-slot {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 2.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-headline-title {
+  position: absolute;
+  left: 50%;
+  margin: 0;
+  white-space: nowrap;
+  font-family: var(--font-headline);
+  font-size: clamp(32px, 4vw, 60px);
+  font-weight: var(--font-semibold);
+  color: var(--color-black);
+  text-align: center;
+  transform: translateX(-50%) translateY(100%);
+  transition: transform 0.5s ease;
+}
+.video-headline-title.titles-active {
+  transform: translateX(-50%) translateY(0);
+}
+.video-headline-title.titles-exit {
+  transform: translateX(-50%) translateY(-100%);
+}
+.video-headline-wrap.titles-at-center {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.video-headline-wrap.titles-at-top {
+  top: 50px;
+  transform: translateY(-50%);
+}
+
+/* Параллакс для красных карточек Experience promise */
+.section-experience-promise .exp-lp-card {
+  will-change: transform;
+}
+
 /* После появления второго заголовка — видео может уезжать при скролле (включается с задержкой, чтобы не сдвигать экран) */
 .section-video-banner.is-headline-scrollable {
   position: relative;
@@ -1366,9 +1495,10 @@
   visibility: hidden;
 }
 
-/* Блок Inspirations подтянут вверх под видео */
+/* Блок Inspirations подтянут вверх под видео; без верхнего отступа — нет белой полосы под видео */
 .section-inspirations.is-headline-pulled {
   margin-top: -100vh;
+  padding-top: 0;
 }
 
 /* Inspirations — Figma node 413:485, контейнер 1536px, сетка 1430×910px */
@@ -1384,13 +1514,18 @@
 .section-inspirations.section-group-tour-cards {
   padding-top: 102px;
 }
+/* Верхняя сетка (2 карточки): боковые зазоры 10px */
 .section-inspirations.section-group-tour-cards .inspirations-grid0 {
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 .section-inspirations.section-group-tour-cards .inspirations-grid.group-tours-bottom-grid {
   gap: 10px;
   margin-top: 0;
+}
+/* Зазор между верхними 2 и нижними 3 блоками — 10px, как по бокам */
+.section-inspirations.section-group-tour-cards .inspirations-grid0 + .inspirations-grid.group-tours-bottom-grid {
+  margin-top: 10px;
 }
 
 .section-inspirations h2 {
