@@ -375,6 +375,8 @@
 
 /* Hero — Figma: заголовок 70% ширины слева, под ним блоки слева + изображение справа */
 .hero-section {
+  display: flex;
+  flex-direction: column;
   padding-top: 120px;
   padding-bottom: 0;
   background: var(--color-bg-hero);
@@ -519,12 +521,14 @@
   border-radius: inherit;
 }
 
-/* .hero-red-line {
+/* Красная линия ровно по низу первого экрана */
+.hero-red-line {
   width: 100%;
   height: 8px;
   background: var(--color-red-figma);
-  margin-top: 12px;
-} */
+  margin-top: auto;
+  flex-shrink: 0;
+}
 
 /* Красная линия под Hero (из Тест1 RedLine-54) */
 .red-line {
@@ -1294,12 +1298,12 @@
 }
 
 /* Gap между видео и Inspirations (100px, как в anim) */
-.video-inspirations-gap {
+ .video-inspirations-gap {
   width: 100%;
-  height: 100px;
+  height: 60px;
   flex-shrink: 0;
   background: var(--color-bg, #f6f6f0);
-}
+} 
 
 /* Inspirations под видео: высота 100vh - 100px */
 #inspiration.screen {
@@ -1381,24 +1385,26 @@
 /* Фиксированный заголовок Inspirations — поверх всего (при переносе в body), центр экрана */
 .video-banner-headline-fixed {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  top: 0;
+  transform: none;
   width: 100%;
-  max-width: 713px;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
   z-index: 9999;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.35s ease, transform 0.4s ease-out;
+  transition: opacity 0.35s ease;
   text-align: center;
 }
 
 .video-banner-headline-fixed.is-slide-up {
-  transform: translate(-50%, calc(-50% + 50px));
+  transform: none;
 }
 
 .video-banner-headline-fixed.is-slide-up.is-visible {
-  transform: translate(-50%, -50%);
+  transform: none;
   opacity: 1;
 }
 
@@ -1426,7 +1432,8 @@
 
 /* Родитель заголовка виден, когда активна обёртка двух заголовков */
 .video-banner-headline-fixed.headline-wrap-visible {
-  opacity: 1;
+  opacity: 1 !important;
+  visibility: visible;
 }
 
 /* Обёртка двух заголовков (логика anim: первый по центру, через 2с второй выталкивает) */
@@ -1441,7 +1448,9 @@
   transition: top 0.5s ease-out, transform 0.5s ease-out;
 }
 .video-headline-wrap.titles-visible {
-  display: block;
+  display: block !important;
+  visibility: visible;
+  opacity: 1;
 }
 .video-headline-slot {
   position: relative;
@@ -3328,10 +3337,6 @@
   .hero-text {
     margin-top: 12px;
     margin-bottom: 12px;
-  }
-
-  .hero-red-line {
-    margin-top: 0;
   }
 
   .section-about {

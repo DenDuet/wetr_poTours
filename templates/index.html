@@ -30,7 +30,7 @@
   </section>
 
   <!-- Красная черта + About -->
-  <div class="red-line"></div>
+  {% comment %} <div class="red-line"></div> {% endcomment %}
   <section class="section-about screen" id="about">
     <div class="container">
       <div class="about-inner">
@@ -102,7 +102,13 @@
               <a href="{% if featured_attractions %}
                   {% url 'attraction_detail' featured_attractions.0.id %}
                 {% else %}
+                  
+                  
+                  
                   #
+
+
+
                 {% endif %}"
                 id="attractions-link"
                 class="">
@@ -115,6 +121,9 @@
                 {{ featured_attractions.0.photo_url }}
               {% else %}
                 {{ MEDIA_URL }}working/test1/origOf1icon.jpg
+
+
+
               {% endif %}"
               alt=""
               class="main-img"
@@ -156,7 +165,7 @@
   <!-- Inspirations — блок под видео -->
   <section class="section-inspirations section-group-tour-cards screen" id="inspiration">
     <div class="container">
-      <h2><span class="discover-accent">Discover</span> our inspirations.</h2>
+      {% comment %} <h2><span class="discover-accent">Discover</span> our inspirations.</h2> {% endcomment %}
       <div class="inspirations-grid0">
         {% for tour in featured_group_tours|slice:':2' %}
           <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-top" style="background-image: url('{{ tour.cover_url }}');">
@@ -335,10 +344,10 @@
     ;(function () {
       document.querySelectorAll('video[data-paused="true"]').forEach(function (v) {
         v.pause()
-      });
-
+      })
+    
       /* Навигация по кадрам как в anim.html: одна лента остановок на всю страницу, стрелки/колесо — только следующий/предыдущий кадр */
-      (function () {
+      ;(function () {
         document.documentElement.classList.add('frame-scroll-used')
         var GAP_PX = 100
         var videoSection = document.getElementById('screen-video')
@@ -351,17 +360,20 @@
         var inspirationsSection = document.querySelector('.section-inspirations')
         var expSection = document.querySelector('.section-experience-promise')
         var expCards = expSection ? expSection.querySelectorAll('.exp-lp-card') : []
-
+    
         var pageStops = []
-
-        function vh() { return window.visualViewport ? window.visualViewport.height : window.innerHeight }
-
+        var videoSectionTopStored = 0
+    
+        function vh() {
+          return window.visualViewport ? window.visualViewport.height : window.innerHeight
+        }
+    
         function getVideoSectionTop() {
           if (!videoSection) return 0
           var rect = videoSection.getBoundingClientRect()
           return rect.top + (window.scrollY || window.pageYOffset)
         }
-
+    
         function buildPageStops() {
           var h = vh()
           var scrollY = window.scrollY || window.pageYOffset
@@ -373,18 +385,21 @@
             if (top < 0) top = 0
             list.push(top)
             if (el.id === 'screen-video') {
+              videoSectionTopStored = top
               list.push(Math.round(top + h / 2 + GAP_PX / 2))
               list.push(Math.round(top + h))
             }
           }
-          list.sort(function (a, b) { return a - b })
+          list.sort(function (a, b) {
+            return a - b
+          })
           var out = [list[0]]
           for (var j = 1; j < list.length; j++) {
             if (list[j] > out[out.length - 1]) out.push(list[j])
           }
           pageStops = out
         }
-
+    
         function getCurrentStopIndex(scrollY) {
           if (!pageStops.length) return 0
           for (var i = pageStops.length - 1; i >= 0; i--) {
@@ -392,7 +407,7 @@
           }
           return 0
         }
-
+    
         var FRAME_DURATION_MS = 1400
         var transitionAnimationId = null
         function easeInOutCubic(t) {
@@ -438,7 +453,7 @@
           var idx = getCurrentStopIndex(scrollY)
           if (idx > 0) scrollToFrame(pageStops[idx - 1], FRAME_DURATION_MS)
         }
-
+    
         function animateVideoSlide() {
           if (!videoEl || !videoBanner) return
           var rect = videoBanner.getBoundingClientRect()
@@ -446,7 +461,7 @@
           var progress = Math.min(1, Math.max(0, 1 - rect.top / h))
           videoEl.style.transform = 'translateX(' + (1 - progress) * 100 + '%)'
         }
-
+    
         var videoHeadlinePhase = 0
         var videoHeadlineTimer = null
         function scheduleVideoHeadlineTitles() {
@@ -476,7 +491,10 @@
         }
         function resetVideoHeadlineTitles() {
           if (videoHeadlinePhase === 0) return
-          if (videoHeadlineTimer) { clearTimeout(videoHeadlineTimer); videoHeadlineTimer = null }
+          if (videoHeadlineTimer) {
+            clearTimeout(videoHeadlineTimer)
+            videoHeadlineTimer = null
+          }
           videoHeadlinePhase = 0
           if (wrapEl) {
             wrapEl.classList.remove('titles-visible', 'titles-at-center', 'titles-at-top')
@@ -485,10 +503,18 @@
             wrapEl.style.transition = ''
           }
           if (headlineFixedEl) headlineFixedEl.classList.remove('headline-wrap-visible')
-          if (title1El) { title1El.classList.remove('titles-active', 'titles-exit'); title1El.style.transition = ''; title1El.style.transform = '' }
-          if (title2El) { title2El.classList.remove('titles-active', 'titles-exit'); title2El.style.transition = ''; title2El.style.transform = '' }
+          if (title1El) {
+            title1El.classList.remove('titles-active', 'titles-exit')
+            title1El.style.transition = ''
+            title1El.style.transform = ''
+          }
+          if (title2El) {
+            title2El.classList.remove('titles-active', 'titles-exit')
+            title2El.style.transition = ''
+            title2El.style.transform = ''
+          }
         }
-
+    
         function updateVideoHeadlineFixed(scrollY, h) {
           if (!wrapEl || !videoSection) return
           var top = getVideoSectionTop()
@@ -508,10 +534,11 @@
             var scrollPastFinal = scrollY - stopFinal
             if (scrollPastFinal <= 0) {
               wrapEl.classList.add('titles-at-top')
-              wrapEl.style.top = (GAP_PX / 2) + 'px'
+              wrapEl.style.top = GAP_PX / 2 + 'px'
               wrapEl.style.transform = 'translateY(-50%)'
             } else {
-              wrapEl.style.top = (GAP_PX / 2 - scrollPastFinal) + 'px'
+              var topPx = GAP_PX / 2 - scrollPastFinal
+              wrapEl.style.top = topPx + 'px'
               wrapEl.style.transform = 'translateY(-50%)'
             }
           } else if (scrollY > stopMid) {
@@ -526,8 +553,8 @@
               var wrapHeight = (slotEl && slotEl.offsetHeight) || 34
               var topStart = h / 2 - wrapHeight / 2
               var topEnd = GAP_PX / 2
-              var topPx = topStart * (1 - progress) + topEnd * progress
-              wrapEl.style.top = topPx + 'px'
+              var interpolatedTop = topStart * (1 - progress) + topEnd * progress
+              wrapEl.style.top = interpolatedTop + 'px'
               wrapEl.style.transform = 'translateY(-50%)'
             }
           } else if (scrollY >= top) {
@@ -538,7 +565,7 @@
             if (headlineFixedEl) headlineFixedEl.classList.remove('headline-wrap-visible')
           }
         }
-
+    
         function animateExperienceParallax() {
           if (!expSection || !expCards.length) return
           var h = vh()
@@ -550,20 +577,21 @@
           for (var i = 0; i < expCards.length; i++) {
             var el = expCards[i]
             var speed = parseFloat(el.getAttribute('data-speed')) || 0.15
-            el.style.transform = 'translate(' + (deltaX * speed) + 'px, ' + (deltaY * speed) + 'px)'
+            el.style.transform = 'translate(' + deltaX * speed + 'px, ' + deltaY * speed + 'px)'
           }
         }
-
+    
         function onScroll() {
           var scrollY = window.scrollY || window.pageYOffset
           var h = vh()
           animateVideoSlide()
           if (videoSection) {
             var top = getVideoSectionTop()
-            if (scrollY >= top - 50) {
+            var onVideo = scrollY >= top - 2 && scrollY < top + h
+            if (onVideo) {
               scheduleVideoHeadlineTitles()
               if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
-            } else if (scrollY < top - 50) {
+            } else if (scrollY < top - 2) {
               resetVideoHeadlineTitles()
             }
             updateVideoHeadlineFixed(scrollY, h)
@@ -578,7 +606,7 @@
           }
           animateExperienceParallax()
         }
-
+    
         function onWheel(e) {
           if (transitionAnimationId) {
             e.preventDefault()
@@ -609,7 +637,7 @@
             goToPrevFrame()
           }
         }
-
+    
         buildPageStops()
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
@@ -620,7 +648,7 @@
         window.addEventListener('wheel', onWheel, { passive: false, capture: true })
         window.addEventListener('keydown', onKeyDown)
       })()
-
+    
       var mainImg = document.getElementById('attractions-main-img')
       var thumbBtns = document.querySelectorAll('.attractions-images .thumbnail-btn')
       var arrowBtns = document.querySelectorAll('.section-attractions .arrow-btn')
@@ -662,7 +690,7 @@
           setAttractionImage(getActiveIndex() + 1)
         })
       }
-
+    
       /* Attractions: левый нижний блок привязан к низу видимой области (только когда не в истории скролла) */
       var attractionsSection = document.querySelector('.section-attractions')
       var attractionsSliderEl = attractionsSection ? attractionsSection.querySelector('.attractions-slider') : null
@@ -670,6 +698,7 @@
       var sliderBlockOffset = 0
       var sliderBlockHeight = 0
       var attractionsRaf = null
+      var videoSectionEl = document.getElementById('screen-video')
       if (attractionsSection && attractionsSliderEl) {
         function updateAttractionsParallax() {
           if (document.documentElement.classList.contains('scroll-story-active')) return
@@ -688,9 +717,17 @@
           if (sliderState === 'normal') {
             translateY = 0
           } else if (sliderState === 'pin-bottom') {
-            translateY = (vh - sliderBlockHeight) - (rect.top + sliderBlockOffset)
+            translateY = vh - sliderBlockHeight - (rect.top + sliderBlockOffset)
+            /* Останавливаем блок под видео, не тянем до футера */
+            if (videoSectionEl) {
+              var videoTop = videoSectionEl.getBoundingClientRect().top
+              var sliderVisualTop = rect.top + sliderBlockOffset + translateY
+              if (sliderVisualTop > videoTop) {
+                translateY = videoTop - (rect.top + sliderBlockOffset)
+              }
+            }
           } else if (sliderState === 'return') {
-            translateY = Math.max(0, (vh - sliderBlockHeight - sliderBlockOffset) - rect.top)
+            translateY = Math.max(0, vh - sliderBlockHeight - sliderBlockOffset - rect.top)
           }
           var roundedY = Math.round(translateY)
           attractionsSliderEl.style.transform = roundedY !== 0 ? 'translateY(' + roundedY + 'px)' : ''
@@ -715,7 +752,6 @@
           updateAttractionsParallax()
         })
       }
-
     })()
   </script>
 {% endblock %}
