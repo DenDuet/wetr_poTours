@@ -5,6 +5,8 @@
   po.tours — Private. Outstanding. Perfectly Organized.
 {% endblock %}
 
+{% block body_class %}page-index{% endblock %}
+
 {% block content %}
   <!-- Hero -->
   <section class="hero-section screen" id="screen-hero">
@@ -225,7 +227,7 @@
         {% endfor %}
         <div class="inspiration-text">
           <p>Poland is various of interesting thinks. If you don't know yet, what you wanna do, just check our ready made inspiration and find something for yourself. Poland is various of interesting thinks. If you don't know yet, what you wanna do, just check our ready made inspiration and find something for yourself.</p>
-          <a href="{% url 'group_tours_page' %}" class="btn btn-cta-header"><span>Get inspired</span></a>
+          <a href="{% url 'tours' %}" class="btn btn-cta-header"><span>Get inspired</span></a>
         </div>
       </div>
     </div>
@@ -373,6 +375,10 @@
     
         var pageStops = []
     
+        function isMobile() {
+          return window.matchMedia('(max-width: 768px)').matches
+        }
+    
         function vh() {
           return window.visualViewport ? window.visualViewport.height : window.innerHeight
         }
@@ -476,6 +482,10 @@
     
         function animateVideoSlide() {
           if (!videoEl || !videoSection) return
+          if (isMobile()) {
+            videoEl.style.transform = 'translateX(0)'
+            return
+          }
           var h = vh()
           var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
           var progress = Math.min(1, Math.max(0, 1 - (getVideoSectionTop() - scrollY) / h))
@@ -537,6 +547,22 @@
     
         function updateVideoHeadlineFixed(scrollY, h) {
           if (!wrapEl || !videoSection) return
+          if (isMobile()) {
+            var rect = videoSection.getBoundingClientRect()
+            var inView = rect.top < h && rect.bottom > 0
+            wrapEl.classList.remove('titles-at-top')
+            wrapEl.style.top = ''
+            wrapEl.style.transform = ''
+            wrapEl.style.transition = ''
+            if (inView) {
+              wrapEl.classList.add('titles-visible', 'titles-at-center')
+              if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
+            } else {
+              wrapEl.classList.remove('titles-visible', 'titles-at-center')
+              if (headlineFixedEl) headlineFixedEl.classList.remove('headline-wrap-visible')
+            }
+            return
+          }
           var top = getVideoSectionTop()
           var stopMid = top + h / 2 + GAP_PX / 2
           var stopFinal = top + h
@@ -619,13 +645,20 @@
           updateAboutAttractionsTransition()
           animateVideoSlide()
           if (videoSection) {
-            var top = getVideoSectionTop()
-            var onVideo = scrollY >= top - 2 && scrollY < top + h
+            var onVideo
+            if (isMobile()) {
+              var rect = videoSection.getBoundingClientRect()
+              onVideo = rect.top < h && rect.bottom > 0
+            } else {
+              var top = getVideoSectionTop()
+              onVideo = scrollY >= top - 2 && scrollY < top + h
+            }
             if (onVideo) {
               scheduleVideoHeadlineTitles()
               if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
-            } else if (scrollY < top - 2) {
-              resetVideoHeadlineTitles()
+            } else {
+              if (isMobile()) resetVideoHeadlineTitles()
+              else if (scrollY < getVideoSectionTop() - 2) resetVideoHeadlineTitles()
             }
             updateVideoHeadlineFixed(scrollY, h)
           }

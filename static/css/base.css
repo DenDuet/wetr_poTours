@@ -21,6 +21,26 @@ html.frame-scroll-active {
   scroll-behavior: auto !important;
 }
 
+/* Маленькие экраны: отключаем анимацию, скрываем красные линии, блоки — вертикально по ширине */
+@media (max-width: 768px) {
+  html {
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-red-line,
+  .red-line {
+    display: none !important;
+  }
+
+  .screen {
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    scroll-snap-align: none !important;
+  }
+}
+
 body {
   margin: 0;
   font-family: var(--font-body);

@@ -194,6 +194,22 @@
   overflow: visible;
 }
 
+/* Мобильный макет: отключаем 100vh, блоки вертикально */
+@media (max-width: 768px) {
+  .gt-slide-page {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .gt-slide-hero-half,
+  .gt-slide-cards-half {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+}
+
 @media (max-width: 1024px) {
   .gt-slide-container {
     padding-left: 15px;

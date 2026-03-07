@@ -417,6 +417,21 @@
   }
 }
 
+/* Мобильный макет: отключаем 100vh, блоки вертикально */
+@media (max-width: 768px) {
+  .group-tours-screen.screen {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .section-inspirations.section-group-tour-cards.group-tours-screen.screen {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+}
+
 @media (max-width: 760px) {
   .group-tours-intro .container {
     padding-left: 15px;
@@ -465,6 +480,15 @@
     margin-top: 0;
     margin-bottom: 0;
     padding-top: 0;
+  }
+
+  .group-tours-hero .group-tours-right {
+    display: none !important;
+  }
+
+  .group-tours-hero .group-tours-bottom-group {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
   .group-tours-desc-bottom {
@@ -584,5 +608,32 @@
 
   .gtf-stats {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Очень узкие экраны (375px и меньше): блоки на всю ширину, выравнивание по ширине */
+@media (max-width: 480px) {
+  .group-tours-intro .container,
+  .section-group-tour-cards .container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+  }
+
+  .group-tours-desc-top,
+  .group-tours-desc-bottom {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .group-tours-left,
+  .group-tours-right {
+    width: 100%;
+  }
+
+  .group-tours-intro-grid {
+    width: 100%;
   }
 }

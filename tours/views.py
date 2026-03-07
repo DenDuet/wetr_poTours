@@ -125,8 +125,9 @@ def tours_list(request):
     )
 
 
-def tour_detail(request, pk):
-    return render(request, 'tour_detail.html', {'tour_id': pk})
+def redirect_tour_to_inspiration(request, pk):
+    """Редирект старых ссылок /tours/<pk>/ на /inspirations/<pk>/."""
+    return redirect("group_tour_inspiration_detail", pk=pk)
 
 
 def figma_design(request):
