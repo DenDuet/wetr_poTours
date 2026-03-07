@@ -116,8 +116,13 @@ def tours_list(request):
         "tour_days", "media_items"
     )
     cards = _build_group_tour_cards(tours_qs)
-    card_chunks = [cards[i : i + 5] for i in range(0, len(cards), 5)]
-    return render(request, "tours.html", {"cards": cards, "card_chunks": card_chunks})
+    first_row = cards[:2]
+    rest_chunks = [cards[i : i + 4] for i in range(2, len(cards), 4)]
+    return render(
+        request,
+        "tours.html",
+        {"cards": cards, "first_row": first_row, "rest_chunks": rest_chunks},
+    )
 
 
 def tour_detail(request, pk):
@@ -277,8 +282,10 @@ def group_tours_page(request):
     tours_qs = GroupTour.all_objects.order_by(
         "-created_at").prefetch_related("tour_days", "media_items")
     cards = _build_group_tour_cards(tours_qs)
+    card_chunks = [cards[i : i + 5] for i in range(0, len(cards), 5)]
     context = {
         "group_tour_rows": _group_tour_card_rows(cards),
+        "card_chunks": card_chunks,
     }
     return render(request, "group_tours.html", context)
 

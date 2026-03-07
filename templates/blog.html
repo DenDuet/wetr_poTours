@@ -60,3 +60,142 @@
     </div>
   </section>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  document.documentElement.classList.add('frame-scroll-used');
+  var pageStops = [];
+
+  function vh() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  function getGridCols() {
+    var grid = document.querySelector('.blog-grid');
+    if (!grid) return 3;
+    var style = window.getComputedStyle(grid);
+    var tc = (style.getPropertyValue('grid-template-columns') || '').trim();
+    var m = tc.match(/repeat\s*\(\s*(\d+)/);
+    if (m) return parseInt(m[1], 10);
+    var parts = tc.split(/\s+/).filter(Boolean);
+    return parts.length || 3;
+  }
+
+  function buildPageStops() {
+    var cards = document.querySelectorAll('.blog-grid .blog-card');
+    var cols = getGridCols();
+    var rowCount = cols <= 0 ? 0 : Math.ceil(cards.length / cols);
+    pageStops = [0];
+
+    for (var r = 1; r < rowCount; r++) {
+      var firstIdx = r * cols;
+      var lastIdx = Math.min((r + 1) * cols, cards.length) - 1;
+      if (firstIdx >= cards.length) break;
+      var firstCard = cards[firstIdx];
+      var lastCard = cards[lastIdx];
+      if (!firstCard || !lastCard) break;
+      var pageY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      var r1 = firstCard.getBoundingClientRect();
+      var r2 = lastCard.getBoundingClientRect();
+      var rowCenterY = pageY + (r1.top + r2.bottom) / 2;
+      var targetScroll = Math.round(rowCenterY - vh() / 2);
+      targetScroll = Math.max(0, targetScroll);
+      pageStops.push(targetScroll);
+    }
+
+    var docHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
+    var maxScroll = Math.max(0, Math.round(docHeight - vh()));
+    if (maxScroll > (pageStops.length ? pageStops[pageStops.length - 1] : 0)) {
+      pageStops.push(maxScroll);
+    }
+    if (pageStops.length === 0) pageStops = [0];
+  }
+
+  function getCurrentStopIndex(scrollY) {
+    if (!pageStops.length) return 0;
+    for (var i = pageStops.length - 1; i >= 0; i--) {
+      if (scrollY >= pageStops[i] - 2) return i;
+    }
+    return 0;
+  }
+
+  var FRAME_DURATION_MS = 1400;
+  var transitionAnimationId = null;
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function setScrollTop(y) {
+    var yy = Math.max(0, Math.round(y));
+    window.scrollTo(0, yy);
+    document.documentElement.scrollTop = yy;
+    if (document.body) document.body.scrollTop = yy;
+  }
+  function scrollToFrame(targetScroll, durationMs) {
+    if (transitionAnimationId) cancelAnimationFrame(transitionAnimationId);
+    var startY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    var distance = targetScroll - startY;
+    if (Math.abs(distance) < 2) return;
+    document.documentElement.classList.add('frame-scroll-active');
+    var startTime = performance.now();
+    function tick(now) {
+      var elapsed = now - startTime;
+      var t = Math.min(elapsed / durationMs, 1);
+      var eased = easeInOutCubic(t);
+      var y = startY + distance * eased;
+      setScrollTop(y);
+      if (t < 1) {
+        transitionAnimationId = requestAnimationFrame(tick);
+      } else {
+        transitionAnimationId = null;
+        document.documentElement.classList.remove('frame-scroll-active');
+      }
+    }
+    transitionAnimationId = requestAnimationFrame(tick);
+  }
+  function goToNextFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx < pageStops.length - 1) scrollToFrame(pageStops[idx + 1], FRAME_DURATION_MS);
+  }
+  function goToPrevFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx > 0) scrollToFrame(pageStops[idx - 1], FRAME_DURATION_MS);
+  }
+
+  buildPageStops();
+  window.addEventListener('resize', function () { buildPageStops(); });
+  window.addEventListener('wheel', function (e) {
+    if (transitionAnimationId) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (e.deltaY > 0 && idx < pageStops.length - 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToNextFrame);
+    } else if (e.deltaY < 0 && idx > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToPrevFrame);
+    }
+  }, { passive: false, capture: true });
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToNextFrame();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToPrevFrame();
+    }
+  });
+})();
+</script>
+{% endblock %}

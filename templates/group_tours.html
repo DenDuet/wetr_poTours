@@ -10,7 +10,8 @@
 {% endblock %}
 
 {% block content %}
-  <section class="section group-tours-intro">
+  <!-- Первый экран 100vh, красная черта снизу (как на главной / for-organizations) -->
+  <section class="section group-tours-intro group-tours-screen group-tours-hero screen" id="gt-intro-screen">
     <div class="container group-tours-intro-grid">
       <h1 class="group-tours-title">Beautiful Ideas for Your Next Journey</h1>
 
@@ -33,34 +34,16 @@
         </div>
       </div>
     </div>
+    <div class="hero-red-line"></div>
   </section>
 
-  <div class="red-line"></div>
-
-  <section class="section-inspirations section-group-tour-cards" id="inspiration">
-    <div class="container">
-      {% for row in group_tour_rows %}
-        <div class="{% if row.size == 2 %}
-            
-            inspirations-grid0
-
-          {% else %}
-            
-            inspirations-grid group-tours-bottom-grid
-
-          {% endif %}">
-          {% for tour in row.cards %}
-            <a href="{% url 'group_tour_inspiration_detail' tour.id %}"
-              class="inspiration-card {% if row.size == 2 %}
-                
-                inspiration-card-top
-
-              {% else %}
-                
-                inspiration-card-bottom
-
-              {% endif %}"
-              style="background-image: url('{{ tour.cover_url }}');">
+  <!-- Экраны по 5 карточек; последний неполный — без 100vh, вместе с футером -->
+  {% for chunk in card_chunks %}
+    <section class="section-inspirations section-group-tour-cards group-tours-screen {% if forloop.last and chunk|length < 5 %}group-tours-screen-incomplete{% else %}screen{% endif %}" id="gt-cards-screen-{{ forloop.counter }}">
+      <div class="container">
+        <div class="inspirations-grid0">
+          {% for tour in chunk|slice:":2" %}
+            <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-top" style="background-image: url('{{ tour.cover_url }}');">
               <div class="card-overlay"></div>
               <div class="card-info">
                 <h3>{{ tour.title }}</h3>
@@ -74,9 +57,142 @@
             </a>
           {% endfor %}
         </div>
-      {% empty %}
+        <div class="inspirations-grid group-tours-bottom-grid">
+          {% for tour in chunk|slice:"2:5" %}
+            <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-bottom" style="background-image: url('{{ tour.cover_url }}');">
+              <div class="card-overlay"></div>
+              <div class="card-info">
+                <h3>{{ tour.title }}</h3>
+                <p>{{ tour.short_description }}</p>
+                <div class="card-badges">
+                  <span class="badge">{{ tour.tour_days_count }} days</span>
+                  <span class="badge">{{ tour.cities_count }} cities</span>
+                </div>
+              </div>
+              <span class="link">Read more</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% empty %}
+    <section class="section-inspirations section-group-tour-cards group-tours-screen screen">
+      <div class="container">
         <p class="group-tours-empty">No group tours yet.</p>
-      {% endfor %}
-    </div>
-  </section>
+      </div>
+    </section>
+  {% endfor %}
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+(function () {
+  document.documentElement.classList.add('frame-scroll-used');
+  var pageStops = [];
+
+  function vh() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  function buildPageStops() {
+    var h = vh();
+    var allScreens = document.querySelectorAll('.group-tours-screen');
+    pageStops = [];
+    for (var i = 0; i < allScreens.length; i++) {
+      pageStops.push(Math.round(i * h));
+    }
+    var docHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
+    var maxScroll = Math.max(pageStops.length ? pageStops[pageStops.length - 1] : 0, Math.round(docHeight - h));
+    if (maxScroll > (pageStops.length ? pageStops[pageStops.length - 1] : 0)) {
+      pageStops.push(maxScroll);
+    }
+    if (pageStops.length === 0) pageStops = [0];
+  }
+
+  function getCurrentStopIndex(scrollY) {
+    if (!pageStops.length) return 0;
+    for (var i = pageStops.length - 1; i >= 0; i--) {
+      if (scrollY >= pageStops[i] - 2) return i;
+    }
+    return 0;
+  }
+
+  var FRAME_DURATION_MS = 1400;
+  var transitionAnimationId = null;
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function setScrollTop(y) {
+    var yy = Math.max(0, Math.round(y));
+    window.scrollTo(0, yy);
+    document.documentElement.scrollTop = yy;
+    if (document.body) document.body.scrollTop = yy;
+  }
+  function scrollToFrame(targetScroll, durationMs) {
+    if (transitionAnimationId) cancelAnimationFrame(transitionAnimationId);
+    var startY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    var distance = targetScroll - startY;
+    if (Math.abs(distance) < 2) return;
+    document.documentElement.classList.add('frame-scroll-active');
+    var startTime = performance.now();
+    function tick(now) {
+      var elapsed = now - startTime;
+      var t = Math.min(elapsed / durationMs, 1);
+      var eased = easeInOutCubic(t);
+      var y = startY + distance * eased;
+      setScrollTop(y);
+      if (t < 1) {
+        transitionAnimationId = requestAnimationFrame(tick);
+      } else {
+        transitionAnimationId = null;
+        document.documentElement.classList.remove('frame-scroll-active');
+      }
+    }
+    transitionAnimationId = requestAnimationFrame(tick);
+  }
+  function goToNextFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx < pageStops.length - 1) scrollToFrame(pageStops[idx + 1], FRAME_DURATION_MS);
+  }
+  function goToPrevFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx > 0) scrollToFrame(pageStops[idx - 1], FRAME_DURATION_MS);
+  }
+
+  buildPageStops();
+  window.addEventListener('resize', function () { buildPageStops(); });
+  window.addEventListener('wheel', function (e) {
+    if (transitionAnimationId) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (e.deltaY > 0 && idx < pageStops.length - 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToNextFrame);
+    } else if (e.deltaY < 0 && idx > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToPrevFrame);
+    }
+  }, { passive: false, capture: true });
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToNextFrame();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToPrevFrame();
+    }
+  });
+})();
+</script>
+{% endblock %}

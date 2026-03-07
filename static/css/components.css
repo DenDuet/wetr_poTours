@@ -1947,7 +1947,7 @@
   grid-template-columns: 1fr auto;
   gap: 40px;
   align-items: start;
-  max-width: 1430px;
+  max-width: none;
   margin: 0 auto;
   padding: 0 var(--container-padding);
 }

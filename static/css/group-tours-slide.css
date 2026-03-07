@@ -1,5 +1,5 @@
-/* Экраны ровно 100vh, плавная смена кадров */
-.gt-slide-page.screen {
+/* Экраны ровно 100vh, плавная смена кадров (логика как на /tours/) */
+.gt-slide-page {
   box-sizing: border-box;
   height: 100vh;
   height: 100dvh;
@@ -14,25 +14,48 @@
   background: var(--color-bg);
 }
 
-/* Первый экран: контент сверху, красная черта ровно по низу 100vh */
-.gt-slide-hero {
+/* Первый экран 100vh: верх 50% — герой без красной полоски, низ 50% — 2 карточки в 1 ряд */
+.gt-slide-first {
   display: flex;
   flex-direction: column;
-  padding: 120px 0 0 0;
-  height: 100%;
 }
 
-.gt-slide-hero .gt-slide-container {
+.gt-slide-hero-half {
+  height: 50vh;
+  min-height: 50vh;
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.gt-slide-hero-half .gt-slide-container {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  padding-top: 120px;
 }
 
-.gt-slide-hero .hero-red-line {
-  margin-top: auto;
+.gt-slide-cards-half {
+  height: 50vh;
+  min-height: 50vh;
+  max-height: 50vh;
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
+}
+
+.gt-slide-cards-half .gt-slide-container {
+  padding-top: min(2vh, 1.5rem);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gt-slide-first-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: 1fr;
 }
 
 /* Экраны с карточками: отступы внутри 100vh */
@@ -60,6 +83,10 @@
   color: var(--color-text-dark);
 }
 
+.gt-slide-hero-half .gt-slide-container h1 {
+  margin-top: 50px;
+}
+
 .gt-slide-lead {
   margin: 0 0 var(--space-8);
   max-width: 520px;
@@ -72,9 +99,14 @@
 
 .gt-slide-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 10px;
   row-gap: 10px;
+}
+
+/* Со 2-го экрана: 4 карточки в 2 ряда (2x2) */
+.gt-slide-grid-2x2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 
 .gt-slide-card {
@@ -155,6 +187,13 @@
   font-size: 20px;
 }
 
+.gt-slide-incomplete {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
 @media (max-width: 1024px) {
   .gt-slide-container {
     padding-left: 15px;
@@ -167,8 +206,9 @@
     padding-top: 102px;
     padding-bottom: 32px;
   }
-  .gt-slide-hero {
-    padding-bottom: 0;
+
+  .gt-slide-hero-half .gt-slide-container {
+    padding-top: 102px;
   }
 
   .gt-slide-container h1 {
@@ -182,8 +222,13 @@
     margin-bottom: var(--space-6);
   }
 
-  .gt-slide-grid {
+  .gt-slide-first-row {
     grid-template-columns: 1fr;
+  }
+
+  .gt-slide-grid-2x2 {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
   }
 }
 
@@ -192,8 +237,9 @@
     padding-top: 92px;
     padding-bottom: 24px;
   }
-  .gt-slide-hero {
-    padding-bottom: 0;
+
+  .gt-slide-hero-half .gt-slide-container {
+    padding-top: 92px;
   }
 
   .gt-slide-container h1 {

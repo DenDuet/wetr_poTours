@@ -1,17 +1,38 @@
-/* About Us — первый экран Figma 989:11673 */
+/* About Us — первый экран 100vh, красная линия снизу */
 
 .about-us-hero {
   position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   padding: 120px 0 0;
   background: var(--color-bg-hero);
   overflow: hidden;
+}
+
+.about-us-hero .about-us-hero-inner {
+  flex: 0 1 auto;
+}
+
+.about-us-hero-cards {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) 0;
+}
+
+.about-us-hero .hero-red-line {
+  flex-shrink: 0;
+  margin-top: auto;
 }
 
 /* Приглушённый логотип по центру первого экрана (hero) */
 .about-us-hero-bg {
   position: absolute;
   left: 50%;
-  top: 100%;
+  top: 45%;
   transform: translate(-50%, -50%);
   opacity: 0.04;
   pointer-events: none;
@@ -55,7 +76,7 @@
 
 /* Второй экран About — Figma 989:12003 */
 .about-us-experience {
-  padding: 24px 0 80px; /* после красной линии убрано 40px (было 64px) */
+  padding: 106px 0 80px; /* сверху отступ под высоту меню, чтобы заголовок не загораживало */
   background: #F9F8F6;
 }
 
@@ -209,16 +230,7 @@
   }
 }
 
-/* Три карточки, красная полоса под ними */
-.about-us-cards-section {
-  padding: 0;
-  margin: 50px 0;
-  background: var(--color-bg);
-}
-
-.about-us-cards-section .hero-red-line {
-  margin-top: 88px; /* +40px к прежним 48px */
-}
+/* Три карточки (в первом экране внутри .about-us-hero-cards) */
 
 .about-us-cards {
   display: grid;
@@ -294,18 +306,12 @@
     box-sizing: border-box;
   }
 
-  .about-us-cards-section,
-  .about-us-cards-section .container {
+  .about-us-hero-cards .container {
     width: 96vw;
     max-width: 96vw;
     padding-left: 2vw;
     padding-right: 2vw;
     box-sizing: border-box;
-  }
-
-  .about-us-cards-section {
-    margin-left: auto;
-    margin-right: auto;
   }
 
   .about-us-cards {
@@ -335,8 +341,7 @@
     font-size: 32px;
   }
 
-  .about-us-cards-section,
-  .about-us-cards-section .container {
+  .about-us-hero-cards .container {
     width: 98vw;
     max-width: 98vw;
     padding-left: 1vw;
@@ -344,8 +349,8 @@
     box-sizing: border-box;
   }
 
-  .about-us-cards-section {
-    margin: 32px auto 48px;
+  .about-us-hero-cards {
+    padding: 24px 0;
   }
 
   .about-us-card {

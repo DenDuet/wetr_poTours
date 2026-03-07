@@ -10,20 +10,41 @@
 {% endblock %}
 
 {% block content %}
-  <!-- Первый экран: заголовок, подзаголовок, красная черта снизу -->
-  <section class="gt-slide-page gt-slide-hero screen" id="gt-screen-hero">
-    <div class="container gt-slide-container">
-      <h1>Group Tours</h1>
-      <p class="gt-slide-lead">Pick a tour or create your own from chosen days</p>
+  <!-- Первый экран 100vh: верхние 50% — герой (без красной полоски), нижние 50% — 2 карточки в 1 ряд -->
+  <section class="gt-slide-page gt-slide-first screen" id="gt-screen-hero">
+    <div class="gt-slide-hero-half">
+      <div class="container gt-slide-container">
+        <h1>Group Tours</h1>
+        <p class="gt-slide-lead">Pick a tour or create your own from chosen days</p>
+      </div>
     </div>
-    <div class="hero-red-line"></div>
+    <div class="gt-slide-cards-half">
+      <div class="container gt-slide-container">
+        <div class="gt-slide-grid gt-slide-first-row">
+          {% for tour in first_row %}
+            <a href="{% url 'group_tour_detail' tour.id %}" class="gt-slide-card" style="background-image: url('{{ tour.cover_url }}');">
+              <div class="gt-slide-overlay"></div>
+              <div class="gt-slide-content">
+                <h3>{{ tour.title }}</h3>
+                <p>{{ tour.short_description }}</p>
+                <div class="gt-slide-badges">
+                  <span>{{ tour.tour_days_count }} days</span>
+                  <span>{{ tour.cities_count }} cities</span>
+                </div>
+              </div>
+              <span class="gt-slide-link">Read more</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- Экран за экраном по 5 карточек, смена кадров с анимацией -->
-  {% for chunk in card_chunks %}
-    <section class="gt-slide-page gt-slide-screen screen" id="gt-screen-{{ forloop.counter }}">
+  <!-- Со 2-го экрана: по 4 карточки в 2 ряда (2x2), логика скролла как на /tours/ -->
+  {% for chunk in rest_chunks %}
+    <section class="gt-slide-page gt-slide-screen {% if forloop.last and chunk|length < 4 %}gt-slide-incomplete{% else %}screen{% endif %}" id="gt-screen-{{ forloop.counter }}">
       <div class="container gt-slide-container">
-        <div class="gt-slide-grid">
+        <div class="gt-slide-grid gt-slide-grid-2x2">
           {% for tour in chunk %}
             <a href="{% url 'group_tour_detail' tour.id %}" class="gt-slide-card" style="background-image: url('{{ tour.cover_url }}');">
               <div class="gt-slide-overlay"></div>
@@ -42,11 +63,13 @@
       </div>
     </section>
   {% empty %}
-    <section class="gt-slide-page gt-slide-screen screen">
-      <div class="container gt-slide-container">
-        <p class="gt-slide-empty">No group tours yet.</p>
-      </div>
-    </section>
+    {% if not first_row %}
+      <section class="gt-slide-page gt-slide-screen screen">
+        <div class="container gt-slide-container">
+          <p class="gt-slide-empty">No group tours yet.</p>
+        </div>
+      </section>
+    {% endif %}
   {% endfor %}
 {% endblock content %}
 
@@ -54,7 +77,6 @@
 <script>
 (function () {
   document.documentElement.classList.add('frame-scroll-used');
-  var screenEls = Array.prototype.slice.call(document.querySelectorAll('.gt-slide-page.screen'));
   var pageStops = [];
 
   function vh() {
@@ -63,8 +85,15 @@
 
   function buildPageStops() {
     var h = vh();
-    for (var i = 0; i < screenEls.length; i++) {
+    var allScreens = document.querySelectorAll('.gt-slide-page');
+    pageStops = [];
+    for (var i = 0; i < allScreens.length; i++) {
       pageStops.push(Math.round(i * h));
+    }
+    var docHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
+    var maxScroll = Math.max(pageStops.length ? pageStops[pageStops.length - 1] : 0, Math.round(docHeight - h));
+    if (maxScroll > (pageStops.length ? pageStops[pageStops.length - 1] : 0)) {
+      pageStops.push(maxScroll);
     }
     if (pageStops.length === 0) pageStops = [0];
   }
@@ -124,7 +153,6 @@
   }
 
   buildPageStops();
-  window.addEventListener('scroll', function () {}, { passive: true });
   window.addEventListener('resize', function () { buildPageStops(); });
   window.addEventListener('wheel', function (e) {
     if (transitionAnimationId) {
@@ -134,13 +162,11 @@
     }
     var scrollY = window.scrollY || window.pageYOffset;
     var idx = getCurrentStopIndex(scrollY);
-    var wheelDown = e.deltaY > 0;
-    var wheelUp = e.deltaY < 0;
-    if (wheelDown && idx < pageStops.length - 1) {
+    if (e.deltaY > 0 && idx < pageStops.length - 1) {
       e.preventDefault();
       e.stopPropagation();
       requestAnimationFrame(goToNextFrame);
-    } else if (wheelUp && idx > 0) {
+    } else if (e.deltaY < 0 && idx > 0) {
       e.preventDefault();
       e.stopPropagation();
       requestAnimationFrame(goToPrevFrame);

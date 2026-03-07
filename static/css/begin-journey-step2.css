@@ -4,8 +4,9 @@
   padding: 106px 0 40px;
 }
 
+/* Не задаём max-width: иначе при padding: 0 var(--container-padding) контент сжимается на широких экранах */
 .journey2-shell {
-  max-width: 1430px;
+  max-width: none;
 }
 
 .journey2-stepper-line {

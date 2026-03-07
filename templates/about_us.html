@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block content %}
-  <!-- Hero — первый экран Figma 989:11673: заголовок, подзаголовок, приглушённый логотип в фоне -->
-  <section class="about-us-hero">
+  <!-- Hero — первый экран 100vh: заголовок, 3 карточки, красная линия снизу -->
+  <section class="about-us-hero about-us-screen">
     <div class="about-us-hero-bg" aria-hidden="true">
       <img src="{{ MEDIA_URL }}working/logo/icon.png" alt="" />
     </div>
@@ -17,34 +17,32 @@
       <h1 class="about-us-title">About Us</h1>
       <p class="about-us-subtitle">Our focus is cultural and historical travel with reliable and professional service</p>
     </div>
-  </section>
-
-  <!-- Три карточки: Private tours, Group Tours, For organizations -->
-  <section class="about-us-cards-section">
-    <div class="container">
-      <div class="about-us-cards">
-        <a href="{% url 'begin_your_journey_step1' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/mount.jpg');">
-          <div class="about-us-card-overlay"></div>
-          <h3 class="about-us-card-title">Private tours</h3>
-          <span class="about-us-card-link">Craft your journey</span>
-        </a>
-        <a href="{% url 'tours' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/balls.jpg');">
-          <div class="about-us-card-overlay"></div>
-          <h3 class="about-us-card-title">Group Tours</h3>
-          <span class="about-us-card-link">Choose a group tour</span>
-        </a>
-        <a href="{% url 'for_organizations' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/kayak.jpg');">
-          <div class="about-us-card-overlay"></div>
-          <h3 class="about-us-card-title">For organizations</h3>
-          <span class="about-us-card-link">Read more</span>
-        </a>
+    <div class="about-us-hero-cards">
+      <div class="container">
+        <div class="about-us-cards">
+          <a href="{% url 'begin_your_journey_step1' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/mount.jpg');">
+            <div class="about-us-card-overlay"></div>
+            <h3 class="about-us-card-title">Private tours</h3>
+            <span class="about-us-card-link">Craft your journey</span>
+          </a>
+          <a href="{% url 'tours' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/balls.jpg');">
+            <div class="about-us-card-overlay"></div>
+            <h3 class="about-us-card-title">Group Tours</h3>
+            <span class="about-us-card-link">Choose a group tour</span>
+          </a>
+          <a href="{% url 'for_organizations' %}" class="about-us-card" style="background-image: url('{{ MEDIA_URL }}working/hero/kayak.jpg');">
+            <div class="about-us-card-overlay"></div>
+            <h3 class="about-us-card-title">For organizations</h3>
+            <span class="about-us-card-link">Read more</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="hero-red-line"></div>
   </section>
 
   <!-- Второй экран About — Figma 989:12003: опыт + фото + 4 карточки -->
-  <section class="about-us-experience">
+  <section class="about-us-experience about-us-screen">
     <div class="container about-us-experience-inner">
       <div class="about-us-experience-text">
         <h2 class="about-us-experience-title">Years of <span class="about-us-experience-accent">experience</span> shaping meaningful journeys</h2>
@@ -87,8 +85,8 @@
     </div>
   </section>
 
-  <!-- The Experience we promise you (с главной) -->
-  <section class="section-experience-promise">
+  <!-- The Experience we promise you (как на index: параллакс карточек) -->
+  <section class="section-experience-promise about-us-screen" id="screen-experience-promise">
     <div class="exp-lp-bg" style="background-image: url('{{ MEDIA_URL }}working/lp/459-523.png');"></div>
     <div class="exp-lp-overlay"></div>
     <div class="container exp-lp-inner">
@@ -98,21 +96,21 @@
       </div>
       <div class="exp-lp-cards-grid">
         <div class="exp-lp-row">
-          <div class="exp-lp-card">
+          <div class="exp-lp-card" data-speed="0.15">
             <span class="exp-lp-title">Personalized Attention</span>
             <div class="exp-lp-illus" style="background-image: url('{{ MEDIA_URL }}working/figma-design-images/e6e6660023c621229cf94ee8e1b7cc75e659da8c.png'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
           </div>
-          <div class="exp-lp-card exp-lp-cards-grid-shift">
+          <div class="exp-lp-card exp-lp-cards-grid-shift" data-speed="0.08">
             <span class="exp-lp-title">Thoughtful Organization</span>
             <div class="exp-lp-illus" style="background-image: url('{{ MEDIA_URL }}working/figma-design-images/1ba233f0c7bec0f15f667de527c69406eb4c74cc.png'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
           </div>
         </div>
         <div class="exp-lp-row">
-          <div class="exp-lp-card">
+          <div class="exp-lp-card" data-speed="0.22">
             <span class="exp-lp-title">Reliable Support</span>
             <div class="exp-lp-illus" style="background-image: url('{{ MEDIA_URL }}working/figma-design-images/076dbee2e5750b967c346b9ed36d16c1d8175575.png'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
           </div>
-          <div class="exp-lp-card exp-lp-cards-grid-shift">
+          <div class="exp-lp-card exp-lp-cards-grid-shift" data-speed="0.12">
             <span class="exp-lp-title">Authentic Experiences</span>
             <div class="exp-lp-illus" style="background-image: url('{{ MEDIA_URL }}working/figma-design-images/bbdeb23d2af13c6a193a49c963b46bcce601d86b.png'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
           </div>
@@ -121,8 +119,8 @@
     </div>
   </section>
 
-  <!-- How it works (с главной) -->
-  <section class="section-how-works">
+  <!-- How it works (как на index) -->
+  <section class="section-how-works about-us-screen" id="screen-how-works">
     <div class="how-lp-bg" style="background-image: url('{{ MEDIA_URL }}working/lp/459-524.svg');"></div>
     <div class="container how-lp-wrap">
       <h2>How it works</h2>
@@ -154,4 +152,138 @@
       </div>
     </div>
   </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  document.documentElement.classList.add('frame-scroll-used');
+  var pageStops = [];
+
+  function vh() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  function buildPageStops() {
+    var screens = document.querySelectorAll('.about-us-screen');
+    pageStops = [];
+    var pageY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    for (var i = 0; i < screens.length; i++) {
+      var rect = screens[i].getBoundingClientRect();
+      pageStops.push(Math.round(rect.top + pageY));
+    }
+    var docHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
+    var maxScroll = Math.max(pageStops.length ? pageStops[pageStops.length - 1] : 0, Math.round(docHeight - vh()));
+    if (maxScroll > (pageStops.length ? pageStops[pageStops.length - 1] : 0)) {
+      pageStops.push(maxScroll);
+    }
+    if (pageStops.length === 0) pageStops = [0];
+  }
+
+  function getCurrentStopIndex(scrollY) {
+    if (!pageStops.length) return 0;
+    for (var i = pageStops.length - 1; i >= 0; i--) {
+      if (scrollY >= pageStops[i] - 2) return i;
+    }
+    return 0;
+  }
+
+  var FRAME_DURATION_MS = 1400;
+  var transitionAnimationId = null;
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function setScrollTop(y) {
+    var yy = Math.max(0, Math.round(y));
+    window.scrollTo(0, yy);
+    document.documentElement.scrollTop = yy;
+    if (document.body) document.body.scrollTop = yy;
+  }
+  function scrollToFrame(targetScroll, durationMs) {
+    if (transitionAnimationId) cancelAnimationFrame(transitionAnimationId);
+    var startY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    var distance = targetScroll - startY;
+    if (Math.abs(distance) < 2) return;
+    document.documentElement.classList.add('frame-scroll-active');
+    var startTime = performance.now();
+    function tick(now) {
+      var elapsed = now - startTime;
+      var t = Math.min(elapsed / durationMs, 1);
+      var eased = easeInOutCubic(t);
+      var y = startY + distance * eased;
+      setScrollTop(y);
+      if (t < 1) {
+        transitionAnimationId = requestAnimationFrame(tick);
+      } else {
+        transitionAnimationId = null;
+        document.documentElement.classList.remove('frame-scroll-active');
+      }
+    }
+    transitionAnimationId = requestAnimationFrame(tick);
+  }
+  function goToNextFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx < pageStops.length - 1) scrollToFrame(pageStops[idx + 1], FRAME_DURATION_MS);
+  }
+  function goToPrevFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx > 0) scrollToFrame(pageStops[idx - 1], FRAME_DURATION_MS);
+  }
+
+  /* Параллакс карточек Experience (как на index) */
+  var expSection = document.getElementById('screen-experience-promise');
+  var expCards = expSection ? expSection.querySelectorAll('.exp-lp-card') : [];
+  function animateExperienceParallax() {
+    if (!expSection || !expCards.length) return;
+    var h = vh();
+    var rect = expSection.getBoundingClientRect();
+    var centerY = rect.top + rect.height / 2;
+    var viewportCenter = h / 2;
+    var deltaY = (centerY - viewportCenter) * 0.5;
+    var deltaX = (centerY - viewportCenter) * 0.08;
+    for (var i = 0; i < expCards.length; i++) {
+      var el = expCards[i];
+      var speed = parseFloat(el.getAttribute('data-speed')) || 0.15;
+      el.style.transform = 'translate(' + deltaX * speed + 'px, ' + deltaY * speed + 'px)';
+    }
+  }
+
+  buildPageStops();
+  animateExperienceParallax();
+  window.addEventListener('resize', function () { buildPageStops(); animateExperienceParallax(); });
+  window.addEventListener('scroll', animateExperienceParallax, { passive: true });
+  window.addEventListener('wheel', function (e) {
+    if (transitionAnimationId) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (e.deltaY > 0 && idx < pageStops.length - 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToNextFrame);
+    } else if (e.deltaY < 0 && idx > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToPrevFrame);
+    }
+  }, { passive: false, capture: true });
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToNextFrame();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToPrevFrame();
+    }
+  });
+})();
+</script>
 {% endblock %}
