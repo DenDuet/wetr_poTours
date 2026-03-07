@@ -10,29 +10,152 @@
 {% endblock %}
 
 {% block content %}
-  <section class="gt-slide-page">
+  <!-- Первый экран: заголовок, подзаголовок, красная черта снизу -->
+  <section class="gt-slide-page gt-slide-hero screen" id="gt-screen-hero">
     <div class="container gt-slide-container">
       <h1>Group Tours</h1>
       <p class="gt-slide-lead">Pick a tour or create your own from chosen days</p>
-
-      <div class="gt-slide-grid">
-        {% for tour in cards %}
-          <a href="{% url 'group_tour_detail' tour.id %}" class="gt-slide-card" style="background-image: url('{{ tour.cover_url }}');">
-            <div class="gt-slide-overlay"></div>
-            <div class="gt-slide-content">
-              <h3>{{ tour.title }}</h3>
-              <p>{{ tour.short_description }}</p>
-              <div class="gt-slide-badges">
-                <span>{{ tour.tour_days_count }} days</span>
-                <span>{{ tour.cities_count }} cities</span>
-              </div>
-            </div>
-            <span class="gt-slide-link">Read more</span>
-          </a>
-        {% empty %}
-          <p class="gt-slide-empty">No group tours yet.</p>
-        {% endfor %}
-      </div>
     </div>
+    <div class="hero-red-line"></div>
   </section>
+
+  <!-- Экран за экраном по 5 карточек, смена кадров с анимацией -->
+  {% for chunk in card_chunks %}
+    <section class="gt-slide-page gt-slide-screen screen" id="gt-screen-{{ forloop.counter }}">
+      <div class="container gt-slide-container">
+        <div class="gt-slide-grid">
+          {% for tour in chunk %}
+            <a href="{% url 'group_tour_detail' tour.id %}" class="gt-slide-card" style="background-image: url('{{ tour.cover_url }}');">
+              <div class="gt-slide-overlay"></div>
+              <div class="gt-slide-content">
+                <h3>{{ tour.title }}</h3>
+                <p>{{ tour.short_description }}</p>
+                <div class="gt-slide-badges">
+                  <span>{{ tour.tour_days_count }} days</span>
+                  <span>{{ tour.cities_count }} cities</span>
+                </div>
+              </div>
+              <span class="gt-slide-link">Read more</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% empty %}
+    <section class="gt-slide-page gt-slide-screen screen">
+      <div class="container gt-slide-container">
+        <p class="gt-slide-empty">No group tours yet.</p>
+      </div>
+    </section>
+  {% endfor %}
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+(function () {
+  document.documentElement.classList.add('frame-scroll-used');
+  var screenEls = Array.prototype.slice.call(document.querySelectorAll('.gt-slide-page.screen'));
+  var pageStops = [];
+
+  function vh() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  function buildPageStops() {
+    var h = vh();
+    for (var i = 0; i < screenEls.length; i++) {
+      pageStops.push(Math.round(i * h));
+    }
+    if (pageStops.length === 0) pageStops = [0];
+  }
+
+  function getCurrentStopIndex(scrollY) {
+    if (!pageStops.length) return 0;
+    for (var i = pageStops.length - 1; i >= 0; i--) {
+      if (scrollY >= pageStops[i] - 2) return i;
+    }
+    return 0;
+  }
+
+  var FRAME_DURATION_MS = 1400;
+  var transitionAnimationId = null;
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function setScrollTop(y) {
+    var yy = Math.max(0, Math.round(y));
+    window.scrollTo(0, yy);
+    document.documentElement.scrollTop = yy;
+    if (document.body) document.body.scrollTop = yy;
+  }
+  function scrollToFrame(targetScroll, durationMs) {
+    if (transitionAnimationId) cancelAnimationFrame(transitionAnimationId);
+    var startY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    var distance = targetScroll - startY;
+    if (Math.abs(distance) < 2) return;
+    document.documentElement.classList.add('frame-scroll-active');
+    var startTime = performance.now();
+    function tick(now) {
+      var elapsed = now - startTime;
+      var t = Math.min(elapsed / durationMs, 1);
+      var eased = easeInOutCubic(t);
+      var y = startY + distance * eased;
+      setScrollTop(y);
+      if (t < 1) {
+        transitionAnimationId = requestAnimationFrame(tick);
+      } else {
+        transitionAnimationId = null;
+        document.documentElement.classList.remove('frame-scroll-active');
+      }
+    }
+    transitionAnimationId = requestAnimationFrame(tick);
+  }
+  function goToNextFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx < pageStops.length - 1) scrollToFrame(pageStops[idx + 1], FRAME_DURATION_MS);
+  }
+  function goToPrevFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx > 0) scrollToFrame(pageStops[idx - 1], FRAME_DURATION_MS);
+  }
+
+  buildPageStops();
+  window.addEventListener('scroll', function () {}, { passive: true });
+  window.addEventListener('resize', function () { buildPageStops(); });
+  window.addEventListener('wheel', function (e) {
+    if (transitionAnimationId) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    var wheelDown = e.deltaY > 0;
+    var wheelUp = e.deltaY < 0;
+    if (wheelDown && idx < pageStops.length - 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToNextFrame);
+    } else if (wheelUp && idx > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToPrevFrame);
+    }
+  }, { passive: false, capture: true });
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToNextFrame();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToPrevFrame();
+    }
+  });
+})();
+</script>
 {% endblock %}

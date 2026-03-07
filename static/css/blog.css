@@ -5,7 +5,8 @@
 }
 
 .blog-page-inner {
-  max-width: var(--container-max);
+  width: min(100%, calc(var(--container-content-max) + (var(--container-padding) * 2)));
+  max-width: none;
   margin: 0 auto;
   padding: 0 var(--container-padding);
 }

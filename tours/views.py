@@ -116,7 +116,8 @@ def tours_list(request):
         "tour_days", "media_items"
     )
     cards = _build_group_tour_cards(tours_qs)
-    return render(request, "tours.html", {"cards": cards})
+    card_chunks = [cards[i : i + 5] for i in range(0, len(cards), 5)]
+    return render(request, "tours.html", {"cards": cards, "card_chunks": card_chunks})
 
 
 def tour_detail(request, pk):

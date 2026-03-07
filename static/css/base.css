@@ -95,8 +95,8 @@ h2 { font-size: var(--text-h3); }
 h3 { font-size: var(--text-h4); }
 
 .container {
-  width: 100%;
-  max-width: var(--container-max);
+  width: min(100%, calc(var(--container-content-max) + (var(--container-padding) * 2)));
+  max-width: none;
   margin: 0 auto;
   padding: 0 var(--container-padding);
 }

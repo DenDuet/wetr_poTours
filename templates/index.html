@@ -29,33 +29,35 @@
     <div class="hero-red-line"></div>
   </section>
 
-  <!-- Красная черта + About -->
+  <!-- Красная черта + About (при переходе к Attractions остаётся на месте, attractions наезжает сверху) -->
   {% comment %} <div class="red-line"></div> {% endcomment %}
-  <section class="section-about screen" id="about">
-    <div class="container">
-      <div class="about-inner">
-        <div class="about-image">
-          <img src="{{ MEDIA_URL }}working/test1/965-5762.png" alt="About po.tours" />
-          <img src="{{ MEDIA_URL }}working/test1/965-5763.svg" alt="" class="badge-2005" />
-          <img src="{{ MEDIA_URL }}working/test1/965-5765.svg" alt="" class="badge-line" />
-          <img src="{{ MEDIA_URL }}working/test1/965-5764.svg" alt="" class="badge-2025" />
-        </div>
-        <div class="about-content">
-          <h2><span class="about-title-accent">About us</span> and our commitment to creating refined travel across Europe</h2>
-          <div class="about-text-block">
-            <p>
-              Po.tours is a Polish travel company that creates private and comfortable journeys across Europe. We focus on travelers who value peace, friendly support, and rich cultural experiences.<br />Our team plans every trip with care and attention to detail, so our guests can enjoy Europe in a relaxed and personal way.
-            </p>
-            <a href="{% url 'about_us' %}" class="btn btn-cta-header"><span>Read about our history</span></a>
+  <div class="about-pin-wrap">
+    <section class="section-about screen" id="about">
+      <div class="container">
+        <div class="about-inner">
+          <div class="about-image">
+            <img src="{{ MEDIA_URL }}working/test1/965-5762.png" alt="About po.tours" />
+            <img src="{{ MEDIA_URL }}working/test1/965-5763.svg" alt="" class="badge-2005" />
+            <img src="{{ MEDIA_URL }}working/test1/965-5765.svg" alt="" class="badge-line" />
+            <img src="{{ MEDIA_URL }}working/test1/965-5764.svg" alt="" class="badge-2025" />
+          </div>
+          <div class="about-content">
+            <h2><span class="about-title-accent">About us</span> and our commitment to creating refined travel across Europe</h2>
+            <div class="about-text-block">
+              <p>
+                Po.tours is a Polish travel company that creates private and comfortable journeys across Europe. We focus on travelers who value peace, friendly support, and rich cultural experiences.<br />Our team plans every trip with care and attention to detail, so our guests can enjoy Europe in a relaxed and personal way.
+              </p>
+              <a href="{% url 'about_us' %}" class="btn btn-cta-header"><span>Read about our history</span></a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <div id="scroll-story-start-anchor" aria-hidden="true"></div>
 
-  <!-- Attractions — скрин 1 -->
+  <!-- Attractions — наезжает сверху поверх about -->
   <section class="section-attractions screen" id="screen-attractions">
     {{ featured_attractions|json_script:'attractions-data' }}
     <div class="container">
@@ -205,6 +207,7 @@
           </a>
         {% endfor %}
       </div>
+      
       <div class="inspirations-grid group-tours-bottom-grid">
         {% for tour in featured_group_tours|slice:'2:4' %}
           <a href="{% url 'group_tour_inspiration_detail' tour.id %}" class="inspiration-card inspiration-card-bottom" style="background-image: url('{{ tour.cover_url }}');">
@@ -350,7 +353,12 @@
       ;(function () {
         document.documentElement.classList.add('frame-scroll-used')
         var GAP_PX = 100
+        var aboutSection = document.getElementById('about')
+        var attractionsScreen = document.getElementById('screen-attractions')
         var videoSection = document.getElementById('screen-video')
+        var reviewsSection = document.getElementById('screen-reviews')
+        var experienceSection = document.getElementById('screen-experience-promise')
+        var howWorksSection = document.getElementById('screen-how-works')
         var videoBanner = document.querySelector('.section-video-banner')
         var videoEl = document.getElementById('video-banner-video') || document.querySelector('.section-video-banner video')
         var headlineFixedEl = document.getElementById('video-banner-headline-fixed')
@@ -360,42 +368,54 @@
         var inspirationsSection = document.querySelector('.section-inspirations')
         var expSection = document.querySelector('.section-experience-promise')
         var expCards = expSection ? expSection.querySelectorAll('.exp-lp-card') : []
+        var screenEls = Array.prototype.slice.call(document.querySelectorAll('.screen'))
+        var aboutImageEl = aboutSection ? aboutSection.querySelector('.about-image') : null
     
         var pageStops = []
-        var videoSectionTopStored = 0
     
         function vh() {
           return window.visualViewport ? window.visualViewport.height : window.innerHeight
         }
+
+        function getScreenUnits(screenEl) {
+          if (!screenEl) return 1
+          if (screenEl.id === 'screen-experience-promise' || screenEl.id === 'screen-how-works') return 0.5
+          return 1
+        }
+
+        function getScreenTop(screenEl) {
+          if (!screenEl) return 0
+          var index = screenEls.indexOf(screenEl)
+          if (index < 0) return 0
+          var unitsBefore = 0
+          for (var i = 0; i < index; i++) {
+            unitsBefore += getScreenUnits(screenEls[i])
+          }
+          return Math.round(unitsBefore * vh())
+        }
     
         function getVideoSectionTop() {
-          if (!videoSection) return 0
-          var rect = videoSection.getBoundingClientRect()
-          return rect.top + (window.scrollY || window.pageYOffset)
+          return getScreenTop(videoSection)
         }
     
         function buildPageStops() {
           var h = vh()
-          var scrollY = window.scrollY || window.pageYOffset
-          var screens = document.querySelectorAll('.screen')
-          var list = [0]
-          for (var i = 0; i < screens.length; i++) {
-            var el = screens[i]
-            var top = Math.round(el.getBoundingClientRect().top + scrollY)
-            if (top < 0) top = 0
-            list.push(top)
-            if (el.id === 'screen-video') {
-              videoSectionTopStored = top
-              list.push(Math.round(top + h / 2 + GAP_PX / 2))
-              list.push(Math.round(top + h))
-            }
-          }
-          list.sort(function (a, b) {
-            return a - b
-          })
-          var out = [list[0]]
-          for (var j = 1; j < list.length; j++) {
-            if (list[j] > out[out.length - 1]) out.push(list[j])
+          var videoTop = getVideoSectionTop()
+          var list = [
+            0,
+            getScreenTop(aboutSection),
+            getScreenTop(attractionsScreen),
+            videoTop,
+            Math.round(videoTop + h / 2 + GAP_PX / 2),
+            Math.round(videoTop + h),
+            getScreenTop(reviewsSection),
+            getScreenTop(experienceSection),
+            getScreenTop(howWorksSection)
+          ]
+          var out = []
+          for (var i = 0; i < list.length; i++) {
+            var stop = Math.max(0, Math.round(list[i] || 0))
+            if (!out.length || stop > out[out.length - 1]) out.push(stop)
           }
           pageStops = out
         }
@@ -455,10 +475,10 @@
         }
     
         function animateVideoSlide() {
-          if (!videoEl || !videoBanner) return
-          var rect = videoBanner.getBoundingClientRect()
+          if (!videoEl || !videoSection) return
           var h = vh()
-          var progress = Math.min(1, Math.max(0, 1 - rect.top / h))
+          var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+          var progress = Math.min(1, Math.max(0, 1 - (getVideoSectionTop() - scrollY) / h))
           videoEl.style.transform = 'translateX(' + (1 - progress) * 100 + '%)'
         }
     
@@ -524,39 +544,21 @@
           wrapEl.style.top = ''
           wrapEl.style.transform = ''
           wrapEl.style.transition = ''
-          if (scrollY > stopFinal + GAP_PX) {
+          if (scrollY >= stopFinal) {
             wrapEl.classList.remove('titles-visible')
             if (headlineFixedEl) headlineFixedEl.classList.remove('headline-wrap-visible')
-          } else if (scrollY >= stopFinal) {
-            wrapEl.classList.add('titles-visible')
-            if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
-            wrapEl.style.transition = 'none'
-            var scrollPastFinal = scrollY - stopFinal
-            if (scrollPastFinal <= 0) {
-              wrapEl.classList.add('titles-at-top')
-              wrapEl.style.top = GAP_PX / 2 + 'px'
-              wrapEl.style.transform = 'translateY(-50%)'
-            } else {
-              var topPx = GAP_PX / 2 - scrollPastFinal
-              wrapEl.style.top = topPx + 'px'
-              wrapEl.style.transform = 'translateY(-50%)'
-            }
           } else if (scrollY > stopMid) {
             wrapEl.classList.add('titles-visible')
             if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
             var progress = Math.min(1, (scrollY - stopMid) / (stopFinal - stopMid))
-            if (progress <= 0) {
-              wrapEl.classList.add('titles-at-center')
-            } else {
-              wrapEl.style.transition = 'none'
-              var slotEl = wrapEl.querySelector('.video-headline-slot')
-              var wrapHeight = (slotEl && slotEl.offsetHeight) || 34
-              var topStart = h / 2 - wrapHeight / 2
-              var topEnd = GAP_PX / 2
-              var interpolatedTop = topStart * (1 - progress) + topEnd * progress
-              wrapEl.style.top = interpolatedTop + 'px'
-              wrapEl.style.transform = 'translateY(-50%)'
-            }
+            wrapEl.style.transition = 'none'
+            var slotEl = wrapEl.querySelector('.video-headline-slot')
+            var wrapHeight = (slotEl && slotEl.offsetHeight) || 34
+            var topStart = h / 2 - wrapHeight / 2
+            var topEnd = -wrapHeight / 2 - 8
+            var interpolatedTop = topStart * (1 - progress) + topEnd * progress
+            wrapEl.style.top = interpolatedTop + 'px'
+            wrapEl.style.transform = 'translateY(-50%)'
           } else if (scrollY >= top) {
             wrapEl.classList.add('titles-visible', 'titles-at-center')
             if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
@@ -580,10 +582,41 @@
             el.style.transform = 'translate(' + deltaX * speed + 'px, ' + deltaY * speed + 'px)'
           }
         }
+
+        function animateAboutImage() {
+          if (!aboutImageEl || !aboutSection) return
+          var scrollY = window.scrollY || window.pageYOffset
+          var h = vh()
+          var aboutTop = getScreenTop(aboutSection)
+          var progress = aboutTop <= 0 ? 1 : Math.min(1, Math.max(0, scrollY / aboutTop))
+          var scale = 0.7 + 0.3 * progress
+          var translateY = Math.round(80 * (1 - progress))
+          aboutImageEl.style.transform = 'translateY(' + translateY + 'px) scale(' + scale + ')'
+        }
+
+        function updateAboutAttractionsTransition() {
+          if (!aboutSection || !attractionsScreen) return
+          var scrollY = window.scrollY || window.pageYOffset
+          var h = vh()
+          var aboutTop = getScreenTop(aboutSection)
+          var attractionsTop = getScreenTop(attractionsScreen)
+          if (scrollY >= aboutTop && scrollY < attractionsTop) {
+            aboutSection.classList.add('is-pinned')
+            attractionsScreen.classList.add('is-sliding-over')
+            var progress = h <= 0 ? 1 : Math.min(1, Math.max(0, (scrollY - aboutTop) / h))
+            var translateY = Math.round((1 - progress) * h)
+            attractionsScreen.style.transform = 'translateY(' + translateY + 'px)'
+          } else {
+            aboutSection.classList.remove('is-pinned')
+            attractionsScreen.classList.remove('is-sliding-over')
+            attractionsScreen.style.transform = ''
+          }
+        }
     
         function onScroll() {
           var scrollY = window.scrollY || window.pageYOffset
           var h = vh()
+          updateAboutAttractionsTransition()
           animateVideoSlide()
           if (videoSection) {
             var top = getVideoSectionTop()
@@ -605,6 +638,7 @@
             }
           }
           animateExperienceParallax()
+          animateAboutImage()
         }
     
         function onWheel(e) {
@@ -736,6 +770,16 @@
             attractionsSection.style.setProperty('--attractions-image-parallax', Math.min(0.35 * delta, 100) + 'px')
           } else {
             attractionsSection.style.setProperty('--attractions-image-parallax', '0px')
+          }
+          /* Гасить блок только когда видео давно заехало (с запасом по скроллу) */
+          var scrollY = window.pageYOffset || window.scrollY
+          var videoRect = videoSectionEl.getBoundingClientRect()
+          var videoSectionTop = scrollY + videoRect.top
+          var videoEnterProgress = vh <= 0 ? 1 : (scrollY - videoSectionTop) / vh
+          if (videoEnterProgress >= 1.35) {
+            attractionsSliderEl.classList.add('is-covered-by-video')
+          } else {
+            attractionsSliderEl.classList.remove('is-covered-by-video')
           }
         }
         function scheduleAttractionsUpdate() {

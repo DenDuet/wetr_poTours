@@ -46,8 +46,10 @@
   --radius-lg: 16px;
   --radius-xl: 24px;
   
+  --container-content-max: 1430px;
+  --container-padding-base: 53px;
   --container-max: 1536px;
-  --container-padding: 53px;
+  --container-padding: max(var(--container-padding-base), calc((100vw - var(--container-content-max)) / 2));
   
   /* Aliases for components */
   --color-primary: #C51230;

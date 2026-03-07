@@ -7,7 +7,7 @@
 
 {% block content %}
   <!-- Hero — по макету Figma node 967:6773 -->
-  <section class="hero-section hero-section--image-open">
+  <section class="hero-section hero-section--image-open screen" id="screen-hero">
     <div class="container hero-inner">
       <div class="hero-text">
         <h1>Group Tours<br />for Organizations</h1>
@@ -29,7 +29,7 @@
   </section>
 
   <!-- Historically Focused — второй экран по Figma -->
-  <section class="section-org-focus">
+  <section class="section-org-focus screen" id="screen-org-focus">
     <div class="container">
       <div class="org-focus-inner">
         <div class="org-focus-collage">
@@ -50,53 +50,204 @@
     </div>
   </section>
 
-  <!-- Request a group tour — третий экран по Figma node 1157:9631 -->
-  <section class="section-org-request" id="request-group-tour">
-    <div class="org-request-bg" aria-hidden="true">
-      <video src="{{ MEDIA_URL }}working/video/organisations_group.mp4" muted loop playsinline></video>
-    </div>
-    <div class="container org-request-inner">
-      {% if submitted %}
-        <!-- Thank you — по макету Figma 1157:9631 -->
-        <div class="org-request-card org-request-card--thankyou">
-          <div class="org-request-thankyou-icon" aria-hidden="true">
-            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="40" cy="40" r="38" fill="var(--color-red-figma)"/>
-              <path d="M24 40L36 52L56 28" stroke="#FFFFFA" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+  <!-- Request a group tour — третий экран: видео выезжает как на index, затем форма -->
+  <div class="org-video-pin-wrapper screen" id="screen-org-video">
+    <section class="section-org-video-banner" aria-hidden="false">
+      <video id="org-video-banner-video" src="{{ MEDIA_URL }}working/video/organisations_group.mp4" muted loop playsinline></video>
+    </section>
+    <div class="org-request-overlay" id="request-group-tour">
+      <div class="container org-request-inner">
+        {% if submitted %}
+          <div class="org-request-card org-request-card--thankyou">
+            <div class="org-request-thankyou-icon" aria-hidden="true">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="var(--color-red-figma)"/>
+                <path d="M24 40L36 52L56 28" stroke="#FFFFFA" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h2 class="org-request-thankyou-title">Thank you for completing your tour request form</h2>
+            <p class="org-request-thankyou-desc">We'll get back to you via email within 24 hours with personalized tour recommendations and next steps.</p>
+            <a href="#request-group-tour" class="btn btn-hero org-request-again"><span>Send Request Again</span></a>
           </div>
-          <h2 class="org-request-thankyou-title">Thank you for completing your tour request form</h2>
-          <p class="org-request-thankyou-desc">We'll get back to you via email within 24 hours with personalized tour recommendations and next steps.</p>
-          <a href="#request-group-tour" class="btn btn-hero org-request-again"><span>Send Request Again</span></a>
-        </div>
-      {% else %}
-        <div class="org-request-card org-request-card--form">
-          <h2 class="org-request-title">Request a group tour</h2>
-          <p class="org-request-desc">Complete the details and we will get back to you via email within 24 hours</p>
-          <form class="org-request-form" action="{% url 'for_organizations' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="submit_request" value="1" />
-            <div class="org-request-field">
-              <label for="id_org_name">Name</label>
-              <input type="text" id="id_org_name" name="name" placeholder="Enter Your Name" required />
-            </div>
-            <div class="org-request-field">
-              <label for="id_org_email">Email address</label>
-              <input type="email" id="id_org_email" name="email" placeholder="Enter Your Email" required />
-            </div>
-            <button type="submit" class="btn btn-hero org-request-submit"><span>Submit Request</span></button>
-          </form>
-        </div>
-      {% endif %}
+        {% else %}
+          <div class="org-request-card org-request-card--form">
+            <h2 class="org-request-title">Request a group tour</h2>
+            <p class="org-request-desc">Complete the details and we will get back to you via email within 24 hours</p>
+            <form class="org-request-form" action="{% url 'for_organizations' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="submit_request" value="1" />
+              <div class="org-request-field">
+                <label for="id_org_name">Name</label>
+                <input type="text" id="id_org_name" name="name" placeholder="Enter Your Name" required />
+              </div>
+              <div class="org-request-field">
+                <label for="id_org_email">Email address</label>
+                <input type="email" id="id_org_email" name="email" placeholder="Enter Your Email" required />
+              </div>
+              <button type="submit" class="btn btn-hero org-request-submit"><span>Submit Request</span></button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
     </div>
     <script>
       (function () {
-        var card = document.querySelector('.section-org-request .org-request-card--thankyou');
+        var card = document.querySelector('.org-request-overlay .org-request-card--thankyou');
         if (!card) return;
         setTimeout(function () {
           card.classList.add('org-request-card--hidden');
         }, 10000);
       })();
     </script>
-  </section>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  document.documentElement.classList.add('frame-scroll-used');
+  var videoSection = document.getElementById('screen-org-video');
+  var videoEl = document.getElementById('org-video-banner-video');
+  var overlayEl = document.getElementById('request-group-tour');
+  var pageStops = [];
+
+  function vh() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  function buildPageStops() {
+    var h = vh();
+    var docHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
+    var maxScroll = Math.max(2 * h, Math.round(docHeight - h));
+    pageStops = [0, h, 2 * h, maxScroll];
+  }
+
+  function getCurrentStopIndex(scrollY) {
+    if (!pageStops.length) return 0;
+    for (var i = pageStops.length - 1; i >= 0; i--) {
+      if (scrollY >= pageStops[i] - 2) return i;
+    }
+    return 0;
+  }
+
+  var FRAME_DURATION_MS = 1400;
+  var transitionAnimationId = null;
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function setScrollTop(y) {
+    var yy = Math.max(0, Math.round(y));
+    window.scrollTo(0, yy);
+    document.documentElement.scrollTop = yy;
+    if (document.body) document.body.scrollTop = yy;
+  }
+  function scrollToFrame(targetScroll, durationMs) {
+    if (transitionAnimationId) cancelAnimationFrame(transitionAnimationId);
+    var startY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    var distance = targetScroll - startY;
+    if (Math.abs(distance) < 2) return;
+    document.documentElement.classList.add('frame-scroll-active');
+    var startTime = performance.now();
+    function tick(now) {
+      var elapsed = now - startTime;
+      var t = Math.min(elapsed / durationMs, 1);
+      var eased = easeInOutCubic(t);
+      var y = startY + distance * eased;
+      setScrollTop(y);
+      if (t < 1) {
+        transitionAnimationId = requestAnimationFrame(tick);
+      } else {
+        transitionAnimationId = null;
+        document.documentElement.classList.remove('frame-scroll-active');
+      }
+    }
+    transitionAnimationId = requestAnimationFrame(tick);
+  }
+  function goToNextFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx < pageStops.length - 1) scrollToFrame(pageStops[idx + 1], FRAME_DURATION_MS);
+  }
+  function goToPrevFrame() {
+    if (transitionAnimationId) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    if (idx > 0) scrollToFrame(pageStops[idx - 1], FRAME_DURATION_MS);
+  }
+
+  function getVideoSectionTop() {
+    return vh();
+  }
+  function animateOrgVideoSlide() {
+    if (!videoEl || !videoSection) return;
+    var h = vh();
+    var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    var top = getVideoSectionTop();
+    var progress = Math.min(1, Math.max(0, 1 - (top - scrollY) / h));
+    videoEl.style.transform = 'translateX(' + (1 - progress) * 100 + '%)';
+  }
+
+  function updateFormVisibility() {
+    if (!overlayEl) return;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var h = vh();
+    var idx = getCurrentStopIndex(scrollY);
+    var inVideoZone = scrollY >= getVideoSectionTop() && scrollY < 2 * h;
+    if (idx >= 2) {
+      overlayEl.classList.add('is-visible');
+      if (videoEl && videoEl.pause) videoEl.pause();
+    } else {
+      overlayEl.classList.remove('is-visible');
+      if (videoEl) {
+        if (inVideoZone && videoEl.play) videoEl.play().catch(function(){});
+        else if (videoEl.pause) videoEl.pause();
+      }
+    }
+  }
+
+  function onScroll() {
+    animateOrgVideoSlide();
+    updateFormVisibility();
+  }
+
+  buildPageStops();
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    buildPageStops();
+    onScroll();
+  });
+  window.addEventListener('wheel', function (e) {
+    if (transitionAnimationId) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    var scrollY = window.scrollY || window.pageYOffset;
+    var idx = getCurrentStopIndex(scrollY);
+    var wheelDown = e.deltaY > 0;
+    var wheelUp = e.deltaY < 0;
+    if (wheelDown && idx < pageStops.length - 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToNextFrame);
+    } else if (wheelUp && idx > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(goToPrevFrame);
+    }
+  }, { passive: false, capture: true });
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToNextFrame();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToPrevFrame();
+    }
+  });
+})();
+</script>
 {% endblock %}

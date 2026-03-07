@@ -360,6 +360,9 @@
 /* Экраны: на весь экран и остановка по скроллу */
 .screen {
   scroll-snap-align: start;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
 }
@@ -538,6 +541,36 @@
   margin-top: 40px;
 }
 
+/* Обёртка About: сохраняет место в потоке, когда #about закреплён */
+.about-pin-wrap {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+}
+
+/* About закреплён при переходе к Attractions — остаётся на месте, attractions наезжает сверху */
+#about.is-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 10;
+  margin: 0;
+  background: var(--color-bg-hero);
+}
+
+/* Attractions при наезде сверху — поверх about, непрозрачный фон */
+.section-attractions.is-sliding-over {
+  z-index: 50;
+  position: relative;
+  isolation: isolate;
+  background: var(--color-bg-hero);
+}
+
 /* Секция About (из Тест1 About-55) */
 .section-about {
   padding: 80px 0;
@@ -553,12 +586,14 @@
   margin: 0 auto;
 }
 
-/* Left-56: блок с картинкой 710×860 */
+/* Left-56: блок с картинкой 710×860; анимация наезда снизу + scale 70%→100% */
 .about-image {
   position: relative;
   width: 710px;
   height: 860px;
   flex-shrink: 0;
+  transform-origin: bottom center;
+  will-change: transform;
 }
 
 /* Img-57: основное фото */
@@ -781,7 +816,68 @@
   line-height: var(--line-height-relaxed);
 }
 
-/* For organizations — третий экран: форма Request a group tour */
+/* For organizations — третий экран: видео выезжает, затем форма */
+.org-video-pin-wrapper {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 2;
+  background-color: var(--color-bg-hero, #f6f6f0);
+}
+
+.section-org-video-banner {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.section-org-video-banner video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: translateX(100%);
+  will-change: transform;
+}
+
+.org-request-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.org-request-overlay.is-visible {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.org-request-overlay .org-request-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Legacy / общая форма Request a group tour (карточка) */
 .section-org-request {
   position: relative;
   padding: 80px 0;
@@ -1029,8 +1125,14 @@
   gap: 40px;
   width: 252px;
   transform: translateY(var(--attractions-parallax, 0));
-  transition: transform 0.28s ease-out;
+  transition: transform 0.28s ease-out, opacity 0.25s ease;
   will-change: transform;
+}
+
+/* Гасим только когда видео полностью заехало и закрыло блок */
+.attractions-slider.is-covered-by-video {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* NavigationArrows-75, SmallBtn — кнопки стрелок (иконки из Тест1 Icons/Icon/Vector) */
@@ -1300,16 +1402,16 @@
 /* Gap между видео и Inspirations (100px, как в anim) */
  .video-inspirations-gap {
   width: 100%;
-  height: 60px;
+  /* height: 100px; */
   flex-shrink: 0;
   background: var(--color-bg, #f6f6f0);
 } 
 
 /* Inspirations под видео: высота 100vh - 100px */
-#inspiration.screen {
+/* #inspiration.screen {
   min-height: calc(100vh - 100px);
   min-height: calc(100dvh - 100px);
-}
+} */
 
 /* Video banner — сдвиг вправо за экран, выезд при скролле, sticky-фиксация вверху */
 .section-video-banner {
@@ -1456,7 +1558,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 2.2em;
+  height: calc(2.2em + 15px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1471,7 +1573,7 @@
   font-weight: var(--font-semibold);
   color: var(--color-black);
   text-align: center;
-  transform: translateX(-50%) translateY(100%);
+  transform: translateX(-50%) translateY(105%);
   transition: transform 0.5s ease;
 }
 .video-headline-title.titles-active {
@@ -1515,8 +1617,17 @@
   padding: 80px 0;
 }
 
+#inspiration.screen {
+  /* margin-top: -100px; */
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
 .section-inspirations .container {
-  max-width: 1536px;
+  width: min(100%, calc(var(--container-content-max) + (var(--container-padding) * 2)));
+  max-width: none;
 }
 
 /* Отступы внутри блока как на странице /tours/ */
@@ -1542,7 +1653,7 @@
   font-size: clamp(32px, 4vw, 60px);
   font-weight: var(--font-semibold);
   color: var(--color-black);
-  margin: 0 0 80px;
+  margin: 0 0 50px;
   text-align: center;
   line-height: 1.1;
 }
@@ -1590,7 +1701,7 @@
 
 /* Верхние карточки — 710×500px (Figma 449:1298) */
 .inspiration-card-top {
-  min-height: 500px;
+  min-height: 400px;
   min-width: 0;
 }
 
@@ -1697,8 +1808,8 @@
 }
 
 .section-reviews .container {
-  max-width: 1536px;
-  width: 100%;
+  width: min(100%, calc(var(--container-content-max) + (var(--container-padding) * 2)));
+  max-width: none;
   min-height: 980px;
   display: flex;
   flex-direction: column;
@@ -1930,6 +2041,10 @@
   /* background: #181D27; */
 }
 
+#screen-how-works {
+  margin-top: 50px;
+}
+
 .how-lp-bg {
   position: absolute;
   left: 50%;
@@ -1947,9 +2062,13 @@
 .how-lp-wrap {
   position: relative;
   z-index: 1;
+  width: calc(100% - (var(--container-padding)));
+  /* max-width: 1430px; */
+  margin: 0 auto;
+  box-sizing: border-box;
   padding-top: 60px;
   padding-bottom: 60px;
-  padding-left: 80px;
+  /* padding-left: 110px; */
 }
 
 .how-lp-wrap h2 {
@@ -1957,7 +2076,7 @@
   font-size: clamp(32px, 4vw, 60px);
   font-weight: 700;
   color: #FFFFFA;
-  margin: 0 0 48px;
+  margin: 10 0 48px;
   line-height: 1.1;
 }
 
@@ -1970,6 +2089,41 @@
   margin-top: -100px;
   margin-bottom: 28px;
 }
+
+
+@media (min-width: 769px) {
+  #screen-experience-promise,
+  #screen-how-works {
+    height: 50vh;
+    height: 50dvh;
+    min-height: 50vh;
+    min-height: 50dvh;
+    margin-top: 50px;
+  }
+}
+/* 
+.how-lp-bg {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  width: calc(100% - (var(--container-padding) * 2));
+  max-width: 1430px;
+  height: 450px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 24px;
+} */
+
+/* .how-lp-wrap { */
+  /* position: relative; */
+  /* z-index: 1; */
+  /* padding-top: 60px; */
+  /* padding-bottom: 60px; */
+  /* padding-left: 110px;
+} */
+
 
 /* Ступенчатые высоты шагов по макету Figma 459-522 */
 .how-lp-step:nth-child(1) { margin-top: 100px; height: 160px; }
@@ -2501,12 +2655,42 @@
 }
 
 .footer-inner {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: flex-start;
   gap: clamp(24px, 4vw, 48px);
   margin-bottom: 48px;
+}
+
+.footer-logo-center {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-logo-center-link {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 360px;
+  height: 360px;
+  overflow: hidden;
+}
+
+.footer-logo-center-img {
+  position: absolute;
+  left: 136px;
+  bottom: 162px;
+  width: 107px;
+  height: auto;
+  object-fit: contain;
+  object-position: left bottom;
+  transform: scale(4);
+  transform-origin: bottom left;
 }
 
 .footer-contact {
@@ -2992,7 +3176,10 @@
   }
   
   .footer-inner {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+  .footer-logo-center {
+    order: -1;
   }
   .footer-menus {
     width: 100%;

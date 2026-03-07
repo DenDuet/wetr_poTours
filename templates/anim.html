@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anim</title>
+    <style>
+      html {
+        scrollbar-width: none;
+      }
+      html::-webkit-scrollbar {
+        display: none;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+      }
+      
+      body.scroll-paused {
+        overflow: hidden;
+      }
+      
+      .sections {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .block {
+        width: 1000px;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+        flex-shrink: 0;
+        margin: 0;
+      }
+      
+      .block-inner {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+      
+      .block-1 {
+        background: #fff9c4;
+        z-index: 1;
+      }
+      
+      .block-1 .block-inner {
+        background: #fff9c4;
+        z-index: 1;
+        overflow: visible;
+      }
+      
+      .block-1-content {
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow: visible;
+      }
+      
+      .row {
+        display: flex;
+        gap: 20px;
+        will-change: transform;
+      }
+      
+      .yellow-item {
+        flex: 1;
+        height: calc(100vh / 3);
+        height: calc(100dvh / 3);
+        background: #f0d96b;
+        border-radius: 8px;
+      }
+      
+      .yellow-item-dark {
+        background: #e3c84d;
+      }
+      
+      .block-1-title {
+        margin: 0;
+        text-align: center;
+        color: #6b5600;
+      }
+      
+      .block-2 {
+        z-index: 2;
+      }
+      
+      .block-2 .block-inner {
+        background: #dcedc8;
+        z-index: 2;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+      
+      .block-2-content {
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .green-item {
+        flex: 1;
+        height: calc(100dvh / 3);
+        background: #aed581;
+        border-radius: 8px;
+      }
+      
+      .green-item-dark {
+        background: #9ccc65;
+      }
+      
+      .block-2-titles {
+        position: relative;
+        overflow: hidden;
+        height: 1.4em;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .block-2-titles .block-2-title {
+        position: absolute;
+        left: 50%;
+        margin: 0;
+        white-space: nowrap;
+        color: #2e5c1f;
+        text-align: center;
+        transform: translateX(-50%) translateY(100%);
+        transition: transform 0.5s ease;
+      }
+
+      .block-2-titles .block-2-title.titles-active {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .block-2-titles .block-2-title.titles-exit {
+        transform: translateX(-50%) translateY(-100%);
+      }
+      
+      .block-3 {
+        background: #ffcdd2;
+        z-index: 3;
+      }
+      
+      .block-3 .block-inner {
+        background: #ffcdd2;
+        z-index: 3;
+      }
+      
+      .block-3-content {
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .red-item {
+        flex: 1;
+        height: calc(100dvh / 3);
+        background: #ef9a9a;
+        border-radius: 8px;
+      }
+      
+      .red-item-dark {
+        background: #e57373;
+      }
+      
+      .block-3-title {
+        margin: 0;
+        text-align: center;
+        color: #7f1d1d;
+      }
+
+      .block-4 {
+        z-index: 4;
+      }
+
+      .block-4 .block-inner {
+        background: #bbdefb;
+        z-index: 4;
+        position: relative;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+      }
+
+      .block-4-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+
+      .block-4-video {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: #90caf9;
+        will-change: transform;
+      }
+
+      .block-4-titles-wrap {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        z-index: 100;
+        pointer-events: none;
+      }
+
+      .block-4-titles-wrap.titles-transition {
+        transition: top 0.15s ease-out;
+      }
+
+      .block-4-titles-wrap.titles-visible {
+        display: block;
+      }
+
+      .block-4-titles-slot {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 2.2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .block-4-title-fixed {
+        position: absolute;
+        left: 50%;
+        margin: 0;
+        white-space: nowrap;
+        color: #0d47a1;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        text-align: center;
+        transform: translateX(-50%) translateY(100%);
+        transition: transform 0.5s ease;
+      }
+
+      .block-4-title-fixed.titles-active {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .block-4-title-fixed.titles-exit {
+        transform: translateX(-50%) translateY(-100%);
+      }
+
+      .block-4-titles-wrap.titles-at-center {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .block-4-titles-wrap.titles-at-top {
+        top: 50px;
+        transform: translateY(-50%);
+      }
+
+      .block-gap {
+        width: 100%;
+        height: 100px;
+        flex-shrink: 0;
+        background: #fff;
+      }
+
+      .block-5 {
+        z-index: 5;
+        height: calc(100vh - 100px);
+        height: calc(100dvh - 100px);
+        min-height: 400px;
+      }
+
+      .block-5 .block-inner {
+        background: #f5f5f5;
+        z-index: 5;
+        height: 100%;
+        box-sizing: border-box;
+      }
+
+      .block-5-content {
+        padding: 20px;
+        box-sizing: border-box;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .block-5-card {
+        background: #e0e0e0;
+        border-radius: 12px;
+        min-height: 120px;
+      }
+
+      .block-5-card:first-child {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .block-5-parallax-item {
+        position: absolute;
+        border-radius: 8px;
+        background: #c62828;
+        will-change: transform;
+      }
+
+      .block-5-parallax-item:nth-child(1) {
+        width: 28%;
+        height: 22%;
+        top: 15%;
+        left: 12%;
+      }
+
+      .block-5-parallax-item:nth-child(2) {
+        width: 22%;
+        height: 28%;
+        top: 45%;
+        left: 18%;
+      }
+
+      .block-5-parallax-item:nth-child(3) {
+        width: 24%;
+        height: 20%;
+        top: 25%;
+        right: 15%;
+        left: auto;
+      }
+
+      .block-5-parallax-item:nth-child(4) {
+        width: 20%;
+        height: 26%;
+        bottom: 20%;
+        right: 20%;
+        left: auto;
+        top: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="block-4-titles-wrap" id="block4TitlesWrap" aria-hidden="true">
+      <div class="block-4-titles-slot">
+        <h1 class="block-4-title-fixed" id="block4Title1">Ну вот и</h1>
+        <h1 class="block-4-title-fixed" id="block4Title2">И вот опять...</h1>
+      </div>
+    </div>
+    <div class="sections">
+      <section class="block block-1">
+        <div class="block-inner">
+          <div class="block-1-content">
+            <div class="row row-top">
+              <div class="yellow-item"></div>
+              <div class="yellow-item"></div>
+            </div>
+            <h1 class="block-1-title">Заголовок</h1>
+            <div class="row row-bottom">
+              <div class="yellow-item yellow-item-dark"></div>
+              <div class="yellow-item yellow-item-dark"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="block block-2">
+        <div class="block-inner">
+          <div class="block-2-content">
+            <div class="row">
+              <div class="green-item"></div>
+              <div class="green-item"></div>
+            </div>
+            <div class="block-2-titles">
+              <h1 class="block-2-title titles-active">Заголовок первый</h1>
+              <h1 class="block-2-title">Заголовок второй</h1>
+            </div>
+            <div class="row">
+              <div class="green-item green-item-dark"></div>
+              <div class="green-item green-item-dark"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="block block-3">
+        <div class="block-inner">
+          <div class="block-3-content">
+            <div class="row">
+              <div class="red-item"></div>
+              <div class="red-item"></div>
+            </div>
+            <h1 class="block-3-title">Заголовок</h1>
+            <div class="row">
+              <div class="red-item red-item-dark"></div>
+              <div class="red-item red-item-dark"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="block block-4">
+        <div class="block-inner">
+          <div class="block-4-content">
+            <div class="block-4-video" id="block4Video"></div>
+          </div>
+        </div>
+      </section>
+      <div class="block-gap" aria-hidden="true"></div>
+      <section class="block block-5">
+        <div class="block-inner">
+          <div class="block-5-content">
+            <div class="block-5-card">
+              <div class="block-5-parallax-item" data-speed="0.15"></div>
+              <div class="block-5-parallax-item" data-speed="0.08"></div>
+              <div class="block-5-parallax-item" data-speed="0.22"></div>
+              <div class="block-5-parallax-item" data-speed="0.12"></div>
+            </div>
+            <div class="block-5-card"></div>
+            <div class="block-5-card"></div>
+            <div class="block-5-card"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      const firstBlock = document.querySelector('.block-1')
+      const block1Title = document.querySelector('.block-1-title')
+      const topRow = document.querySelector('.row-top')
+      const bottomRow = document.querySelector('.row-bottom')
+      const blocks = Array.from(document.querySelectorAll('.block'))
+      const block4Section = document.querySelector('.block-4')
+      const previousTops = blocks.map((block) => block.getBoundingClientRect().top)
+      let isScrollPaused = false
+      let scrollTicking = false
+      let transitionAnimationId = null
+      
+      const GAP_PX = 100
+
+      function getVisibleHeight() {
+        return window.visualViewport ? window.visualViewport.height : window.innerHeight
+      }
+
+      function getBlockDocumentTop(block) {
+        if (!block) return 0
+        const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        const rect = block.getBoundingClientRect()
+        return rect.top + scrollY
+      }
+
+      function getBlock4Top() {
+        return getBlockDocumentTop(block4Section)
+      }
+
+      function getScrollStops(vh) {
+        const block2Top = getBlockDocumentTop(blocks[1])
+        const block3Top = getBlockDocumentTop(blocks[2])
+        const block4Top = getBlock4Top()
+        return [
+          0,
+          block2Top || vh,
+          block3Top || 2 * vh,
+          block4Top || 3 * vh,
+          (block4Top || 3 * vh) + vh / 2 + GAP_PX / 2,
+          (block4Top || 3 * vh) + vh
+        ]
+      }
+
+      function getCurrentStopIndex(scrollY, vh) {
+        const stops = getScrollStops(vh)
+        for (let i = stops.length - 1; i >= 0; i--) {
+          if (scrollY >= stops[i] - 2) return i
+        }
+        return 0
+      }
+      
+      function animateRowsOnScroll() {
+        if (!topRow || !bottomRow) return
+      
+        const vh = getVisibleHeight()
+        const scrollY = window.scrollY || window.pageYOffset
+        const progress = Math.min(1, Math.max(0, scrollY / vh))
+        const shift = progress * vh * 0.35
+        const offset = Math.min(scrollY, vh)
+      
+        topRow.style.transform = `translateY(${-shift}px)`
+        bottomRow.style.transform = `translateY(${offset + shift}px)`
+        if (block1Title) {
+          block1Title.style.transform = `translateY(${offset}px)`
+        }
+      }
+      
+      function pauseScroll(durationMs) {
+        if (isScrollPaused) {
+          return
+        }
+      
+        isScrollPaused = true
+        document.body.classList.add('scroll-paused')
+      
+        window.setTimeout(() => {
+          document.body.classList.remove('scroll-paused')
+          isScrollPaused = false
+        }, durationMs)
+      }
+      
+      function handleScrollPause() {
+        if (isScrollPaused) return
+      
+        for (let index = 0; index < blocks.length; index++) {
+          const currentTop = blocks[index].getBoundingClientRect().top
+          const reachedTop = previousTops[index] > 0 && currentTop <= 0
+      
+          if (index > 0 && reachedTop) {
+            pauseScroll(450)
+            previousTops[index] = currentTop
+            return
+          }
+          previousTops[index] = currentTop
+        }
+      }
+      
+      function animateBlock4() {
+        const block4 = document.querySelector('.block-4')
+        const videoEl = document.getElementById('block4Video')
+        if (!block4 || !videoEl) return
+        const vh = getVisibleHeight()
+        const rect = block4.getBoundingClientRect()
+        const progress4 = Math.min(1, Math.max(0, 1 - rect.top / vh))
+        videoEl.style.transform = `translateX(${(1 - progress4) * 100}%)`
+      }
+
+      function animateBlock5Parallax() {
+        const block5 = document.querySelector('.block-5')
+        const items = document.querySelectorAll('.block-5-parallax-item')
+        if (!block5 || !items.length) return
+        const vh = getVisibleHeight()
+        const rect = block5.getBoundingClientRect()
+        const centerY = rect.top + rect.height / 2
+        const viewportCenter = vh / 2
+        const deltaY = (centerY - viewportCenter) * 0.5
+        const deltaX = (centerY - viewportCenter) * 0.08
+        items.forEach((el) => {
+          const speed = parseFloat(el.dataset.speed) || 0.15
+          const y = deltaY * speed
+          const x = deltaX * speed
+          el.style.transform = `translate(${x}px, ${y}px)`
+        })
+      }
+
+      let block4TitlePhase = 0
+      let block4TitleTimer = null
+
+      function scheduleBlock4Titles() {
+        const wrap = document.getElementById('block4TitlesWrap')
+        const title1 = document.getElementById('block4Title1')
+        const title2 = document.getElementById('block4Title2')
+        if (!wrap || !title1 || !title2 || block4TitlePhase !== 0) return
+        wrap.classList.add('titles-visible', 'titles-at-center')
+        title1.classList.add('titles-active')
+        block4TitlePhase = 1
+        if (block4TitleTimer) clearTimeout(block4TitleTimer)
+        block4TitleTimer = setTimeout(() => {
+          title1.classList.remove('titles-active')
+          title1.classList.add('titles-exit')
+          title2.classList.remove('titles-exit')
+          title2.classList.add('titles-active')
+          const onEnd = () => {
+            title1.removeEventListener('transitionend', onEnd)
+            title1.classList.remove('titles-exit')
+            title1.style.transition = 'none'
+            title1.style.transform = 'translateX(-50%) translateY(100%)'
+            title1.offsetHeight
+            title1.style.transition = ''
+            title1.style.transform = ''
+            block4TitlePhase = 2
+          }
+          title1.addEventListener('transitionend', onEnd)
+        }, 2000)
+      }
+
+      function resetBlock4Titles() {
+        if (block4TitlePhase === 0) return
+        if (block4TitleTimer) clearTimeout(block4TitleTimer)
+        block4TitleTimer = null
+        block4TitlePhase = 0
+        const wrap = document.getElementById('block4TitlesWrap')
+        const title1 = document.getElementById('block4Title1')
+        const title2 = document.getElementById('block4Title2')
+        if (wrap) {
+          wrap.classList.remove('titles-visible', 'titles-at-center', 'titles-at-top')
+          wrap.style.top = ''
+          wrap.style.transform = ''
+        }
+        if (title1) {
+          title1.classList.remove('titles-active', 'titles-exit')
+          title1.style.transition = ''
+          title1.style.transform = ''
+        }
+        if (title2) {
+          title2.classList.remove('titles-active', 'titles-exit')
+          title2.style.transition = ''
+          title2.style.transform = ''
+        }
+      }
+
+      function updateBlock4TitleFixed(scrollY, vh) {
+        const wrap = document.getElementById('block4TitlesWrap')
+        if (!wrap) return
+        const block4Top = getBlock4Top()
+        const stopMid = block4Top + vh / 2 + GAP_PX / 2
+        const stopFinal = block4Top + vh
+        wrap.classList.remove('titles-at-center', 'titles-at-top', 'titles-transition')
+        wrap.style.top = ''
+        wrap.style.transform = ''
+        wrap.style.transition = ''
+        if (scrollY > stopFinal + GAP_PX) {
+          wrap.classList.remove('titles-visible')
+        } else if (scrollY >= stopFinal) {
+          wrap.classList.add('titles-visible')
+          wrap.style.transition = 'none'
+          const scrollPastFinal = scrollY - stopFinal
+          if (scrollPastFinal <= 0) {
+            wrap.classList.add('titles-at-top')
+            wrap.style.top = (GAP_PX / 2) + 'px'
+            wrap.style.transform = 'translateY(-50%)'
+          } else {
+            const topPx = GAP_PX / 2 - scrollPastFinal
+            wrap.style.top = topPx + 'px'
+            wrap.style.transform = 'translateY(-50%)'
+          }
+        } else if (scrollY > stopMid) {
+          wrap.classList.add('titles-visible')
+          const progress = Math.min(1, (scrollY - stopMid) / (stopFinal - stopMid))
+          if (progress <= 0) {
+            wrap.classList.add('titles-at-center')
+          } else {
+            wrap.style.transition = 'none'
+            const slotEl = wrap.querySelector('.block-4-titles-slot')
+            const wrapHeight = (slotEl && slotEl.offsetHeight) || 34
+            const topStart = vh / 2 - wrapHeight / 2
+            const topEnd = GAP_PX / 2
+            const topPx = topStart * (1 - progress) + topEnd * progress
+            wrap.style.top = topPx + 'px'
+            wrap.style.transform = 'translateY(-50%)'
+          }
+        } else if (scrollY >= block4Top) {
+          wrap.classList.add('titles-visible', 'titles-at-center')
+        } else {
+          wrap.classList.remove('titles-visible')
+        }
+      }
+
+      function onScroll() {
+        animateRowsOnScroll()
+        animateBlock4()
+        animateBlock5Parallax()
+        const vh = getVisibleHeight()
+        const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        const block4Top = getBlock4Top()
+        if (scrollY >= block4Top - 2 && scrollY < block4Top + vh) scheduleBlock4Titles()
+        else if (scrollY < block4Top - 2) resetBlock4Titles()
+        updateBlock4TitleFixed(scrollY, vh)
+        if (scrollTicking) return
+        scrollTicking = true
+        requestAnimationFrame(() => {
+          handleScrollPause()
+          scrollTicking = false
+        })
+      }
+      
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+      }
+      
+      function setScrollTop(y) {
+        window.scrollTo(0, y)
+        document.documentElement.scrollTop = y
+        document.body.scrollTop = y
+      }
+      
+      function scrollToFrame(targetScroll, durationMs) {
+        if (transitionAnimationId) cancelAnimationFrame(transitionAnimationId)
+        const startY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        const distance = targetScroll - startY
+        if (Math.abs(distance) < 2) return
+        const startTime = performance.now()
+        function tick(now) {
+          const elapsed = now - startTime
+          const t = Math.min(elapsed / durationMs, 1)
+          const eased = easeInOutCubic(t)
+          const y = startY + distance * eased
+          setScrollTop(y)
+          if (t < 1) transitionAnimationId = requestAnimationFrame(tick)
+          else transitionAnimationId = null
+        }
+        transitionAnimationId = requestAnimationFrame(tick)
+      }
+      
+      function goToNextFrame() {
+        if (transitionAnimationId) return
+        const vh = getVisibleHeight()
+        const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        const stops = getScrollStops(vh)
+        const idx = getCurrentStopIndex(scrollY, vh)
+        if (idx < stops.length - 1) scrollToFrame(stops[idx + 1], 800)
+      }
+
+      function goToPrevFrame() {
+        if (transitionAnimationId) return
+        const vh = getVisibleHeight()
+        const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        const stops = getScrollStops(vh)
+        const idx = getCurrentStopIndex(scrollY, vh)
+        if (idx > 0) scrollToFrame(stops[idx - 1], 800)
+      }
+
+      function onWheel(e) {
+        if (transitionAnimationId) {
+          e.preventDefault()
+          e.stopPropagation()
+          return
+        }
+        const vh = getVisibleHeight()
+        const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        const stops = getScrollStops(vh)
+        const idx = getCurrentStopIndex(scrollY, vh)
+        const wheelDown = e.deltaY > 0
+        const wheelUp = e.deltaY < 0
+        if (wheelDown && idx < stops.length - 1) {
+          e.preventDefault()
+          e.stopPropagation()
+          requestAnimationFrame(() => goToNextFrame())
+        } else if (wheelUp && idx > 0) {
+          e.preventDefault()
+          e.stopPropagation()
+          requestAnimationFrame(() => goToPrevFrame())
+        }
+      }
+      
+      function onKeyDown(e) {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+          e.preventDefault()
+          goToNextFrame()
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault()
+          goToPrevFrame()
+        }
+      }
+      
+      window.addEventListener('scroll', onScroll, { passive: true })
+      window.addEventListener('wheel', onWheel, { passive: false, capture: true })
+      window.addEventListener('keydown', onKeyDown)
+
+      ;(function block2Titles() {
+        const container = document.querySelector('.block-2-titles')
+        if (!container) return
+        const titles = container.querySelectorAll('.block-2-title')
+        if (titles.length < 2) return
+        let index = 0
+        function switchTitle() {
+          const current = titles[index]
+          const next = titles[1 - index]
+          current.classList.remove('titles-active')
+          current.classList.add('titles-exit')
+          next.classList.remove('titles-exit')
+          next.classList.add('titles-active')
+          const onEnd = () => {
+            current.removeEventListener('transitionend', onEnd)
+            current.classList.remove('titles-exit')
+            current.style.transition = 'none'
+            current.style.transform = 'translateX(-50%) translateY(100%)'
+            current.offsetHeight
+            current.style.transition = ''
+            current.style.transform = ''
+            index = 1 - index
+          }
+          current.addEventListener('transitionend', onEnd)
+        }
+        setInterval(switchTitle, 3000)
+      })()
+
+      window.addEventListener('resize', () => {
+        animateRowsOnScroll()
+        animateBlock4()
+        animateBlock5Parallax()
+        const vh = getVisibleHeight()
+        const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+        updateBlock4TitleFixed(scrollY, vh)
+        for (let i = 0; i < blocks.length; i++) {
+          previousTops[i] = blocks[i].getBoundingClientRect().top
+        }
+      })
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          animateRowsOnScroll()
+          animateBlock4()
+          animateBlock5Parallax()
+          const vh = getVisibleHeight()
+          const scrollY = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+          updateBlock4TitleFixed(scrollY, vh)
+        })
+      }
+      animateRowsOnScroll()
+      animateBlock4()
+      animateBlock5Parallax()
+      updateBlock4TitleFixed(
+        window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0,
+        getVisibleHeight()
+      )
+    </script>
+  </body>
+</html>

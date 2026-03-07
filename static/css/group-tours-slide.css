@@ -1,6 +1,54 @@
+/* Экраны ровно 100vh, плавная смена кадров */
+.gt-slide-page.screen {
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
 .gt-slide-page {
   background: var(--color-bg);
-  padding: 120px 0 48px;
+}
+
+/* Первый экран: контент сверху, красная черта ровно по низу 100vh */
+.gt-slide-hero {
+  display: flex;
+  flex-direction: column;
+  padding: 120px 0 0 0;
+  height: 100%;
+}
+
+.gt-slide-hero .gt-slide-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.gt-slide-hero .hero-red-line {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* Экраны с карточками: отступы внутри 100vh */
+.gt-slide-screen {
+  padding: 48px 0;
+}
+
+.gt-slide-screen .gt-slide-container {
+  padding-top: var(--space-6);
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+.gt-slide-screen .gt-slide-grid {
+  max-height: 100%;
 }
 
 .gt-slide-container h1 {
@@ -119,6 +167,9 @@
     padding-top: 102px;
     padding-bottom: 32px;
   }
+  .gt-slide-hero {
+    padding-bottom: 0;
+  }
 
   .gt-slide-container h1 {
     font-size: clamp(28px, 6vw, 56px);
@@ -140,6 +191,9 @@
   .gt-slide-page {
     padding-top: 92px;
     padding-bottom: 24px;
+  }
+  .gt-slide-hero {
+    padding-bottom: 0;
   }
 
   .gt-slide-container h1 {
