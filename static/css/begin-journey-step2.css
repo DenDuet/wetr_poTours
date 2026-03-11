@@ -54,23 +54,41 @@
   min-height: 760px;
   border-radius: 24px;
   overflow: hidden;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
   padding: 30px;
   display: flex;
   align-items: flex-end;
+}
+
+.journey2-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.journey2-hero-bg-next {
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+  pointer-events: none;
+}
+
+.journey2-hero-bg-next.is-active {
+  opacity: 1;
+  z-index: 1;
 }
 
 .journey2-hero-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.08) 58%, rgba(0, 0, 0, 0.04));
+  z-index: 2;
 }
 
 .journey2-hero-text {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   max-width: 420px;
   color: #fffffa;
   margin-left: 54px;

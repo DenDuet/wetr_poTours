@@ -31,5 +31,6 @@ staticfiles/
 # IDE
 .idea/
 .vscode/
+.cursor/
 *.swp
 *.swo

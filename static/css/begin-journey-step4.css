@@ -83,7 +83,13 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
-  background: #000;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.journey4-cover.is-video-ready video {
+  opacity: 1;
 }
 
 .journey4-form-card {

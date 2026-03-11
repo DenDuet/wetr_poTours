@@ -24,8 +24,8 @@
       </nav>
 
       <div class="journey4-layout">
-        <section class="journey4-cover">
-          <video preload="metadata" playsinline muted>
+        <section class="journey4-cover" id="journey4-cover">
+          <video class="journey4-video" preload="auto" playsinline muted loop style="background:transparent;opacity:0">
             <source src="{{ MEDIA_URL }}working/video/final%20detail.mp4" type="video/mp4" />
           </video>
         </section>
@@ -108,4 +108,22 @@
       </div>
     </div>
   </section>
+
+  <script>
+    ;(function () {
+      var cover = document.getElementById('journey4-cover')
+      var video = cover ? cover.querySelector('.journey4-video') : null
+      if (!cover || !video) return
+      function showVideo() {
+        cover.classList.add('is-video-ready')
+        video.style.opacity = '1'
+      }
+      if (video.readyState >= 2) showVideo()
+      else {
+        video.addEventListener('loadeddata', showVideo, { once: true })
+        video.addEventListener('canplay', showVideo, { once: true })
+        setTimeout(showVideo, 4000)
+      }
+    })()
+  </script>
 {% endblock %}

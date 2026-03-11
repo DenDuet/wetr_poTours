@@ -24,7 +24,9 @@
       </nav>
 
       <div class="journey2-grid">
-        <section class="journey2-hero" id="journey2-slider" style="background-image: url('{{ slider_current.photo_url }}');">
+        <section class="journey2-hero" id="journey2-slider">
+          <div class="journey2-hero-bg" id="journey2-hero-bg" style="background-image: url('{{ slider_current.photo_url }}');"></div>
+          <div class="journey2-hero-bg journey2-hero-bg-next" id="journey2-hero-bg-next" aria-hidden="true"></div>
           <div class="journey2-hero-overlay"></div>
           <button type="button" class="journey2-arrow journey2-arrow-left" aria-label="Previous attraction">←</button>
           <button type="button" class="journey2-arrow journey2-arrow-right" aria-label="Next attraction">→</button>
@@ -69,12 +71,14 @@
     ;(function () {
       var dataTag = document.getElementById('journey2-attractions-data')
       var slider = document.getElementById('journey2-slider')
+      var bgEl = document.getElementById('journey2-hero-bg')
+      var bgNextEl = document.getElementById('journey2-hero-bg-next')
       var title = document.getElementById('journey2-title')
       var description = document.getElementById('journey2-description')
       var prevBtn = document.querySelector('.journey2-arrow-left')
       var nextBtn = document.querySelector('.journey2-arrow-right')
-      if (!dataTag || !slider || !title || !description || !prevBtn || !nextBtn) return
-    
+      if (!dataTag || !slider || !bgEl || !bgNextEl || !title || !description || !prevBtn || !nextBtn) return
+
       var attractions = []
       try {
         attractions = JSON.parse(dataTag.textContent || '[]')
@@ -82,26 +86,40 @@
         attractions = []
       }
       if (!attractions.length) return
-    
+
+      var TRANSITION_MS = 350
       var idx = 0
       var readMoreLink = document.getElementById('journey2-read-more')
-      var render = function () {
+
+      function render(withTransition) {
         var item = attractions[idx]
-        slider.style.backgroundImage = "url('" + item.photo_url + "')"
+        var photoUrl = item.photo_url || ''
         title.textContent = item.title || ''
         description.textContent = item.description || ''
         if (readMoreLink && item.id) readMoreLink.href = '/attractions/' + item.id + '/'
+
+        if (withTransition && photoUrl) {
+          bgNextEl.style.backgroundImage = "url('" + photoUrl + "')"
+          bgNextEl.classList.add('is-active')
+          setTimeout(function () {
+            bgEl.style.backgroundImage = "url('" + photoUrl + "')"
+            bgNextEl.classList.remove('is-active')
+          }, TRANSITION_MS)
+        } else {
+          bgEl.style.backgroundImage = "url('" + photoUrl + "')"
+          bgNextEl.classList.remove('is-active')
+        }
       }
 
-      render()
-    
+      render(false)
+
       prevBtn.addEventListener('click', function () {
         idx = (idx - 1 + attractions.length) % attractions.length
-        render()
+        render(true)
       })
       nextBtn.addEventListener('click', function () {
         idx = (idx + 1) % attractions.length
-        render()
+        render(true)
       })
     })()
   </script>

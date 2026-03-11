@@ -5,7 +5,7 @@
 /* Header */
 .header {
   position: fixed;
-  top: 0;
+  top: 15px;
   left: 0;
   right: 0;
   z-index: 1000;
@@ -145,7 +145,7 @@
 .header-scrolled .header-inner {
   display: flex;
   width: 620px;
-  padding: 6px 12px;
+  padding: 0 12px;
   justify-content: space-between;
   align-items: center;
   border-radius: 60px;
@@ -182,7 +182,7 @@
   width: 67px;
 }
 
-/* Бургер-меню — минимальный dropdown под кнопкой */
+/* Бургер-меню — выпадающее меню под кнопкой Menu */
 .burger-menu {
   position: absolute;
   top: 100%;
@@ -571,9 +571,9 @@
   background: var(--color-bg-hero);
 }
 
-/* Секция About (из Тест1 About-55) */
+/* Секция About (из Тест1 About-55): 15px от header до контента, 24px снизу */
 .section-about {
-  padding: 80px 0;
+  padding: 110px 0 24px;
 }
 
 .about-inner {
@@ -586,14 +586,17 @@
   margin: 0 auto;
 }
 
-/* Left-56: блок с картинкой 710×860; анимация наезда снизу + scale 70%→100% */
+/* Блок с картинкой: пропорционально сжат scale(0.85), внутренние элементы масштабируются вместе */
 .about-image {
   position: relative;
   width: 710px;
   height: 860px;
   flex-shrink: 0;
-  transform-origin: bottom center;
+  transform: scale(0.85);
+  transform-origin: top left;
   will-change: transform;
+  margin-right: -107px;
+  margin-bottom: -129px;
 }
 
 /* Img-57: основное фото */
@@ -637,15 +640,15 @@
   object-fit: contain;
 }
 
-/* Conatainer-61: контент справа 520×860 */
+/* Conatainer-61: контент справа, расстояние между заголовком и блоком с текстом уменьшено */
 .about-content {
   width: 520px;
-  height: 860px;
+  height: 731px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 168px;
+  gap: 60px;
 }
 
 /* H2About-62 */
@@ -1050,9 +1053,9 @@
   display: inline-block;
 }
 
-/* Attractions (из Тест1 Attractions-69); параллакс только при уходе секции вверх за экран */
+/* Attractions: 15px от header до контента, 24px снизу */
 .section-attractions {
-  padding: 80px 0;
+  padding: 110px 0 24px;
   --attractions-parallax: 0px;
   --attractions-image-parallax: 0px;
 }
@@ -1063,15 +1066,15 @@
   margin: 0 auto;
 }
 
-/* Desktop layout: left text/slider + right image */
+/* Расстояние между верхним блоком (заголовок) и нижним (слайдер) уменьшено */
 .attractions-content {
   width: 100%;
-  min-height: 860px;
+  min-height: 731px;
   display: grid;
   grid-template-columns: 590px 710px;
   grid-template-rows: auto 1fr;
   column-gap: 130px;
-  row-gap: 40px;
+  row-gap: 24px;
   align-items: start;
 }
 
@@ -1114,12 +1117,12 @@
   max-width: 450px;
 }
 
-/* ContainerSlider-74 — при уходе секции вверх: движение вниз (параллакс) */
+/* ContainerSlider-74 — при уходе секции вверх: движение вниз (параллакс); 24px до низа секции */
 .attractions-slider {
   grid-column: 1;
   grid-row: 2;
   align-self: end;
-  margin-bottom: 80px;
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -1233,7 +1236,7 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  width: 252px;
+  width: 410px;
 }
 
 /* TourTitle-88 */
@@ -1255,7 +1258,7 @@
   line-height: 1.4;
 }
 
-/* SliderImage-93: правая колонка 710×860; параллакс — картинка отстаёт при скролле (как в Figma top: 50%) */
+/* Правая колонка: картинка пропорционально сжата scale(0.85), внутренние элементы масштабируются вместе */
 .attractions-images {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -1264,12 +1267,15 @@
   max-width: 710px;
   height: 860px;
   flex-shrink: 0;
-  transform: translateY(var(--attractions-image-parallax, 0));
+  transform: scale(0.85) translateY(var(--attractions-image-parallax, 0));
+  transform-origin: top left;
   transition: transform 0.12s ease-out;
   will-change: transform;
+  margin-right: -107px;
+  margin-bottom: -129px;
 }
 
-/* Img-94 */
+/* Img-94 — плавная смена при переключении кнопками (crossfade как на preferences) */
 .attractions-images .main-img {
   position: absolute;
   left: 0;
@@ -1278,6 +1284,17 @@
   height: 100%;
   object-fit: cover;
   border-radius: 24px;
+}
+
+.attractions-images .main-img-next {
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.attractions-images .main-img-next.is-active {
+  opacity: 1;
 }
 
 /* ImageThumbnails-95 */
@@ -1634,8 +1651,9 @@
 .section-inspirations.section-group-tour-cards {
   padding-top: 102px;
 }
-/* Верхняя сетка (2 карточки): боковые зазоры 10px */
+/* Верхняя сетка (2 карточки): одна строка, чтобы row-gap не добавлял отступ снизу */
 .section-inspirations.section-group-tour-cards .inspirations-grid0 {
+  grid-template-rows: auto;
   gap: 10px;
   margin-bottom: 0;
 }
@@ -1798,23 +1816,23 @@
   align-self: flex-start;
 }
 
-/* Reviews / Voices — Figma node 708:2005, контейнер 1536×980px */
+/* Reviews / Voices — те же отступы и ширина, что hero: 15px от низа меню, 24px от низа экрана */
 .section-reviews {
   min-height: 980px;
+  padding: 110px 0 24px;
   background: #F9F7F4;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Контейнер по ширине как у 1-го экрана (hero), без своего вертикального padding */
 .section-reviews .container {
-  width: min(100%, calc(var(--container-content-max) + (var(--container-padding) * 2)));
-  max-width: none;
   min-height: 980px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px var(--container-padding);
+  padding: 0 var(--container-padding);
   box-sizing: border-box;
 }
 
@@ -1841,8 +1859,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  flex: 1;
-  align-items: stretch;
+  align-items: start;
 }
 
 .review-card {
@@ -1953,7 +1970,8 @@
 }
 
 .exp-lp-content {
-  max-width: 483px;
+  max-width: 560px;
+  padding-left: var(--container-padding-base, 53px);
 }
 
 .exp-lp-content h2 {
@@ -2613,37 +2631,22 @@
   overflow: hidden;
 }
 
-/* Фоновый логотип по центру футера */
+/* Фоновый логотип — фон блока по размеру футера, обрезка по границам автоматическая */
 .footer-logo-bg {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 380px;
-  height: 380px;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  opacity: 0.1;
-}
-
-.footer-logo-bg-image {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 596px;
-  height: 604px;
-  background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
+  background-position: 15% -15%;
+  background-size: 200%;
+  opacity: 0.06;
 }
 
-.footer-logo-bg-tint {
+.footer-logo-bg::after {
+  content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 596px;
-  height: 604px;
+  inset: 0;
   background-color: var(--color-yellow);
   mix-blend-mode: multiply;
   opacity: 0.15;
@@ -2651,7 +2654,7 @@
 
 .footer-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .footer-inner {
@@ -2664,33 +2667,23 @@
 
 .footer-logo-center {
   position: relative;
-  width: 180px;
-  height: 180px;
-  overflow: hidden;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.footer-logo-center-link {
-  display: block;
-  position: absolute;
-  right: 0;
-  top: 0;
   width: 360px;
   height: 360px;
+  margin-top: -50px;
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
 }
 
-.footer-logo-center-img {
-  position: absolute;
-  left: 136px;
-  bottom: 162px;
-  width: 107px;
-  height: auto;
-  object-fit: contain;
-  object-position: left bottom;
-  transform: scale(4);
-  transform-origin: bottom left;
+/* Логотип — фон блока, увеличен, прижат к левому нижнему углу, обрезка справа и сверху */
+.footer-logo-center-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 150%;
 }
 
 .footer-contact {
@@ -2796,24 +2789,28 @@
   color: var(--color-red-figma);
 }
 
+/* Правая часть футера — три колонки в ряд: Menu | Services | картинка+кнопка (230px, отступ 10px) */
 .footer-menus {
   display: flex;
-  gap: 40px;
+  flex-wrap: nowrap;
+  gap: 10px;
   align-items: flex-start;
-  flex-wrap: wrap;
+  max-width: 710px;
 }
 
 .footer-menu-col {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  width: 230px;
+  flex-shrink: 0;
 }
 
 .footer-menu-title {
   font-family: var(--font-body);
   font-size: 24px;
+  font-weight: 500;
   color: var(--color-black);
-  font-weight: 600;
+  margin: 0 0 30px;
 }
 
 .footer-links {
@@ -2824,32 +2821,35 @@
 
 .footer-links a {
   font-family: var(--font-body);
-  font-size: var(--text-h6);
+  font-size: 18px;
   color: var(--color-black);
   text-decoration: none;
 }
 
 .footer-links a:hover {
-  color: var(--color-red-dark);
+  color: var(--color-red-figma);
 }
 
 .footer-cta-block {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 230px;
   min-width: 230px;
+  flex-shrink: 0;
 }
 
 .footer-cta-block .btn-cta-header {
   width: 100%;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .footer-image {
-  width: 100%;
+  width: 230px;
   height: 259px;
   object-fit: cover;
-  border-radius: var(--radius-xl);
+  border-radius: 24px;
 }
 
 .footer-bottom {
@@ -2858,7 +2858,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  padding-top: 32px;
+  padding-top: 40px;
+  margin-top: 0;
   border-top: 1px solid var(--color-gray-light);
 }
 
@@ -3736,7 +3737,7 @@
   }
 
   .section-inspirations .inspirations-grid {
-    margin-top: 14px;
+    margin-top: 10px;
   }
 
   .section-inspirations .inspiration-card {

@@ -132,6 +132,10 @@
               alt=""
               class="main-img"
               id="attractions-main-img" />
+            <img alt=""
+              class="main-img main-img-next"
+              id="attractions-main-img-next"
+              aria-hidden="true" />
             <div class="thumbnails">
               {% for att in featured_attractions %}
                 <button type="button" class="thumbnail-btn {% if forloop.first %}active{% endif %}" aria-label="View {{ att.title }}" data-src="{{ att.photo_url }}" data-title="{{ att.title }}" data-description="{{ att.description|truncatewords:15 }}" data-href="{% url 'attraction_detail' att.id %}"><img src="{{ att.photo_url }}" alt="{{ att.title }}" /></button>
@@ -423,6 +427,9 @@
             var stop = Math.max(0, Math.round(list[i] || 0))
             if (!out.length || stop > out[out.length - 1]) out.push(stop)
           }
+          var docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)
+          var maxScroll = Math.max(0, Math.round(docHeight - h))
+          if (maxScroll > out[out.length - 1]) out.push(maxScroll)
           pageStops = out
         }
     
@@ -566,30 +573,40 @@
           var top = getVideoSectionTop()
           var stopMid = top + h / 2 + GAP_PX / 2
           var stopFinal = top + h
-          wrapEl.classList.remove('titles-at-center', 'titles-at-top')
-          wrapEl.style.top = ''
-          wrapEl.style.transform = ''
-          wrapEl.style.transition = ''
           if (scrollY >= stopFinal) {
-            wrapEl.classList.remove('titles-visible')
+            wrapEl.classList.remove('titles-visible', 'titles-at-center', 'titles-at-top')
+            wrapEl.style.top = ''
+            wrapEl.style.transform = ''
+            wrapEl.style.transition = ''
             if (headlineFixedEl) headlineFixedEl.classList.remove('headline-wrap-visible')
           } else if (scrollY > stopMid) {
-            wrapEl.classList.add('titles-visible')
-            if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
-            var progress = Math.min(1, (scrollY - stopMid) / (stopFinal - stopMid))
-            wrapEl.style.transition = 'none'
-            var slotEl = wrapEl.querySelector('.video-headline-slot')
-            var wrapHeight = (slotEl && slotEl.offsetHeight) || 34
-            var topStart = h / 2 - wrapHeight / 2
+            /* Текущая позиция из DOM — без скачка при переходе с top: 50% на пиксели */
+            var wrapRect = wrapEl.getBoundingClientRect()
+            var topStart = wrapRect.top
+            var wrapHeight = wrapEl.offsetHeight || 34
             var topEnd = -wrapHeight / 2 - 8
+            /* Заголовок в 2 раза медленнее отлетает и прилетает */
+            var headlineScrollRange = (stopFinal - stopMid) * 3.6
+            var progress = Math.min(1, (scrollY - stopMid) / headlineScrollRange)
             var interpolatedTop = topStart * (1 - progress) + topEnd * progress
+            wrapEl.style.transition = 'none'
             wrapEl.style.top = interpolatedTop + 'px'
             wrapEl.style.transform = 'translateY(-50%)'
+            wrapEl.classList.remove('titles-at-center', 'titles-at-top')
+            wrapEl.classList.add('titles-visible')
+            if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
           } else if (scrollY >= top) {
+            wrapEl.classList.remove('titles-at-top')
+            wrapEl.style.top = ''
+            wrapEl.style.transform = ''
+            wrapEl.style.transition = ''
             wrapEl.classList.add('titles-visible', 'titles-at-center')
             if (headlineFixedEl) headlineFixedEl.classList.add('headline-wrap-visible')
           } else {
-            wrapEl.classList.remove('titles-visible')
+            wrapEl.classList.remove('titles-visible', 'titles-at-center', 'titles-at-top')
+            wrapEl.style.top = ''
+            wrapEl.style.transform = ''
+            wrapEl.style.transition = ''
             if (headlineFixedEl) headlineFixedEl.classList.remove('headline-wrap-visible')
           }
         }
@@ -615,7 +632,7 @@
           var h = vh()
           var aboutTop = getScreenTop(aboutSection)
           var progress = aboutTop <= 0 ? 1 : Math.min(1, Math.max(0, scrollY / aboutTop))
-          var scale = 0.7 + 0.3 * progress
+          var scale = 0.85 * (0.7 + 0.3 * progress)
           var translateY = Math.round(80 * (1 - progress))
           aboutImageEl.style.transform = 'translateY(' + translateY + 'px) scale(' + scale + ')'
         }
@@ -717,26 +734,30 @@
       })()
     
       var mainImg = document.getElementById('attractions-main-img')
+      var mainImgNext = document.getElementById('attractions-main-img-next')
       var thumbBtns = document.querySelectorAll('.attractions-images .thumbnail-btn')
       var arrowBtns = document.querySelectorAll('.section-attractions .arrow-btn')
+      var ATTRACTIONS_IMAGE_TRANSITION_MS = 350
       function setAttractionImage(index) {
-        if (!mainImg || !thumbBtns.length) return
+        if (!mainImg || !mainImgNext || !thumbBtns.length) return
         index = (index + thumbBtns.length) % thumbBtns.length
         var btn = thumbBtns[index]
         var src = btn.getAttribute('data-src')
-        if (src) {
-          mainImg.src = src
-          thumbBtns.forEach(function (b) {
-            b.classList.remove('active')
-          })
-          btn.classList.add('active')
-        }
+        if (!src) return
+        mainImgNext.src = src
+        mainImgNext.classList.add('is-active')
         var titleEl = document.getElementById('attractions-title')
         var descEl = document.getElementById('attractions-desc')
         var linkEl = document.getElementById('attractions-link')
+        thumbBtns.forEach(function (b) { b.classList.remove('active') })
+        btn.classList.add('active')
         if (titleEl && btn.getAttribute('data-title')) titleEl.textContent = btn.getAttribute('data-title')
         if (descEl && btn.getAttribute('data-description')) descEl.textContent = btn.getAttribute('data-description')
         if (linkEl && btn.getAttribute('data-href')) linkEl.href = btn.getAttribute('data-href')
+        setTimeout(function () {
+          mainImg.src = src
+          mainImgNext.classList.remove('is-active')
+        }, ATTRACTIONS_IMAGE_TRANSITION_MS)
       }
       function getActiveIndex() {
         for (var i = 0; i < thumbBtns.length; i++) {
@@ -758,57 +779,27 @@
         })
       }
     
-      /* Attractions: левый нижний блок привязан к низу видимой области (только когда не в истории скролла) */
+      /* Attractions: блок и картинка всегда в позиции по макету (как на референсе), и при скролле вверх, и при скролле вниз */
       var attractionsSection = document.querySelector('.section-attractions')
       var attractionsSliderEl = attractionsSection ? attractionsSection.querySelector('.attractions-slider') : null
-      var sliderState = 'normal'
-      var sliderBlockOffset = 0
-      var sliderBlockHeight = 0
       var attractionsRaf = null
       var videoSectionEl = document.getElementById('screen-video')
       if (attractionsSection && attractionsSliderEl) {
         function updateAttractionsParallax() {
           if (document.documentElement.classList.contains('scroll-story-active')) return
-          var rect = attractionsSection.getBoundingClientRect()
+          if (!videoSectionEl) return
           var vh = window.innerHeight
-          var sliderRect = attractionsSliderEl.getBoundingClientRect()
-          if (sliderState === 'normal' && rect.top >= 0) {
-            sliderBlockOffset = sliderRect.top - rect.top
-            sliderBlockHeight = sliderRect.height
-          }
-          var translateY = 0
-          if (rect.top < 0 && rect.bottom > 0 && sliderState === 'normal') sliderState = 'pin-bottom'
-          if (sliderState === 'pin-bottom' && rect.top >= 0) sliderState = 'return'
-          if (sliderState === 'pin-bottom' && rect.bottom <= 0) sliderState = 'normal'
-          if (sliderState === 'return' && rect.top >= Math.max(0, vh - sliderBlockHeight - sliderBlockOffset)) sliderState = 'normal'
-          if (sliderState === 'normal') {
-            translateY = 0
-          } else if (sliderState === 'pin-bottom') {
-            translateY = vh - sliderBlockHeight - (rect.top + sliderBlockOffset)
-            /* Останавливаем блок под видео, не тянем до футера */
-            if (videoSectionEl) {
-              var videoTop = videoSectionEl.getBoundingClientRect().top
-              var sliderVisualTop = rect.top + sliderBlockOffset + translateY
-              if (sliderVisualTop > videoTop) {
-                translateY = videoTop - (rect.top + sliderBlockOffset)
-              }
-            }
-          } else if (sliderState === 'return') {
-            translateY = Math.max(0, vh - sliderBlockHeight - sliderBlockOffset - rect.top)
-          }
-          var roundedY = Math.round(translateY)
-          attractionsSliderEl.style.transform = roundedY !== 0 ? 'translateY(' + roundedY + 'px)' : ''
-          if (rect.top < 0 && rect.bottom > 0) {
-            var delta = -rect.top
-            attractionsSection.style.setProperty('--attractions-image-parallax', Math.min(0.35 * delta, 100) + 'px')
-          } else {
-            attractionsSection.style.setProperty('--attractions-image-parallax', '0px')
-          }
-          /* Гасить блок только когда видео давно заехало (с запасом по скроллу) */
           var scrollY = window.pageYOffset || window.scrollY
           var videoRect = videoSectionEl.getBoundingClientRect()
           var videoSectionTop = scrollY + videoRect.top
           var videoEnterProgress = vh <= 0 ? 1 : (scrollY - videoSectionTop) / vh
+          /* Параллакс: блок уходит вниз, когда видео приближается снизу (видно по videoRect.top) */
+          var parallaxMaxPx = 320
+          var parallaxProgress = videoRect.top >= vh ? 0 : Math.min(1, (vh - videoRect.top) / vh)
+          var parallaxPx = Math.round(parallaxProgress * parallaxMaxPx)
+          attractionsSection.style.setProperty('--attractions-parallax', parallaxPx + 'px')
+          attractionsSliderEl.style.transform = 'translateY(' + parallaxPx + 'px)'
+          attractionsSection.style.setProperty('--attractions-image-parallax', '0px')
           if (videoEnterProgress >= 1.35) {
             attractionsSliderEl.classList.add('is-covered-by-video')
           } else {
@@ -824,10 +815,7 @@
         }
         updateAttractionsParallax()
         window.addEventListener('scroll', scheduleAttractionsUpdate, { passive: true })
-        window.addEventListener('resize', function () {
-          sliderState = 'normal'
-          updateAttractionsParallax()
-        })
+        window.addEventListener('resize', scheduleAttractionsUpdate)
       }
     })()
   </script>
